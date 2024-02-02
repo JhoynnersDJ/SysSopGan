@@ -5,6 +5,7 @@
 <strong> Variables:</strong>
 En minusculas, singular y en ingles:
 Ejemplo: client, password, email.
+Las informaciones sensibles en variables de entorno (.env).
 Las variables de las bases de datos separados con guiones bajos. Ejemplo:
 num_tel, nombre_us
 
@@ -36,6 +37,8 @@ const gananciaPorProyectoArray
 En español separado con guiones:
 Ejemplo:
 router.get('/proyectos-por-usuario/:id_usuario')
+
+Para trabajar con la base de datos, se usara mongoose para base de datos no relacional, y sequelize mysql2 (Mysql) y sequelize pg (para posgree) por los momentos.
 
 <h1>Importante comentar su codigo.</h1>
     
