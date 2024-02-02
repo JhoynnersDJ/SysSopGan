@@ -37,6 +37,8 @@ En español separado con guiones:
 Ejemplo:
 router.get('/proyectos-por-usuario/:id_usuario')
 
+Para trabajar con la base de datos, se usara mongoose para base de datos no relacional, y sequelize mysql2 (Mysql) y sequelize pg (para posgree) por los momentos.
+
 <h1>Importante comentar su codigo.</h1>
     
 
