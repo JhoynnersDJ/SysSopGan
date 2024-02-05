@@ -1,13 +1,14 @@
-const user = require('../model/UserModel.js');
-const bcrypt = require('bcryptjs');
-const createAccessToken = require('../libs/jwt.js');
-const jwt = require ('jsonwebtoken');
+import user from '../model/UserModel.js';
+import bcrypt from 'bcryptjs';
+import { createAccessToken } from '../libs/jwt.js';
+import jwt from "jsonwebtoken";
+import  {v4 } from "uuid";
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
-const uuidv4 = require('uuid');
+
 
 
 //se registra el usuario y genera su id 
-const register = async (req, res) => {
+export const register = async (req, res) => {
     const { email, password, username } = req.body;
     
     try {
@@ -21,17 +22,16 @@ const register = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, 10);
         
         //se genera el id unico del usuario
-        let idUnico = uuidv4.v4();
-
+        let idUnico = v4();
+        
         //se crea un nuevo usuario
         const newuser = new user(username, email, passwordHash, idUnico);
         
         //se guarda el usuario
         newuser.save();
-
         //se genera el token para ser manejado por la cookie
-        const token = await createAccessToken.createAccessToken({ id: newuser.getUserId() });
-
+        const token = await createAccessToken({ id: newuser.getUserId() });
+        
         //se envia de respuesta el token yy los datos ingresados
         res.cookie('token', token);
         res.json({
@@ -49,7 +49,7 @@ const register = async (req, res) => {
 
 
 // inicia sesion el usuario
-const login = async (req, res) => {
+export const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -66,15 +66,16 @@ const login = async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: "Incorrect password" });
 
         //se genera un token para ser manejado como una cookie
-        const token = await createAccessToken.createAccessToken({ id: userFound.getUserId() });
+        const token = await createAccessToken({ id: userFound.getUserId() });
 
-        //se envia de respuesta el token yy los datos ingresados
+        //se envia de respuesta el token y los datos ingresados
         res.cookie('token', token);
         res.json({
             id: userFound.getUserId(),
             username: userFound.getUserName(),
             email: userFound.getUserEmail()
         });
+        console.log(`El usuario ${userFound.getUserName()} a iniciado sesion`);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -82,7 +83,7 @@ const login = async (req, res) => {
 }
 
 //finalizar sesion del usuario
-const logout = (req, res) => {
+export const logout = (req, res) => {
     //se le agota el tiempo de vida de la cookie
     res.cookie('token', "", {
         expires: new Date(0)
@@ -91,7 +92,7 @@ const logout = (req, res) => {
 }
 
 //obtener datos del usuario
-const profile = async (req, res) => {
+export const profile = async (req, res) => {
     //busca al usuario por el email
     const userFound = await user.findById(req.user.id)
 
@@ -109,4 +110,3 @@ const profile = async (req, res) => {
 
 }
 
-module.exports = { "register": register, "login": login, "logout":logout, "profile":profile}

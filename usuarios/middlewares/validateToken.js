@@ -1,7 +1,7 @@
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
-const jwt = require('jsonwebtoken');
+import jwt from "jsonwebtoken";
 
-const authRequired = (req, res, next) => {
+export const authRequired = (req, res, next) => {
     //obtiene el usuario del request
     const {token} = req.cookies;
     //console.log(token)
@@ -19,5 +19,3 @@ const authRequired = (req, res, next) => {
     })
    
 }
-
-module.exports = authRequired;

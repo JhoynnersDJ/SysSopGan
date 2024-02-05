@@ -1,7 +1,7 @@
-const userMock = require('../model/UsersMockup');
+import userMock from'./UsersMockup.js';
 
 //clase que define la estructura del usuario del sistema
-class user {
+export default class user {
     constructor(userName, email, password, id) {
         this.userName = userName;
         this.email = email;
@@ -32,4 +32,3 @@ class user {
 
 }
 
-module.exports = user

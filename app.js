@@ -1,13 +1,13 @@
-require('dotenv').config(); // Cargar variables de entorno desde .env
-
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser')
-
+import 'dotenv/config' // Cargar variables de entorno desde .env
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 // Importar el enrutador de prueba desde el archivo './prueba/prueba'
-const pruebaRouter = require('./prueba/prueba'); 
+import pruebaRouter from "./prueba/prueba.js";
+// Importar el enrutador de usuario desde el archivo './usuarios/usuarios'
+import userRouter from "./usuarios/usuarios.js";
 
-const userRouter = require('./usuarios/usuarios');
+
 
 const port = process.env.PORT || 3000;
 const corsOrigin = process.env.CORS_ORIGIN;

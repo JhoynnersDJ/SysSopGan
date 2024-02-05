@@ -1,7 +1,7 @@
-const z = require('zod');
+import z from 'zod';
 
 //se asegura que los campos ingresados al registro sean validos
-const registerSchema = z.object({
+export const registerSchema = z.object({
     username: z.string({
         required_error: 'Username is required'
     }),
@@ -19,7 +19,7 @@ const registerSchema = z.object({
 })
 
 //se asegura que los campos ingresados al login sean validos
-const loginSchema = z.object({
+export const loginSchema = z.object({
     email: z.string({
         required_error: 'Email is required'
     }).email({
@@ -32,4 +32,3 @@ const loginSchema = z.object({
     })
 })
 
-module.exports = {"registerSchema": registerSchema, "loginSchema":loginSchema}

@@ -1,4 +1,4 @@
-const user = require('../model/UserModel.js');
+import user from './UserModel.js';
 
 class userPort{
     save(user){}
@@ -15,7 +15,7 @@ function findOne(email){
     return users.users.find((users) => users.email == email);
 }
 
-class userMockup extends userPort{
+export default class userMockup extends userPort{
     users = [];
     static save(user){
         
@@ -31,4 +31,3 @@ class userMockup extends userPort{
 
 let users = new userMockup();
 
-module.exports = userMockup,userPort;

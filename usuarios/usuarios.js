@@ -1,20 +1,20 @@
-const express = require('express');
-const router = express.Router();
-const controller = require('./controllers/UserControllers');
-const validateSchema = require('./middlewares/ValidatorSchema');
-const authRequired = require('./middlewares/validateToken')
-const {loginSchema, registerSchema} = require('./schemas/UserSchema');
+import { Router} from "express";
+import  {login, logout, register, profile}  from './controllers/UserControllers.js';
+import { authRequired } from "./middlewares/validateToken.js";
+import { validateSchema } from "./middlewares/ValidatorSchema.js";
+import { loginSchema, registerSchema } from "./schemas/UserSchema.js";
 
+const router = Router()
 //registrar usuario (nombre de usuario, contraseña, email)
-router.post('/registro',validateSchema(registerSchema), controller.register);
+router.post('/registro',validateSchema(registerSchema), register);
 
 //iiniciar sesion con email y contraseña
-router.post('/login',validateSchema(loginSchema), controller.login);
+router.post('/login',validateSchema(loginSchema), login);
 
 //finalizar sesion usuario
-router.post('/logout', controller.logout);
+router.post('/logout', logout);
 
 //obtener datos del usuario
-router.get('/perfil', authRequired, controller.profile);
+router.get('/perfil', authRequired, profile);
 
-module.exports = router;
+export default router

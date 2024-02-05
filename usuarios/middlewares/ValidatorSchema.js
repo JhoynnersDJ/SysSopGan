@@ -1,4 +1,4 @@
-const validateSchema = (schema) => (req,res,next) => {
+export const validateSchema = (schema) => (req,res,next) => {
     try {
         //compara los dato del request body con el del schema
         schema.parse(req.body);
@@ -9,4 +9,3 @@ const validateSchema = (schema) => (req,res,next) => {
 
 }
 
-module.exports = validateSchema;
