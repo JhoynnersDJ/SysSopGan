@@ -2,14 +2,15 @@ import holiday from "../model/HolidaysModel.js"
 import holidayMock from "../model/HolidaysMockup.js"
 import got from 'got';
 import  {v4 } from "uuid";
+const TOKEN_API = process.env.TOKEN_API;
 
 //cargar los feriados desde la api de google calendar
 export const loadHolidays = async (req,res) => {
     try {
-
+        console.log(TOKEN_API)
         //se consume el endpoint para obtener todos los feriados de google calendar y se obtiene un json
         const items = await got
-            .get('https://www.googleapis.com/calendar/v3/calendars/es.ve%23holiday%40group.v.calendar.google.com/events?key=AIzaSyAJ5y-6CVOLN6lnMucyJCS6BoCEIhHS4HY')
+            .get(`https://www.googleapis.com/calendar/v3/calendars/es.ve%23holiday%40group.v.calendar.google.com/events?key=${TOKEN_API}`)
             .json(); 
             
         //se convierte en objeto solo los items del json
@@ -29,9 +30,9 @@ export const loadHolidays = async (req,res) => {
             
         });
         
-        
+        res.json(obj)
     } catch (err) {
-        console.log(err);
+        return res.status(404).json({message: err.message});
     }
 }
 
