@@ -6,7 +6,9 @@ import cors from "cors";
 import pruebaRouter from "./prueba/prueba.js";
 // Importar el enrutador de usuario desde el archivo './usuarios/usuarios'
 import userRouter from "./usuarios/usuarios.js";
+import holidaysRouter from "./feriados/feriados.js"
 
+import {loadHolidays} from "./feriados/controllers/HolidayController.js"
 
 
 const port = process.env.PORT || 3000;
@@ -21,12 +23,19 @@ app.use(cors({
 app.use(express.json());
 //manejo de cookies
 app.use(cookieParser());
+
 // Middleware para Prueba
 app.use('/prueba', pruebaRouter);
 
 //Middleware para usuario
 app.use('/usuario', userRouter);
 
+//Middleware para feriados
+app.use('/feriados', holidaysRouter);
+
 app.listen(port, () => {
   console.log(`La aplicación está corriendo en http://localhost:${port}`);
 });
+
+//carga feriados ddesde google calendar a la aplicaion
+//loadHolidays();
