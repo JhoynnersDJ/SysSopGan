@@ -27,8 +27,7 @@ const ResponsableTecnico = sequelize.define('Responsable_Tecnico', {
     allowNull: true,
   },
 }, {
-    timestamps: false, // Desactivar las columnas createdAt y updatedAt
-
+    timestamps: false, 
 });
 
 export default ResponsableTecnico;

@@ -1,7 +1,7 @@
 // FeriadoModel.js
 
 import { DataTypes } from 'sequelize';
-import sequelize from './sequelize.js'; // Importa la instancia de Sequelize
+import sequelize from './sequelize.js'; 
 
 const Feriado = sequelize.define('Feriado', {
   id: {

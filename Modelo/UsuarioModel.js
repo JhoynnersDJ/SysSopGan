@@ -2,7 +2,7 @@
 
 import { DataTypes } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
-import sequelize from './sequelize.js'; // Asegúrate de que la importación sea correcta
+import sequelize from './sequelize.js'; 
 import Rol from './RolModel.js';
 
 const Usuario = sequelize.define('Usuario', {

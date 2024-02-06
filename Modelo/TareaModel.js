@@ -1,7 +1,7 @@
 // TareaModel.js
 
 import { DataTypes } from 'sequelize';
-import sequelize from './sequelize.js'; // Importa la instancia de Sequelize
+import sequelize from './sequelize.js'; 
 
 const Tarea = sequelize.define('Tarea', {
     id_tarea: {
