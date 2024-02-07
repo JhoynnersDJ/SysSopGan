@@ -33,8 +33,26 @@ function deleteOne(id){
     hol =[];
 }
 
+//encuentra un feriado por fecha
+function findOneByDate(date){
+    //date.setHours(0,0,0,0);
+    for(var i = 0; i < holidays.holidays.length; i++) {
+        let day = holidays.holidays[i].date;
+        //day.setHours(0,0,0,0);
+        if (day.valueOf() == date.valueOf()) {
+            return holidays.holidays[i];
+        }
+        //date = null;
+    }
+    return null;
+}
+
 export default class holidayMockup extends holidayPort{
     holidays = [];
+
+    getHolidays (){
+        return this.holidays;
+    }
     static save(holiday){
         
         saveHoliday(holiday);
@@ -43,6 +61,10 @@ export default class holidayMockup extends holidayPort{
 
     static findOne(id){
         return findOne(id);
+    }
+
+    static findOneByDate(date){
+        return findOneByDate(date);
     }
 
     static getHolidays(){
@@ -56,4 +78,5 @@ export default class holidayMockup extends holidayPort{
 }
 
 let holidays = new holidayMockup();
-let hol = []
+let hol = [];
+//let day =new Date();
