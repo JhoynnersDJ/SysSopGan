@@ -27,6 +27,10 @@ export default class holidays {
         return holidayMock.findOne(id);
     }
 
+    static findOneByDate(date){
+        return holidayMock.findOneByDate(date);
+    }
+
     static deleteOne(id){
         holidayMock.deleteOne(id);
     }
