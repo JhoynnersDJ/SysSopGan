@@ -10,11 +10,12 @@ export const authRequired = (req, res, next) => {
     
     //se verifica el token
     jwt.verify(token,TOKEN_SECRET, (err, user) => {
-        console.log(token)
+        console.log(token);
+        
         if (err) return res.status(403).json({message: "Invalid Token"});
 
         req.user = user
-
+        console.log(req.user);
         next()
     })
    

@@ -94,18 +94,16 @@ export const logout = (req, res) => {
 //obtener datos del usuario
 export const profile = async (req, res) => {
     //busca al usuario por el email
-    const userFound = await user.findById(req.user.id)
+    const userFound = await user.findOneById(req.user.id)
 
     //si no encuentra al usurio da el mensaje de error
     if (!userFound) return res.status(400).json({ message: "User not found" });
 
     //manda una respuesta con los datos del usuario encontrados
     return res.json({
-        id: userFound._id,
+        id: userFound.id,
         username: userFound.username,
-        email: userFound.email,
-        createdAt: userFound.createdAt,
-        updateAt: userFound.updatedAt
+        email: userFound.email
     });
 
 }

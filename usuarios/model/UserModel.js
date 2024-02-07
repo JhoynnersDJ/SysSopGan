@@ -30,5 +30,17 @@ export default class user {
         return userMock.findOne(email);
     }
 
+    static findOneById(id){
+        return userMock.findOneById(id);
+    }
+
+}
+
+class userRol{
+    constructor(id, nameRol, descriptionRol){
+        this.id = id,
+        this.nameRol = nameRol,
+        this.descriptionRol = descriptionRol
+    }
 }
 
