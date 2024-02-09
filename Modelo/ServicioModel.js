@@ -3,8 +3,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from './sequelize.js'; 
 
-const Actividad = sequelize.define('Actividad', {
-  id_actividad: {
+const Servicio = sequelize.define('Servicio', {
+  id_servicio: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
@@ -35,4 +35,4 @@ const Actividad = sequelize.define('Actividad', {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt
   });
 
-export default Actividad;
+export default Servicio;

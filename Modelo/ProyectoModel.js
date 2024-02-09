@@ -38,6 +38,10 @@
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
+      fecha_inicio: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+      },
     }, {
         timestamps: false, // Desactivar las columnas createdAt y updatedAt
 

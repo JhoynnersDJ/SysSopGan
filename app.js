@@ -1,4 +1,4 @@
-import 'dotenv/config' // Cargar variables de entorno desde .env
+import 'dotenv/config'; // Cargar variables de entorno desde .env
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -6,13 +6,15 @@ import cors from "cors";
 import pruebaRouter from "./prueba/prueba.js";
 // Importar el enrutador de usuario desde el archivo './usuarios/usuarios'
 import userRouter from "./usuarios/usuarios.js";
-import holidaysRouter from "./feriados/feriados.js"
+import holidaysRouter from "./feriados/feriados.js";
 import sequelize from './Modelo/sequelize.js';
-
-
-
-import {loadHolidays} from "./feriados/controllers/HolidayController.js"
-
+import {loadHolidays} from "./feriados/controllers/HolidayController.js";
+import Usuario from "./Modelo/UsuarioModel.js";
+import Feriado from "./Modelo/FeriadoModel.js";
+import Proyecto from "./Modelo/ProyectoModel.js";
+import Tarea from "./Modelo/TareaModel.js";
+import ResponsableTecnico from "./Modelo/ResponsableTecnicoModel.js";
+import Servicio from "./Modelo/ServicioModel.js";
 
 const port = process.env.PORT || 3000;
 const corsOrigin = process.env.CORS_ORIGIN;
