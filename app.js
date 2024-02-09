@@ -8,13 +8,13 @@ import pruebaRouter from "./prueba/prueba.js";
 import userRouter from "./usuarios/usuarios.js";
 import holidaysRouter from "./feriados/feriados.js"
 import sequelize from './Modelo/sequelize.js';
-
-
+// Importar el router de proyectos desde '.proyectos/proyectos'
+import proyectoRouter from './proyectos/proyectos.js';
 
 import {loadHolidays} from "./feriados/controllers/HolidayController.js"
 
-
 const port = process.env.PORT || 3000;
+const host = process.env.HOST;
 const corsOrigin = process.env.CORS_ORIGIN;
 
 const app = express();
@@ -27,7 +27,7 @@ app.use(express.json());
 //manejo de cookies
 app.use(cookieParser());
 //Sincronizacion de la base de datos
-sequelize.sync({ force: false }).then(() => {
+await sequelize.sync({ force: false }).then(() => {
   console.log('Modelo sincronizado con la base de datos');
 });
 
@@ -40,8 +40,11 @@ app.use('/usuario', userRouter);
 //Middleware para feriados
 app.use('/feriados', holidaysRouter);
 
+//Middleware para proyectos
+app.use('/proyectos', proyectoRouter);
+
 app.listen(port, () => {
-  console.log(`La aplicación está corriendo en http://localhost:${port}`);
+  console.log(`La aplicación está corriendo en http://${host}:${port}`);
 });
 
 //carga feriados ddesde google calendar a la aplicaion
