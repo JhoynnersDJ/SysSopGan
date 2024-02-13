@@ -1,4 +1,4 @@
-import user from './UserModel.js';
+import {user} from './UserModel.js';
 
 class userPort{
     save(user){}

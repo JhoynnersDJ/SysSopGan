@@ -1,7 +1,7 @@
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
 import jwt from "jsonwebtoken";
 
-export const authRequired = (req, res, next) => {
+export const authRequired  = (req, res, next) => {
     //obtiene el usuario del request
     const {token} = req.cookies;
     //console.log(token)
@@ -10,12 +10,11 @@ export const authRequired = (req, res, next) => {
     
     //se verifica el token
     jwt.verify(token,TOKEN_SECRET, (err, user) => {
-        console.log(token);
-        
+                
         if (err) return res.status(403).json({message: "Invalid Token"});
 
         req.user = user
-        console.log(req.user);
+        
         next()
     })
    
