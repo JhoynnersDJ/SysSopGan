@@ -12,7 +12,7 @@ export const register = async (req, res) => {
     const { email, password, username } = req.body;
     
     try {
-        //se busaca el correo para saber si ya esta registrado
+        //se busca el correo para saber si ya esta registrado
         const userFound = await user.findOne(email);
         
         //si se encuentra el email se da el siguiente mensaje de error

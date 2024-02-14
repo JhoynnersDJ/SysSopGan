@@ -7,9 +7,15 @@ import pruebaRouter from "./prueba/prueba.js";
 // Importar el enrutador de usuario desde el archivo './usuarios/usuarios'
 import userRouter from "./usuarios/usuarios.js";
 import holidaysRouter from "./feriados/feriados.js"
-import sequelize from './Modelo/sequelize.js';
-// Importar el router de proyectos desde '.proyectos/proyectos'
-import proyectoRouter from './proyectos/proyectos.js';
+import sequelize from './src/Modelo/sequelize.js';
+// Importar el router de proyectos
+import ProyectoRouter from './src/routes/ProyectoRouter.js';
+// Importar el router de rol
+import RolRouter from './src/routes/RoleRouter.js';
+// Importar el router de actividad
+import ActividadRouter from './src/routes/ActividadRouter.js';
+// Importar el router de tareas
+import TareaRouter from './src/routes/TareaRouter.js';
 
 import {loadHolidays} from "./feriados/controllers/HolidayController.js"
 
@@ -41,7 +47,16 @@ app.use('/usuario', userRouter);
 app.use('/feriados', holidaysRouter);
 
 //Middleware para proyectos
-app.use('/proyectos', proyectoRouter);
+app.use('/proyectos', ProyectoRouter);
+
+//Middleware para roles
+app.use('/rol', RolRouter);
+
+//Middleware para actividades
+app.use('/actividad', ActividadRouter);
+
+//Middleware para actividades
+app.use('/tarea', TareaRouter);
 
 app.listen(port, () => {
   console.log(`La aplicación está corriendo en http://${host}:${port}`);
