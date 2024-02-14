@@ -1,6 +1,7 @@
 import { Router} from "express";
 import  {login, logout, register, profile}  from './controllers/UserControllers.js';
 import { authRequired } from "../middlewares/validateToken.js";
+import { rolRequired } from "../middlewares/validateRol.js";
 import { validateSchema } from "../middlewares/ValidatorSchema.js";
 import { loginSchema, registerSchema } from "./schemas/UserSchema.js";
 
@@ -15,6 +16,6 @@ router.post('/login',validateSchema(loginSchema), login);
 router.post('/logout', logout);
 
 //obtener datos del usuario
-router.get('/perfil', authRequired, profile);
+router.get('/perfil', authRequired, rolRequired('user'), profile);
 
 export default router
