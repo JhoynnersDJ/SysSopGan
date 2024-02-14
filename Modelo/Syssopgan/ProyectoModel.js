@@ -1,8 +1,9 @@
     // ProyectoModel.js
 
     import { DataTypes } from 'sequelize';
-    import sequelize from './sequelize.js'; 
-    
+    import {sequelize} from '../sequelize.js'; 
+    import { ClienteReplica } from './ReplicaClienteModel.js';
+
     const Proyecto = sequelize.define('Proyecto', {
         id_proyecto: {
             type: DataTypes.UUID,
@@ -34,6 +35,14 @@
         key: 'id_us', // Clave primaria en la tabla de referencia
         },
     },
+    id_cliente_fk: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+        model: ClienteReplica, // Nombre de la tabla de referencia
+        key: 'id_cliente', // Clave primaria en la tabla de referencia
+        },
+    },
     status: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -47,4 +56,4 @@
 
     });
 
-    export default Proyecto;
+    export  {Proyecto};

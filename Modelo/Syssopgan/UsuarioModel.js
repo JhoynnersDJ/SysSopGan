@@ -2,8 +2,8 @@
 
 import { DataTypes } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
-import sequelize from './sequelize.js'; 
-import Rol from './RolModel.js';
+import {sequelize} from '../sequelize.js'; 
+import {Rol} from './RolModel.js';
 
 const Usuario = sequelize.define('Usuario', {
   id_us: {
@@ -63,4 +63,4 @@ const Usuario = sequelize.define('Usuario', {
   timestamps: false, // Desactivar las columnas createdAt y updatedAt
 });
 
-export default Usuario;
+export {Usuario} ;

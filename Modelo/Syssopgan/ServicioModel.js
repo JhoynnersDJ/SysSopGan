@@ -1,7 +1,7 @@
 // ActividadModel.js
 
 import { DataTypes } from 'sequelize';
-import sequelize from './sequelize.js'; 
+import {sequelize} from '../sequelize.js'; 
 
 const Servicio = sequelize.define('Servicio', {
   id_servicio: {
@@ -35,4 +35,4 @@ const Servicio = sequelize.define('Servicio', {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt
   });
 
-export default Servicio;
+export  {Servicio};

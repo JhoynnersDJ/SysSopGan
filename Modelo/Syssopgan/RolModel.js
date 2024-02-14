@@ -1,7 +1,7 @@
 // rolModel.js
 
 import { DataTypes } from 'sequelize';
-import sequelize from './sequelize.js'; 
+import {sequelize } from '../sequelize.js'; 
 
 const Rol = sequelize.define('Rol', {
   id_rol: {
@@ -20,4 +20,4 @@ const Rol = sequelize.define('Rol', {
   timestamps: false, // Esto desactiva la creación automática de las columnas createdAt y updatedAt
 });
 
-export default Rol;
+export  {Rol};
