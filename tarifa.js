@@ -10,7 +10,7 @@ let doc = new PDFDocument;
 doc.pipe(fs.createWriteStream('output.pdf'));
 
 
-function calculateRate(startDate, startTime, endTime, hourlyRate) {
+export function calculateRate(startDate, startTime, endTime, hourlyRate) {
     // Convertimos la fecha de inicio a un objeto Date.
     
     let endDate = new Date(startDate);
@@ -80,8 +80,6 @@ function calculateRate(startDate, startTime, endTime, hourlyRate) {
         isHoliday: isHoliday,
         dayOfWeek: dayOfWeek 
     };
-
-    
 }
 
 // Definimos una ruta GET para '/' que genera un reporte.
@@ -89,7 +87,7 @@ app.get('/', (req, res) => {
     // Definimos los datos de entrada son de prueba
     const startDate = '2024-02-15';
     const startTime = '15:00';
-    const endTime = '2:00';
+    const endTime = '02:00';
     const hourlyRate = 15;
 
     // Extraemos las horas de inicio y fin.
