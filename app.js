@@ -1,4 +1,4 @@
-import 'dotenv/config' // Cargar variables de entorno desde .env
+import 'dotenv/config'; // Cargar variables de entorno desde .env
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";

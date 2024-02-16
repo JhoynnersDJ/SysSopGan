@@ -4,11 +4,11 @@ import { DataTypes } from 'sequelize';
 import sequelize from './sequelize.js'; 
 
 const Tarea = sequelize.define('Tarea', {
-    id_tarea: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-        allowNull: false,
+  id_tarea: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+      allowNull: false,
       },
   fecha: {
     type: DataTypes.DATEONLY,
@@ -34,12 +34,12 @@ const Tarea = sequelize.define('Tarea', {
       key: 'id_proyecto', // Clave primaria en la tabla de referencia
     },
   },
-  id_actividad_fk: {
+  id_servicio_fk: {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Actividad', // Nombre de la tabla de referencia
-      key: 'id_actividad', // Clave primaria en la tabla de referencia
+      model: 'Servicio', // Nombre de la tabla de referencia
+      key: 'id_servicio', // Clave primaria en la tabla de referencia
     },
   },
   feriado_fk: {
