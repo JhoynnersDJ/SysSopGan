@@ -29,7 +29,7 @@ export const createEschema = z.object({
         required_error: 'Estado es requerido',
         invalid_type_error: 'Estado debe ser tipo numérico'
     }),
-    start_date: z.date({
+    start_date: z.coerce.date({
         required_error: "Fecha de inicio es requerido",
         invalid_type_error: "La fecha de inicio debe ser una cadena de caráteres y formato ISO 8601",
     })
@@ -65,7 +65,7 @@ export const updateEschema = z.object({
     status: z.number({
         invalid_type_error: 'Estado debe ser tipo numérico'
     }),
-    start_date: z.date({
+    start_date: z.coerce.date({
         invalid_type_error: "La fecha de inicio debe ser una cadena de caráteres y formato ISO 8601",
     })
 }).partial()

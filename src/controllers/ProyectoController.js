@@ -61,14 +61,12 @@ class ProyectoController {
                 { fields: ['tarifa', 'status', 'nombre_proyecto', 'id_responsable_tecnico_fk', 'id_usuario_fk', 'fecha_inicio' ] }
               )
             //   console.log('Proyecto creado correctamente' )
-              res.json({
+              res.status(201).json({
                 name: name,
-                fee: hourly_rate,
+                hourly_rate: hourly_rate,
                 id_technician: id_technician,
                 id_user: id_user,
-                status: status
-            },
-            {
+                status: status,
                 message: 'Proyecto creado correctamente'
             });
         } catch (error) {
