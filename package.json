@@ -12,6 +12,7 @@
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
     "got": "^14.2.0",
+    "ibm_db": "^3.2.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.1",
     "mysql2": "^3.9.1",

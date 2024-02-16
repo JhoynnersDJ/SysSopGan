@@ -1,7 +1,7 @@
 // ResponsableTecnicoModel.js
 
 import { DataTypes } from 'sequelize';
-import sequelize from './sequelize.js';
+import {sequelize} from './sequelize.js';
 
 const ResponsableTecnico = sequelize.define('Responsable_Tecnico', {
   id_responsable_tec: {
@@ -30,4 +30,4 @@ const ResponsableTecnico = sequelize.define('Responsable_Tecnico', {
     timestamps: false, 
 });
 
-export default ResponsableTecnico;
+export  {ResponsableTecnico};

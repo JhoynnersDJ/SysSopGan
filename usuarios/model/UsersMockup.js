@@ -1,4 +1,4 @@
-import user from './UserModel.js';
+import {user} from './UserModel.js';
 
 class userPort{
     save(user){}
@@ -15,6 +15,10 @@ function findOne(email){
     return users.users.find((users) => users.email == email);
 }
 
+function findOneById(id){
+    return users.users.find((users) => users.id == id);
+}
+
 export default class userMockup extends userPort{
     users = [];
     static save(user){
@@ -25,6 +29,10 @@ export default class userMockup extends userPort{
 
     static findOne(email){
         return findOne(email);
+    }
+
+    static findOneById(id){
+        return findOneById(id);
     }
     
 }

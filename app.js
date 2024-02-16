@@ -1,4 +1,4 @@
-import 'dotenv/config' // Cargar variables de entorno desde .env
+import 'dotenv/config'; // Cargar variables de entorno desde .env
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -6,7 +6,7 @@ import cors from "cors";
 // Importar el enrutador de usuario desde el archivo './usuarios/usuarios'
 import userRouter from "./usuarios/usuarios.js";
 import holidaysRouter from "./feriados/feriados.js"
-import sequelize from './src/Modelo/sequelize.js';
+import {sequelize} from './src/Modelo/sequelize.js';
 // Importar el router de proyectos
 import ProyectoRouter from './src/routes/ProyectoRouter.js';
 // Importar el router de rol

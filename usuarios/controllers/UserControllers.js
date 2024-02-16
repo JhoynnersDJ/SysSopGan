@@ -1,4 +1,4 @@
-import user from '../model/UserModel.js';
+import {user , userRol} from '../model/UserModel.js';
 import bcrypt from 'bcryptjs';
 import { createAccessToken } from '../libs/jwt.js';
 import jwt from "jsonwebtoken";
@@ -9,7 +9,7 @@ const TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 //se registra el usuario y genera su id 
 export const register = async (req, res) => {
-    const { email, password, username } = req.body;
+    const { name,lastName, email, password, cellphone, empress, departament } = req.body;
     
     try {
         //se busca el correo para saber si ya esta registrado
@@ -25,22 +25,29 @@ export const register = async (req, res) => {
         let idUnico = v4();
         
         //se crea un nuevo usuario
-        const newuser = new user(username, email, passwordHash, idUnico);
+        const newuser = new user(name,lastName, email, passwordHash, cellphone, empress, departament, 
+            new userRol(1, 'user', 'user of the system'), idUnico,);
         
         //se guarda el usuario
         newuser.save();
         //se genera el token para ser manejado por la cookie
-        const token = await createAccessToken({ id: newuser.getUserId() });
+        const token = await createAccessToken({ id: newuser.getUserId(), rol: newuser.getUserRol() });
         
         //se envia de respuesta el token yy los datos ingresados
         res.cookie('token', token);
         res.json({
             id: newuser.getUserId(),
-            username: newuser.getUserName(),
+            name: newuser.getUserName(),
+            lastName: newuser.getUserLastName(),
             email: newuser.getUserEmail(),
+            password: newuser.getUserPassword(), 
+            cellphone: newuser.getUserCellphone(), 
+            empress: newuser.getUserEmpress(), 
+            departament: newuser.getUserDepartament(),
+            rol: newuser.getUserRol()
         });
         console.log('Se creo el usuario correctamente');
-        console.log(newuser);
+        //console.log(newuser);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -66,7 +73,7 @@ export const login = async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: "Incorrect password" });
 
         //se genera un token para ser manejado como una cookie
-        const token = await createAccessToken({ id: userFound.getUserId() });
+        const token = await createAccessToken({ id: userFound.getUserId(), rol: userFound.getUserRol() });
 
         //se envia de respuesta el token y los datos ingresados
         res.cookie('token', token);
@@ -94,18 +101,22 @@ export const logout = (req, res) => {
 //obtener datos del usuario
 export const profile = async (req, res) => {
     //busca al usuario por el email
-    const userFound = await user.findById(req.user.id)
+    const userFound = await user.findOneById(req.user.id)
 
     //si no encuentra al usurio da el mensaje de error
     if (!userFound) return res.status(400).json({ message: "User not found" });
 
     //manda una respuesta con los datos del usuario encontrados
     return res.json({
-        id: userFound._id,
-        username: userFound.username,
-        email: userFound.email,
-        createdAt: userFound.createdAt,
-        updateAt: userFound.updatedAt
+        id: userFound.getUserId(),
+        name: userFound.getUserName(),
+        lastName: userFound.getUserLastName(),
+        email: userFound.getUserEmail(),
+        password: userFound.getUserPassword(), 
+        cellphone: userFound.getUserCellphone(), 
+        empress: userFound.getUserEmpress(), 
+        departament: userFound.getUserDepartament(),
+        rol: userFound.getUserRol()
     });
 
 }
