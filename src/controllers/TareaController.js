@@ -1,4 +1,6 @@
 import Tarea from "../Modelo/TareaModel.js";
+import { calculateRate } from "../services/tarifa.js";
+import Proyecto from "../Modelo/ProyectoModel.js";
 
 class TareaController {
     // devuelve todas las tareas
@@ -32,10 +34,15 @@ class TareaController {
     static async create (req, res){
         try {
             // capturar datos
-            const { date, start_time, end_time, total_hours, id_project, id_activity, id_holiday } = req.body
-            // instanciar el objeto y guardarlo en la base de datos
+            const { date, start_time, end_time, id_project, id_activity } = req.body
+            // obtener tarifa por hora de un proyecto
+            const project = await Proyecto.findByPk(id_project)
+            const hourlyRate = project.tarifa
+            // calculo del total de horas y si es feriado
+            const rate = calculateRate(date, start_time, end_time, hourlyRate)
+             // instanciar el objeto y guardarlo en la base de datos
             const role = await Tarea.create(
-                { fecha: date, hora_inicio:start_time, hora_fin:end_time, total_hora: total_hours, id_proyecto_fk: id_project, id_actividad_fk: id_activity, feriado_fk: id_holiday },
+                { fecha: date, hora_inicio:start_time, hora_fin:end_time, total_hora: rate.totalHours, id_proyecto_fk: id_project, id_actividad_fk: id_activity, feriado_fk: rate.isHoliday },
                 { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_proyecto_fk', 'id_actividad_fk', 'feriado_fk'] }
               )
               res.status(201).json({ message: 'Tarea creada correctamente' })
@@ -44,6 +51,7 @@ class TareaController {
         }
     }
 
+    // hay que revisar esta funcion
     // actualizar una tarea
     static async update (req, res){
         try {
