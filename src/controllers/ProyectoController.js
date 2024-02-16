@@ -34,11 +34,12 @@ class ProyectoController {
             // capturar datos
             const { fee, name, id_technician, id_user, status } = req.body
             // instanciar el objeto y guardarlo en la base de datos
-            await Proyecto.create(
+            const proyect = await Proyecto.create(
                 { tarifa: fee, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status },
                 { fields: ['tarifa', 'status', 'nombre_proyecto', 'id_responsable_tecnico_fk', 'id_usuario_fk'] }
               )
-              res.status(201).json({ message: 'Proyecto creado correctamente' })
+              res.status(201).json({ message: 'Proyecto creado correctamente' });
+              res.json(project);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
