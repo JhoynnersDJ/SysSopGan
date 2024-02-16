@@ -4,7 +4,7 @@ class ProyectoController {
     // devuelve todos los proyectos
     static async index (req, res) {
         try {
-            // capturar datos
+            // buscar todos los registros
             const projects = await Proyecto.findAll()
             res.status(200).json(projects)
         } catch (error) {
@@ -32,10 +32,10 @@ class ProyectoController {
     static async create (req, res){
         try {
             // capturar datos
-            const { fee, name, id_technician, id_user, status } = req.body
+            const { hourly_rate, name, id_technician, id_user, status } = req.body
             // instanciar el objeto y guardarlo en la base de datos
             await Proyecto.create(
-                { tarifa: fee, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status },
+                { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status },
                 { fields: ['tarifa', 'status', 'nombre_proyecto', 'id_responsable_tecnico_fk', 'id_usuario_fk'] }
               )
               res.status(201).json({ message: 'Proyecto creado correctamente' })
@@ -49,14 +49,14 @@ class ProyectoController {
         try {
         // capturar datos
         const { id } = req.params
-        const { fee, name, id_technician, id_user, status } = req.body
+        const { hourly_rate, name, id_technician, id_user, status } = req.body
         // comprobar si existe
         const projectFound = await Proyecto.findByPk(id)
         if (projectFound === null) {
             res.status(404).json({ message: 'Proyecto no encontrado' })
         } else {
             await Proyecto.update(
-            { tarifa: fee, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status },
+            { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status },
             { where: { id_proyecto: id } }
             )
             res.status(200).json({ message: 'Proyecto actualizado correctamente' })

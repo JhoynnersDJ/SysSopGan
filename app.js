@@ -2,8 +2,7 @@ import 'dotenv/config' // Cargar variables de entorno desde .env
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-// Importar el enrutador de prueba desde el archivo './prueba/prueba'
-import pruebaRouter from "./prueba/prueba.js";
+
 // Importar el enrutador de usuario desde el archivo './usuarios/usuarios'
 import userRouter from "./usuarios/usuarios.js";
 import holidaysRouter from "./feriados/feriados.js"
@@ -16,6 +15,8 @@ import RolRouter from './src/routes/RoleRouter.js';
 import ActividadRouter from './src/routes/ActividadRouter.js';
 // Importar el router de tareas
 import TareaRouter from './src/routes/TareaRouter.js';
+// Importar el router de responsable tecnico
+import ResponsableTecnicoRouter from './src/routes/ResponsableTecnicoRouter.js';
 
 import {loadHolidays} from "./feriados/controllers/HolidayController.js"
 
@@ -37,8 +38,6 @@ await sequelize.sync({ force: false }).then(() => {
   console.log('Modelo sincronizado con la base de datos');
 });
 
-// Middleware para Prueba
-app.use('/prueba', pruebaRouter);
 
 //Middleware para usuario
 app.use('/usuario', userRouter);
@@ -55,12 +54,15 @@ app.use('/rol', RolRouter);
 //Middleware para actividades
 app.use('/actividad', ActividadRouter);
 
-//Middleware para actividades
+//Middleware para tareas
 app.use('/tarea', TareaRouter);
+
+//Middleware para tareas
+app.use('/responsable-tecnico', ResponsableTecnicoRouter);
 
 app.listen(port, () => {
   console.log(`La aplicación está corriendo en http://${host}:${port}`);
 });
 
-//carga feriados ddesde google calendar a la aplicaion
+//carga feriados desde google calendar a la aplicaion
 //loadHolidays();

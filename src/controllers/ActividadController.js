@@ -4,7 +4,7 @@ class ActividadController {
     // devuelve todas las actividades
     static async index (req, res) {
         try {
-            // capturar datos
+            // buscar todos los registros
             const activities = await Actividad.findAll()
             res.status(200).json(activities)
         } catch (error) {

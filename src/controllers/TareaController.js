@@ -4,7 +4,7 @@ class TareaController {
     // devuelve todas las tareas
     static async index (req, res) {
         try {
-            // capturar datos
+            // buscar todos los registros
             const tasks = await Tarea.findAll()
             res.status(200).json(tasks)
         } catch (error) {

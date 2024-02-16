@@ -4,7 +4,7 @@ class RolController {
     // devuelve todos los roles
     static async index (req, res) {
         try {
-            // capturar datos
+            // buscar todos los registros
             const roles = await Rol.findAll()
             res.status(200).json(roles)
         } catch (error) {
