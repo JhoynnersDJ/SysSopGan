@@ -21,4 +21,4 @@ const Rol = sequelize.define('Rol', {
   timestamps: false, // Esto desactiva la creación automática de las columnas createdAt y updatedAt
 });
 
-export  {Rol};
+export {Rol};

@@ -1,6 +1,6 @@
-import Tarea from "../Modelo/TareaModel.js";
+import {Tarea} from "../Modelo/Syssopgan/TareaModel.js";
 import { calculateRate } from "../services/tarifa.js";
-import Proyecto from "../Modelo/ProyectoModel.js";
+import {Proyecto} from "../Modelo/Syssopgan/ProyectoModel.js";
 
 class TareaController {
     // devuelve todas las tareas

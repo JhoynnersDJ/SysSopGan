@@ -56,4 +56,4 @@
 
     });
 
-    export  {Proyecto};
+    export {Proyecto};

@@ -1,11 +1,11 @@
-import Actividad from "../Modelo/ActividadModel.js";
+import {Servicio} from "../Modelo/Syssopgan/ServicioModel.js";
 
-class ActividadController {
+class ServicioController {
     // devuelve todas las actividades
     static async index (req, res) {
         try {
             // buscar todos los registros
-            const activities = await Actividad.findAll()
+            const activities = await Servicio.findAll()
             res.status(200).json(activities)
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -18,7 +18,7 @@ class ActividadController {
             // capturar datos
             const { id } = req.params
             // comprobar si existe
-            const activity = await Actividad.findByPk(id)
+            const activity = await Servicio.findByPk(id)
             if (activity === null) {
                 return res.status(404).json({message: 'Actividad no encontrada'})
             }
@@ -34,7 +34,7 @@ class ActividadController {
             // capturar datos
             const { name, description, type, category, platform } = req.body
             // instanciar el objeto y guardarlo en la base de datos
-            const activity = await Actividad.create(
+            const activity = await Servicio.create(
                 { nombre: name, descripcion:description, tipo: type, categoria: category, plataforma: platform},
                 { fields: ['nombre', 'descripcion', 'tipo', 'categoria', 'plataforma'] }
               )
@@ -51,7 +51,7 @@ class ActividadController {
         const { id } = req.params
         const { name, description, type, category, platform } = req.body
         // comprobar si existe
-        const activityFound = await Actividad.findByPk(id)
+        const activityFound = await Servicio.findByPk(id)
         if (activityFound === null) {
             res.status(404).json({ message: 'Actividad no encontrada' })
         } else {
@@ -67,4 +67,4 @@ class ActividadController {
     }
 }
 
-export default ActividadController
+export default ServicioController

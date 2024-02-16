@@ -35,4 +35,4 @@ const Servicio = sequelize.define('Servicio', {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt
   });
 
-export  {Servicio};
+export {Servicio};

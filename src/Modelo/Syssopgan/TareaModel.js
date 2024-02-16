@@ -1,7 +1,7 @@
 // TareaModel.js
 
 import { DataTypes } from 'sequelize';
-import {sequelize} from './sequelize.js'; 
+import {sequelize} from '../sequelize.js'; 
 
 const Tarea = sequelize.define('Tarea', {
   id_tarea: {
@@ -52,4 +52,4 @@ const Tarea = sequelize.define('Tarea', {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt
 });
 
-export  {Tarea};
+export {Tarea};

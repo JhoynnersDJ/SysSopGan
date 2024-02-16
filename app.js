@@ -12,7 +12,7 @@ import ProyectoRouter from './src/routes/ProyectoRouter.js';
 // Importar el router de rol
 import RolRouter from './src/routes/RoleRouter.js';
 // Importar el router de actividad
-import ActividadRouter from './src/routes/ActividadRouter.js';
+import ServicioRouter from './src/routes/ServicioRouter.js';
 // Importar el router de tareas
 import TareaRouter from './src/routes/TareaRouter.js';
 // Importar el router de responsable tecnico
@@ -52,7 +52,7 @@ app.use('/proyectos', ProyectoRouter);
 app.use('/rol', RolRouter);
 
 //Middleware para actividades
-app.use('/actividad', ActividadRouter);
+app.use('/servicio', ServicioRouter);
 
 //Middleware para tareas
 app.use('/tarea', TareaRouter);

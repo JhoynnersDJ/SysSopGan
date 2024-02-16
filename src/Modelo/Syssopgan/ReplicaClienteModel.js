@@ -26,4 +26,4 @@ import {sequelize} from '../sequelize.js';
 
     });
 
-    export  {ClienteReplica};
+    export {ClienteReplica};

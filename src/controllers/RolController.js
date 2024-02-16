@@ -1,4 +1,4 @@
-import {Rol} from "../Modelo/RolModel.js";
+import {Rol} from "../Modelo/Syssopgan/RolModel.js";
 
 class RolController {
     // devuelve todos los roles

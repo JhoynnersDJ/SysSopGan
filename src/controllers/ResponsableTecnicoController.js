@@ -1,4 +1,4 @@
-import ResponsableTecnico from "../Modelo/ResponsableTecnicoModel.js";
+import {ResponsableTecnico} from "../Modelo/Syssopgan/ResponsableTecnicoModel.js";
 
 class ResponsableTecnicoController {
     // devuelve todos los responsables tecnicos
