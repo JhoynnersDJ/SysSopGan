@@ -1,7 +1,7 @@
 // ActividadModel.js
 
 import { DataTypes } from 'sequelize';
-import {sequelize} from '../sequelize.js'; 
+import {sequelize} from './sequelize.js'; 
 
 const Servicio = sequelize.define('Servicio', {
   id_servicio: {

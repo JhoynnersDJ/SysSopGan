@@ -1,4 +1,4 @@
-import Tarea from "../Modelo/TareaModel.js";
+import {Tarea} from "../Modelo/TareaModel.js";
 
 class TareaController {
     // devuelve todas las tareas
