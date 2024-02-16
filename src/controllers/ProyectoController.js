@@ -54,11 +54,11 @@ class ProyectoController {
     static async create (req, res){
         try {
             // capturar datos
-            const { hourly_rate, name, id_technician, id_user, status } = req.body
+            const { hourly_rate, name, id_technician, id_user, status, start_date} = req.body
             // instanciar el objeto y guardarlo en la base de datos
              await Proyecto.create(
-                { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status },
-                { fields: ['tarifa', 'status', 'nombre_proyecto', 'id_responsable_tecnico_fk', 'id_usuario_fk'] }
+                { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status, fecha_inicio: start_date},
+                { fields: ['tarifa', 'status', 'nombre_proyecto', 'id_responsable_tecnico_fk', 'id_usuario_fk', 'fecha_inicio' ] }
               )
             //   console.log('Proyecto creado correctamente' )
               res.json({
@@ -81,14 +81,14 @@ class ProyectoController {
         try {
         // capturar datos
         const { id } = req.params
-        const { hourly_rate, name, id_technician, id_user, status } = req.body
+        const { hourly_rate, name, id_technician, id_user, status, start_date } = req.body
         // comprobar si existe
         const projectFound = await Proyecto.findByPk(id)
         if (projectFound === null) {
             res.status(404).json({ message: 'Proyecto no encontrado' })
         } else {
             await Proyecto.update(
-            { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status },
+            { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status, fecha_inicio: start_date },
             { where: { id_proyecto: id } }
             )
             res.status(200).json({ message: 'Proyecto actualizado correctamente' })
