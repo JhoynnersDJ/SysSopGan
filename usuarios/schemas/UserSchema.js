@@ -11,12 +11,13 @@ export const registerSchema = z.object({
     email: z.string({
         required_error: 'Email is required'
     }).email({
-        meassage: 'Invalid email'
+        message: 'Invalid email'
     }),
     password: z.string({
         required_error: 'password is required'
     }).min(6, {
         message: 'Password must be at least 6 characters'
+<<<<<<< HEAD
     }),
     cellphone: z.number({
         required_error: 'cellphone is required, in number'
@@ -29,6 +30,9 @@ export const registerSchema = z.object({
     }),
 
 
+=======
+    })
+>>>>>>> origin/cesar
 })
 
 //se asegura que los campos ingresados al login sean validos
@@ -36,7 +40,7 @@ export const loginSchema = z.object({
     email: z.string({
         required_error: 'Email is required'
     }).email({
-        meassage: 'Invalid email'
+        message: 'Invalid email'
     }),
     password: z.string({
         required_error: 'password is required'

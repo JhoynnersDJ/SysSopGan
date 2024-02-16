@@ -1,6 +1,6 @@
 import { Router} from "express";
 import {loadHolidays, getHolidays, createHoliday, updateHoliday, getHoliday, deleteHoliday, getHolidayByDate} from "./controllers/HolidayController.js"
-import {validateSchema} from "../middlewares/ValidatorSchema.js"
+import {validateSchema} from "../src/middlewares/ValidatorSchema.js"
 import {createHolidaySchema, updateHolidaySchema} from "./schemas/HolidaySchema.js"
 
 const router = Router()
