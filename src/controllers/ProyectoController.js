@@ -1,5 +1,6 @@
 import {Proyecto} from "../Modelo/Syssopgan/ProyectoModel.js";
 import { ResponsableTecnico } from "../Modelo/Syssopgan/ResponsableTecnicoModel.js";
+import { Usuario } from "../Modelo/Syssopgan/UsuarioModel.js";
 
 class ProyectoController {
     // devuelve todos los proyectos
@@ -17,6 +18,9 @@ class ProyectoController {
                   }
                 ],
               })
+            if (!projects) {
+                return res.status(500).json({message: 'No hay proyectos registrados'})
+            }
             res.status(200).json(projects)
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -40,8 +44,8 @@ class ProyectoController {
                   }
                 ],
               })
-            // comprobar si existe
-            if (project === null) {
+            // comprobar si existe el proyecto
+            if (!project) {
                 return res.status(404).json({message: 'Proyecto no encontrado'})
             }
             res.status(200).json(project)
@@ -55,20 +59,22 @@ class ProyectoController {
         try {
             // capturar datos
             const { hourly_rate, name, id_technician, id_user, status, start_date} = req.body
-            // instanciar el objeto y guardarlo en la base de datos
-             await Proyecto.create(
+            // comprobar si existe el responsable tecnico
+            const technicianFound = await ResponsableTecnico.findByPk(id_technician)
+            if (!technicianFound) {
+                return res.status(404).json({message: 'Responsable técnico no encontrado'})
+            }
+            // comprobar si existe el usuario
+            const userFound = await Usuario.findByPk(id_user)
+            if (!userFound) {
+                return res.status(404).json({message: 'Usuario no encontrado'})
+            }
+            // instanciar el objeto proyecto y guardarlo en la base de datos
+            await Proyecto.create(
                 { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status, fecha_inicio: start_date},
                 { fields: ['tarifa', 'status', 'nombre_proyecto', 'id_responsable_tecnico_fk', 'id_usuario_fk', 'fecha_inicio' ] }
-              )
-            //   console.log('Proyecto creado correctamente' )
-              res.status(201).json({
-                name: name,
-                hourly_rate: hourly_rate,
-                id_technician: id_technician,
-                id_user: id_user,
-                status: status,
-                message: 'Proyecto creado correctamente'
-            });
+            )
+            res.status(201).json({message: 'Proyecto creado correctamente'});
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -77,20 +83,30 @@ class ProyectoController {
     // actualiza un proyecto
     static async update (req, res){
         try {
-        // capturar datos
-        const { id } = req.params
-        const { hourly_rate, name, id_technician, id_user, status, start_date } = req.body
-        // comprobar si existe
-        const projectFound = await Proyecto.findByPk(id)
-        if (projectFound === null) {
-            res.status(404).json({ message: 'Proyecto no encontrado' })
-        } else {
+            // capturar datos
+            const { id } = req.params
+            const { hourly_rate, name, id_technician, id_user, status, start_date } = req.body
+            // comprobar si existe el proyecto
+            const projectFound = await Proyecto.findByPk(id)
+            if (!projectFound) {
+                return res.status(404).json({ message: 'Proyecto no encontrado' })
+            } 
+            // comprobar si existe el responsable tecnico
+            const technicianFound = await ResponsableTecnico.findByPk(id_technician)
+            if (!technicianFound) {
+                return res.status(404).json({message: 'Responsable técnico no encontrado'})
+            }
+            // comprobar si existe el usuario
+            const userFound = await Usuario.findByPk(id_user)
+            if (!userFound) {
+                return res.status(404).json({message: 'Usuario no encontrado'})
+            }
+            // guardar el proyecto en la base de datos
             await Proyecto.update(
             { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_technician, id_usuario_fk:id_user, status, fecha_inicio: start_date },
             { where: { id_proyecto: id } }
             )
             res.status(200).json({ message: 'Proyecto actualizado correctamente' })
-        }
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

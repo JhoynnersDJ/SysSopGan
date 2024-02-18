@@ -6,6 +6,9 @@ class ResponsableTecnicoController {
         try {
             // buscar todos los registros
             const technicians = await ResponsableTecnico.findAll()
+            if (!technicians) {
+                return res.status(500).json({message: 'No hay responsables técnicos registrados'})
+            }
             res.status(200).json(technicians)
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -19,7 +22,7 @@ class ResponsableTecnicoController {
             const { id } = req.params
             // comprobar si existe
             const technician = await ResponsableTecnico.findByPk(id)
-            if (technician === null) {
+            if (!technician) {
                 return res.status(404).json({message: 'Técnico responsable no encontrado'})
             }
             res.status(200).json(technician)
@@ -34,11 +37,11 @@ class ResponsableTecnicoController {
             // capturar datos
             const { name, Position, email, num_tel } = req.body
             // instanciar el objeto y guardarlo en la base de datos
-            const technician = await ResponsableTecnico.create(
+            await ResponsableTecnico.create(
                 { nombre_responsable_tec: name, cargo:Position, email, num_tel: num_tel},
                 { fields: ['nombre_responsable_tec', 'cargo', 'email', 'num_tel'] }
-              )
-              res.status(201).json({ message: 'Técnico responsable registrado correctamente' })
+            )
+            res.status(201).json({ message: 'Técnico responsable registrado correctamente' })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -47,20 +50,19 @@ class ResponsableTecnicoController {
     // actualizar un tecnico responsable
     static async update (req, res){
         try {
-        // capturar datos
-        const { id } = req.params
-        const { name, Position, email, num_tel } = req.body
-        // comprobar si existe
-        const technicianFound = await ResponsableTecnico.findByPk(id)
-        if (technicianFound === null) {
-            res.status(404).json({ message: 'Técnico responsable no encontrado' })
-        } else {
-            await Tarea.update(
-            { nombre_responsable_tec: name, cargo:Position, email, num_tel: num_tel },
-            { where: { id_responsable_tec: id } }
+            // capturar datos
+            const { id } = req.params
+            const { name, Position, email, num_tel } = req.body
+            // comprobar si existe
+            const technicianFound = await ResponsableTecnico.findByPk(id)
+            if (!technicianFound) {
+                return res.status(404).json({ message: 'Técnico responsable no encontrado' })
+            }
+            await ResponsableTecnico.update(
+                { nombre_responsable_tec: name, cargo:Position, email, num_tel: num_tel },
+                { where: { id_responsable_tec: id } }
             )
             res.status(200).json({ message: 'Técnico responsable actualizado correctamente' })
-        }
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

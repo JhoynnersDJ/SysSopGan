@@ -1,11 +1,15 @@
-import {Rol} from "../Modelo/Syssopgan/RolModel.js";
+import { Rol } from "../Modelo/Syssopgan/RolModel.js";
 
 class RolController {
+
     // devuelve todos los roles
     static async index (req, res) {
         try {
             // buscar todos los registros
             const roles = await Rol.findAll()
+            if (!roles) {
+                return res.status(500).json({message: 'No hay roles registrados'})
+            }
             res.status(200).json(roles)
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -19,7 +23,7 @@ class RolController {
             const { id } = req.params
             // comprobar si existe
             const role = await Rol.findByPk(id)
-            if (role === null) {
+            if (!role) {
                 return res.status(404).json({message: 'Rol no encontrado'})
             }
             res.status(200).json(role)
@@ -37,8 +41,8 @@ class RolController {
             const role = await Rol.create(
                 { nombre: name, descripcion:description },
                 { fields: ['nombre', 'descripcion'] }
-              )
-              res.status(201).json({ message: 'Rol creado correctamente' })
+            )
+            res.status(201).json({ message: 'Rol creado correctamente' })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -52,8 +56,8 @@ class RolController {
         const { name, description } = req.body
         // comprobar si existe
         const roleFound = await Rol.findByPk(id)
-        if (roleFound === null) {
-            res.status(404).json({ message: 'Rol no encontrado' })
+        if (!roleFound) {
+            return res.status(404).json({ message: 'Rol no encontrado' })
         } else {
             await Rol.update(
             { nombre: name, descripcion:description },
