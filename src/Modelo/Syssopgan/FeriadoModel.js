@@ -3,7 +3,7 @@
 import { DataTypes } from 'sequelize';
 import {sequelize} from '../sequelize.js'; 
 
-const Feriado = sequelize.define('Feriado', {
+const Feriado = sequelize.define('feriado', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,

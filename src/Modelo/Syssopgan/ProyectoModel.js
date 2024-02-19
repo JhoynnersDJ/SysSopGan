@@ -4,13 +4,13 @@
     import {sequelize} from '../sequelize.js'; 
     import { ClienteReplica } from './ReplicaClienteModel.js';
 
-    const Proyecto = sequelize.define('Proyecto', {
-        id_proyecto: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            primaryKey: true,
-            allowNull: false,
-          },
+    const Proyecto = sequelize.define('proyecto', {
+    id_proyecto: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
+        },
     tarifa: {
         type: DataTypes.FLOAT,
         allowNull: false,
@@ -47,14 +47,13 @@
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
-      fecha_inicio: {
+    fecha_inicio: {
         type: DataTypes.DATEONLY,
         allowNull: false,
-      },
+    },
     }, {
         timestamps: false, // Desactivar las columnas createdAt y updatedAt
 
     });
 
-    export  {Proyecto};
-
+    export {Proyecto};

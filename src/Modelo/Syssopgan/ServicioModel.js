@@ -3,7 +3,7 @@
 import { DataTypes } from 'sequelize';
 import {sequelize} from '../sequelize.js'; 
 
-const Servicio = sequelize.define('Servicio', {
+const Servicio = sequelize.define('servicio', {
   id_servicio: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -32,7 +32,7 @@ const Servicio = sequelize.define('Servicio', {
   },
 },
 {
-    timestamps: false, // Desactivar las columnas createdAt y updatedAt
-  });
+  timestamps: false, // Desactivar las columnas createdAt y updatedAt
+});
 
-export  {Servicio};
+export {Servicio};

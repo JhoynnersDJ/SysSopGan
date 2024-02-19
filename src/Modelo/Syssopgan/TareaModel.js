@@ -3,7 +3,7 @@
 import { DataTypes } from 'sequelize';
 import {sequelize} from '../sequelize.js'; 
 
-const Tarea = sequelize.define('Tarea', {
+const Tarea = sequelize.define('tarea', {
   id_tarea: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -52,4 +52,4 @@ const Tarea = sequelize.define('Tarea', {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt
 });
 
-export  {Tarea};
+export {Tarea};

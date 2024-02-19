@@ -3,7 +3,7 @@
 import { DataTypes } from 'sequelize';
 import {sequelize } from '../sequelize.js'; 
 
-const Rol = sequelize.define('Rol', {
+const Rol = sequelize.define('rol', {
   id_rol: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -21,4 +21,4 @@ const Rol = sequelize.define('Rol', {
   timestamps: false, // Esto desactiva la creación automática de las columnas createdAt y updatedAt
 });
 
-export  {Rol};
+export {Rol};

@@ -3,7 +3,7 @@
 import { DataTypes } from 'sequelize';
 import {sequelize} from '../sequelize.js';
 
-const ResponsableTecnico = sequelize.define('Responsable_Tecnico', {
+const ResponsableTecnico = sequelize.define('responsable_tecnico', {
   id_responsable_tec: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -30,4 +30,4 @@ const ResponsableTecnico = sequelize.define('Responsable_Tecnico', {
     timestamps: false, 
 });
 
-export  {ResponsableTecnico};
+export {ResponsableTecnico};
