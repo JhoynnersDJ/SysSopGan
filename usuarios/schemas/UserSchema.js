@@ -18,11 +18,14 @@ export const registerSchema = z.object({
     }).min(6, {
         message: 'Password must be at least 6 characters'
     }),
-    cellphone: z.number({
+    cellphone: z.string({
         required_error: 'cellphone is required, in number'
     }),
     empress: z.string({
         required_error: 'empress is required, in string'
+    }),
+    cargo: z.string({
+        required_error: 'cargo is required, in string'
     }),
     departament: z.string({
         required_error: 'departament is required, in string'

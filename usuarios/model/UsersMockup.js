@@ -1,12 +1,29 @@
 import {user} from './UserModel.js';
 
+import {Usuario} from '../../src/Modelo/Syssopgan/UsuarioModel.js'
+
 class userPort{
     save(user){}
     findOne(email){}
 }
 
 //guarda al usuario para persistencia
-function saveUser(user) {
+async function saveUser(user) {
+    /*const rol = await Rol.create(
+        { nombre: user.rol.nameRol, descripcion:user.rol.descriptionRol },
+        { fields: ['nombre', 'descripcion'] }
+    )*/
+    try {
+        await Usuario.create({nombre: user.name, apellido: user.lastName, email: user.email, 
+            num_tel:user.cellphone, password: user.password, empresa: user.empress, 
+            cargo: user.cargo, departamento: user.departament, id_rolref: '1'},
+            {fields: ['nombre', 'apellido', 'email', 'num_tel', 'password', 'empresa', 'cargo', 
+            'departamento', 'id_rolref']})
+    } catch (error) {
+        console.log(error.message);
+    }
+    
+    
     users.users.push(user);
 }
 

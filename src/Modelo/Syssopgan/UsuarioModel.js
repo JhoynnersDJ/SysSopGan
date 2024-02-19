@@ -52,12 +52,12 @@ const Usuario = sequelize.define('Usuario', {
     defaultValue: DataTypes.NOW,
   },
   id_rolref: {
-    type: DataTypes.UUID, // Tipo de datos UUID para la clave externa del rol
+    type: DataTypes.STRING, // Tipo de datos UUID para la clave externa del rol
     allowNull: false,
-    references: {
+    /*references: {
       model: Rol, // Nombre del modelo de la tabla a la que se hace referencia
       key: 'id_rol', // Clave primaria de la tabla a la que se hace referencia
-    },
+    },*/
   },
 }, {
   timestamps: false, // Desactivar las columnas createdAt y updatedAt

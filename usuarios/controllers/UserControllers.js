@@ -9,7 +9,7 @@ const TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 //se registra el usuario y genera su id 
 export const register = async (req, res) => {
-    const { name,lastName, email, password, cellphone, empress, departament } = req.body;
+    const { name,lastName, email, password, cellphone, empress, departament, cargo } = req.body;
     
     try {
         //se busca el correo para saber si ya esta registrado
@@ -25,7 +25,7 @@ export const register = async (req, res) => {
         let idUnico = v4();
         
         //se crea un nuevo usuario
-        const newuser = new user(name,lastName, email, passwordHash, cellphone, empress, departament, 
+        const newuser = new user(name,lastName, email, passwordHash, cellphone, empress,cargo, departament, 
             new userRol(1, 'user', 'user of the system'), idUnico,);
         
         //se guarda el usuario
@@ -44,7 +44,7 @@ export const register = async (req, res) => {
             cellphone: newuser.getUserCellphone(), 
             empress: newuser.getUserEmpress(), 
             departament: newuser.getUserDepartament(),
-            rol: newuser.getUserRol()
+            rol: newuser.rol
         });
         console.log('Se creo el usuario correctamente');
         //console.log(newuser);
