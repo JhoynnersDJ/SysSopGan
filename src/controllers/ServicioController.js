@@ -1,13 +1,13 @@
 import { Servicio } from "../Modelo/Syssopgan/ServicioModel.js";
 
 class ServicioController {
-    // devuelve todas las actividades
+    // devuelve todaos los servicios
     static async index (req, res) {
         try {
             // buscar todos los registros
             const services = await Servicio.findAll()
             if (!services) {
-                return res.status(500).json({message: 'No hay actividades registradas'})
+                return res.status(500).json({message: 'No hay servicios registrados'})
             }
             res.status(200).json(services)
         } catch (error) {
@@ -15,7 +15,7 @@ class ServicioController {
         }
     }
 
-    // devuelve una actividad segun su ID
+    // devuelve un servicio segun su ID
     static async getById (req, res){
         try {
             // capturar datos
@@ -23,7 +23,7 @@ class ServicioController {
             // comprobar si existe
             const service = await Servicio.findByPk(id)
             if (!service) {
-                return res.status(404).json({message: 'Actividad no encontrada'})
+                return res.status(404).json({message: 'Servicio no encontrado'})
             }
             res.status(200).json(service)
         } catch (error) {
@@ -31,23 +31,23 @@ class ServicioController {
         }
     }
 
-    // crear una actividad
+    // crear un servicio
     static async create (req, res){
         try {
             // capturar datos
             const { name, description, type, category, platform } = req.body
-            // instanciar el objeto y guardarlo en la base de datos
+            // guardar en la base de datos
             await Servicio.create(
                 { nombre: name, descripcion:description, tipo: type, categoria: category, plataforma: platform},
                 { fields: ['nombre', 'descripcion', 'tipo', 'categoria', 'plataforma'] }
               )
-            res.status(201).json({ message: 'Actividad creada correctamente' })
+            res.status(201).json({ message: 'Servicio creado correctamente' })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
 
-    // actualiza una actividad
+    // actualiza un servicio
     static async update (req, res){
         try {
             // capturar datos
@@ -56,13 +56,14 @@ class ServicioController {
             // comprobar si existe
             const activityFound = await Servicio.findByPk(id)
             if (!activityFound) {
-                return res.status(404).json({ message: 'Actividad no encontrada' })
+                return res.status(404).json({ message: 'Servicio no encontrado' })
             }
+            // guardar en la base de datos
             await Servicio.update(
             { nombre: name, descripcion:description, tipo: type, categoria: category, plataforma: platform },
-            { where: { id_actividad: id } }
+            { where: { id_servicio: id } }
             )
-            res.status(200).json({ message: 'Actividad actualizada correctamente' })
+            res.status(200).json({ message: 'Servicio actualizado correctamente' })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

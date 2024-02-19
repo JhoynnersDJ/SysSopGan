@@ -3,8 +3,6 @@
 import { DataTypes } from 'sequelize';
 import {sequelize} from '../sequelize.js';
 
-import { Proyecto } from "./ProyectoModel.js";
-
 const ResponsableTecnico = sequelize.define('Responsable_Tecnico', {
   id_responsable_tec: {
     type: DataTypes.UUID,
@@ -31,9 +29,5 @@ const ResponsableTecnico = sequelize.define('Responsable_Tecnico', {
 }, {
     timestamps: false, 
 });
-
-// Definir la relación de uno a muchos con el modelo Proyecto
-ResponsableTecnico.hasMany(Proyecto, { foreignKey:'id_responsable_tecnico_fk', onDelete: 'CASCADE' });
-Proyecto.belongsTo(ResponsableTecnico, { targetKey:'id_responsable_tec', foreignKey: 'id_responsable_tecnico_fk', onDelete: 'CASCADE' });
 
 export {ResponsableTecnico};

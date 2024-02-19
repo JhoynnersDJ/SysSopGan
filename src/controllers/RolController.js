@@ -37,8 +37,8 @@ class RolController {
         try {
             // capturar datos
             const { name, description } = req.body
-            // instanciar el objeto y guardarlo en la base de datos
-            const role = await Rol.create(
+            // guardar en la base de datos
+            await Rol.create(
                 { nombre: name, descripcion:description },
                 { fields: ['nombre', 'descripcion'] }
             )
@@ -51,20 +51,20 @@ class RolController {
     // actualiza un rol
     static async update (req, res){
         try {
-        // capturar datos
-        const { id } = req.params
-        const { name, description } = req.body
-        // comprobar si existe
-        const roleFound = await Rol.findByPk(id)
-        if (!roleFound) {
-            return res.status(404).json({ message: 'Rol no encontrado' })
-        } else {
+            // capturar datos
+            const { id } = req.params
+            const { name, description } = req.body
+            // comprobar si existe el rol
+            const roleFound = await Rol.findByPk(id)
+            if (!roleFound) {
+                return res.status(404).json({ message: 'Rol no encontrado' })
+            }
+            // guardar en base de datos
             await Rol.update(
             { nombre: name, descripcion:description },
             { where: { id_rol: id } }
             )
             res.status(200).json({ message: 'Rol actualizado correctamente' })
-        }
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
