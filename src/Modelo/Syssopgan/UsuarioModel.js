@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {sequelize} from '../sequelize.js'; 
 import {Rol} from './RolModel.js';
 
-const Usuario = sequelize.define('Usuario', {
+const Usuario = sequelize.define('usuario', {
   id_us: {
     type: DataTypes.UUID,
     defaultValue: () => uuidv4(),

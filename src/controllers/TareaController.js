@@ -71,16 +71,41 @@ class TareaController {
             if (!serviceFound) {
                 return res.status(404).json({message: 'Servicio no encontrado'})
             }
-            // calculo del total de horas y booleano de feriado
-            // obtener tarifa por hora de un proyecto
-            const hourlyRate = project.tarifa
-            const rate = calculateRate(date, start_time, end_time, hourlyRate)
-            // guardar en la base de datos
-            await Tarea.create(
-                { fecha: date, hora_inicio:start_time, hora_fin:end_time, total_hora: rate.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rate.isHoliday },
-                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk'] }
-              )
-              res.status(201).json({ message: 'Tarea creada correctamente' })
+
+            // Extraemos las horas de inicio y fin.
+            let startHour = parseInt(start_time.split(':')[0]);
+            let endHour = parseInt(end_time.split(':')[0]);
+
+            // Si el técnico trabajo hasta el día siguiente...
+            if (endHour < startHour) {
+                // Calculamos la tarifa para el primer día
+                let rateDay1 = calculateRate(date, start_time, '24:00', project.tarifa);
+                // guardar en la base de datos
+                await Tarea.create(
+                    { fecha: date, hora_inicio:start_time, hora_fin: '24:00', total_hora: rateDay1.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay1.isHoliday },
+                    { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk'] }
+                )
+                // Calculamos la tarifa para el día siguiente
+                let nextDay = new Date(date);
+                nextDay.setDate(nextDay.getDate() + 1);
+                nextDay = nextDay.toISOString().split('T')[0]
+                let rateDay2 = calculateRate(nextDay, '00:00', end_time, project.tarifa);
+                // guardar en la base de datos
+                await Tarea.create(
+                    { fecha: nextDay, hora_inicio: '00:00', hora_fin: end_time, total_hora: rateDay2.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay2.isHoliday },
+                    { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk'] }
+                )
+                res.status(201).json({ message: 'Tareas creadas correctamente' })
+            } else {
+                // Si el técnico terminó el mismo día, calculamos la tarifa
+                const rate = calculateRate(date, start_time, end_time, project.tarifa)
+                // guardar en la base de datos
+                await Tarea.create(
+                    { fecha: date, hora_inicio:start_time, hora_fin:end_time, total_hora: rate.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rate.isHoliday },
+                    { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk'] }
+                    )
+                res.status(201).json({ message: 'Tarea creada correctamente' })
+            }
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

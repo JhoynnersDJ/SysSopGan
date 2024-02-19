@@ -4,7 +4,7 @@
     import {sequelize} from '../sequelize.js'; 
     import { ClienteReplica } from './ReplicaClienteModel.js';
 
-    const Proyecto = sequelize.define('Proyecto', {
+    const Proyecto = sequelize.define('proyecto', {
     id_proyecto: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,

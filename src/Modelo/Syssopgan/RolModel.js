@@ -3,7 +3,7 @@
 import { DataTypes } from 'sequelize';
 import {sequelize } from '../sequelize.js'; 
 
-const Rol = sequelize.define('Rol', {
+const Rol = sequelize.define('rol', {
   id_rol: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
