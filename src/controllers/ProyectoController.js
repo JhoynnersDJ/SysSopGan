@@ -1,5 +1,6 @@
 import { Proyecto } from "../Modelo/Syssopgan/Asociaciones.js";
-import { ClienteReplica } from "../Modelo/Syssopgan/ReplicaClienteModel.js";
+import { ClienteReplica } from "../Modelo/Syssopgan/Asociaciones.js";
+import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
 import { ResponsableTecnico } from "../Modelo/Syssopgan/ResponsableTecnicoModel.js";
 import { Usuario } from "../Modelo/Syssopgan/UsuarioModel.js";
 
@@ -16,7 +17,16 @@ class ProyectoController {
                   },
                   {
                     model: ClienteReplica,
-                    attributes: [['nombre_cliente', 'nombre']]
+                    attributes: [['nombre_cliente', 'nombre']],
+                    include: [
+                        {
+                          model: ReplicaResponsableCliente,
+                          attributes: [
+                              ['id_responsable_cliente', 'id_responsable'],
+                              ['nombre_responsable_cl', 'nombre_responsable']
+                          ]
+                        }
+                      ]
                   },
                   {
                     model: Usuario,
@@ -44,22 +54,31 @@ class ProyectoController {
             // buscar el proyecto segun su id junto con el nombre del tecnico responable
             const project = await Proyecto.findByPk(id, {
                 include: [
-                    {
-                      model: ResponsableTecnico,
-                      attributes: [['nombre_responsable_tec', 'nombre']]
-                    },
-                    {
-                      model: ClienteReplica,
-                      attributes: [['nombre_cliente', 'nombre']]
-                    },
-                    {
-                      model: Usuario,
-                      attributes: [
-                          'nombre',
-                          'apellido'
+                  {
+                    model: ResponsableTecnico,
+                    attributes: [['nombre_responsable_tec', 'nombre']]
+                  },
+                  {
+                    model: ClienteReplica,
+                    attributes: [['nombre_cliente', 'nombre']],
+                    include: [
+                        {
+                          model: ReplicaResponsableCliente,
+                          attributes: [
+                              ['id_responsable_cliente', 'id_responsable'],
+                              ['nombre_responsable_cl', 'nombre_responsable']
+                          ]
+                        }
                       ]
-                    }
-                  ]
+                  },
+                  {
+                    model: Usuario,
+                    attributes: [
+                        'nombre',
+                        'apellido'
+                    ]
+                  }
+                ]
               })
             // comprobar si existe el proyecto
             if (!project) {

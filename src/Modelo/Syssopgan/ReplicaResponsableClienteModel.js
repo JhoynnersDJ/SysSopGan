@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import {sequelize} from '../sequelize.js'; 
-import {Cliente} from './ClienteModel.js';
+import {ClienteReplica} from './ReplicaClienteModel.js';
 
 const ReplicaResponsableCliente = sequelize.define('responsable_cliente', {
     id_responsable_cliente: {
@@ -17,7 +17,7 @@ id_cliente_fk: {
     type: DataTypes.UUID,
     allowNull: true,
     references: {
-    model: Cliente, // Nombre de la tabla de referencia
+    model: ClienteReplica, // Nombre de la tabla de referencia
     key: 'id_cliente', // Clave primaria en la tabla de referencia
     },
     
