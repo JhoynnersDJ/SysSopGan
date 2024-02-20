@@ -5,6 +5,7 @@ import { ResponsableTecnico } from "./ResponsableTecnicoModel.js";
 import { Usuario } from "./UsuarioModel.js";
 import { Tarea } from "./TareaModel.js";
 import { Servicio } from "./ServicioModel.js";
+import { Rol } from "./RolModel.js"
 
 
 // Asociaciones relacionadas a ClienteReplica
@@ -29,6 +30,8 @@ Proyecto.belongsTo(ResponsableTecnico, { targetKey:'id_responsable_tec', foreign
 // Definir la relación de uno a muchos con Usuario y Proyecto
 Usuario.hasMany(Proyecto, { foreignKey:'id_usuario_fk'});
 Proyecto.belongsTo(Usuario, { targetKey:'id_us', foreignKey: 'id_usuario_fk' });
+Rol.hasOne(Usuario, { foreignKey:'id_rolref'});
+Usuario.belongsTo(Rol, { targetKey:'id_rol', foreignKey: 'id_rolref' })
 
 
 // Asociaciones relacionadas a Proyecto

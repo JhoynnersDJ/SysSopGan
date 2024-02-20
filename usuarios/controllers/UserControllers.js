@@ -26,15 +26,17 @@ export const register = async (req, res) => {
         
         //se crea un nuevo usuario
         const newuser = new user(name,lastName, email, passwordHash, cellphone, empress,cargo, departament, 
-            new userRol(1, 'user', 'user of the system'), idUnico,);
+            null, idUnico);
         
         //se guarda el usuario
-        newuser.save();
+        const userSaved = await user.save(newuser);
+        
         //se genera el token para ser manejado por la cookie
-        const token = await createAccessToken({ id: newuser.getUserId(), rol: newuser.getUserRol() });
+        const token = await createAccessToken({ id: newuser.getUserId(), rol: userSaved.getUseRol() });
         
         //se envia de respuesta el token yy los datos ingresados
         res.cookie('token', token);
+       
         res.json({
             id: newuser.getUserId(),
             name: newuser.getUserName(),
@@ -44,7 +46,7 @@ export const register = async (req, res) => {
             cellphone: newuser.getUserCellphone(), 
             empress: newuser.getUserEmpress(), 
             departament: newuser.getUserDepartament(),
-            rol: newuser.rol
+            rol: userSaved.getUseRol()
         });
         console.log('Se creo el usuario correctamente');
         //console.log(newuser);

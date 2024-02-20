@@ -5,10 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 import {sequelize} from '../sequelize.js'; 
 import {Rol} from './RolModel.js';
 
-const Usuario = sequelize.define('Usuario', {
+const Usuario = sequelize.define('usuario', {
   id_us: {
     type: DataTypes.UUID,
-    defaultValue: () => uuidv4(),
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
   nombre: {
@@ -52,12 +52,12 @@ const Usuario = sequelize.define('Usuario', {
     defaultValue: DataTypes.NOW,
   },
   id_rolref: {
-    type: DataTypes.STRING, // Tipo de datos UUID para la clave externa del rol
+    type: DataTypes.UUID, // Tipo de datos UUID para la clave externa del rol
     allowNull: false,
-    /*references: {
-      model: Rol, // Nombre del modelo de la tabla a la que se hace referencia
+    references: {
+      model: 'rol', // Nombre del modelo de la tabla a la que se hace referencia
       key: 'id_rol', // Clave primaria de la tabla a la que se hace referencia
-    },*/
+    },
   },
 }, {
   timestamps: false, // Desactivar las columnas createdAt y updatedAt

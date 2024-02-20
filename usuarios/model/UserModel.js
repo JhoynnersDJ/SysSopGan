@@ -31,10 +31,11 @@ export class user {
     setUserEmail(email) { this.email = email;}
     setUserPassword(password) { this.password = password;}
     setUserId(id) { this.id = id;}
+    setUserRol(rol) {this.rol = rol}
 
 
-    save(){
-        userMock.save(this);
+    static save(user){
+        return userMock.save(user);
     }
 
     static findOne(email){

@@ -19,7 +19,7 @@ export const registerSchema = z.object({
         message: 'Password must be at least 6 characters'
     }),
     cellphone: z.string({
-        required_error: 'cellphone is required, in number'
+        required_error: 'cellphone is required, in string'
     }),
     empress: z.string({
         required_error: 'empress is required, in string'
