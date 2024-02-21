@@ -14,17 +14,34 @@ async function saveHoliday(holiday) {
 }
 
 //busca en la lista de feriados una fecha pasada por parametro
-function findOne(id){
+async function findOne(id){
+    const holidayFound = await Feriado.findOne(
+        {
+            where: { id : id} 
+        }
+    );
+    if(!holidayFound) return null;
+    
+    const newHoliday = new holidays(holidayFound.dataValues.nombre, holidayFound.dataValues.fecha, holidayFound.dataValues.id);
+    
+    return newHoliday;
     //return holidays.holidays.find((holidays) => holidays.id == id);
 }
 
 //devuelve todos los feriados guardados
-function getHolidays(date){
+async function getHolidays(date){
+    const allHolidays = await Feriado.findAll();
+    return allHolidays;
     //return holidays.holidays;
 }
 
 //elimina un feriado por id
-function deleteOne(id){
+async function deleteOne(id){
+    const deleteHoliday = await Feriado.destroy({
+        where: {
+          id: id
+        },
+      });
     /*hol = [];
     for(var i = 0; i < holidays.holidays.length; i++) {
         if (holidays.holidays[i].id != id) {
@@ -44,7 +61,7 @@ async function findOneByDate(date){
         }
     );
     if(!holidayFound) return null;
-
+    const newHoliday = new holidays(holidayFound.dataValues.nombre, holidayFound.dataValues.fecha, holidayFound.dataValues.id);
     return holidayFound;
     /*//date.setHours(0,0,0,0);
     for(var i = 0; i < holidays.holidays.length; i++) {
