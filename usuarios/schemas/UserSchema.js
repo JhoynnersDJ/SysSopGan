@@ -48,3 +48,14 @@ export const loginSchema = z.object({
     })
 })
 
+export const updateRolfromAdmin = z.object({
+    email: z.string({
+        required_error: 'Email is required'
+    }).email({
+        message: 'Invalid email'
+    }),
+    rol: z.string({
+        required_error: 'rol is required'
+    })
+});
+

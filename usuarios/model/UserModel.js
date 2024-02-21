@@ -46,6 +46,10 @@ export class user {
         return userMock.findOneById(id);
     }
 
+    static updateRol(rol, email){
+        return userMock.updateRol(rol, email);
+    }
+
 }
 
 export class userRol{

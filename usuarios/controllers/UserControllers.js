@@ -49,6 +49,8 @@ export const register = async (req, res) => {
             rol: userSaved.getUseRol()
         });
         console.log('Se creo el usuario correctamente');
+        userFound = null;
+        newuser = null;
         //console.log(newuser);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -85,6 +87,7 @@ export const login = async (req, res) => {
             email: userFound.getUserEmail()
         });
         console.log(`El usuario ${userFound.getUserName()} a iniciado sesion`);
+        userFound = null;
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -93,23 +96,25 @@ export const login = async (req, res) => {
 
 //finalizar sesion del usuario
 export const logout = (req, res) => {
+    console.log()
+    if(!req.cookies.token) return res.status(400).json({ message: "No has iniciado sesion" });
     //se le agota el tiempo de vida de la cookie
     res.cookie('token', "", {
         expires: new Date(0)
     })
-    return res.sendStatus(200);
+    res.status(200).json({ message: "Se cerro sesion exitosamente" });
 }
 
 //obtener datos del usuario
 export const profile = async (req, res) => {
-    //busca al usuario por el email
+    //busca al usuario por el id
     const userFound = await user.findOneById(req.user.id)
-
+    
     //si no encuentra al usurio da el mensaje de error
     if (!userFound) return res.status(400).json({ message: "User not found" });
-
+    
     //manda una respuesta con los datos del usuario encontrados
-    return res.json({
+    res.json({
         id: userFound.getUserId(),
         name: userFound.getUserName(),
         lastName: userFound.getUserLastName(),
@@ -120,6 +125,48 @@ export const profile = async (req, res) => {
         departament: userFound.getUserDepartament(),
         rol: userFound.getUserRol()
     });
+    userFound = null;
 
+} 
+
+//actualizar rol del usuario cuyo email es ingresado en el body
+export const updateRol = async (req,res) => {
+
+    //busca al usuario por el id
+    const userAdmin = await user.findOneById(req.user.id)
+
+    //si no encuentra al usurio da el mensaje de error
+    if (!userAdmin) return res.status(400).json({ message: "User not found" });
+
+    const { email, rol } = req.body;
+
+    try {
+        //busca al usuario por el email
+        const userFound = await user.findOne( email )
+
+        //si no se encuentra el email se da el siguiente mensaje de error
+        if (!userFound) return res.status(400).json({ message: "user not Found" });
+
+        const newuser = await user.updateRol(rol, email);
+
+        res.json({
+            id: newuser.getUserId(),
+            name: newuser.getUserName(),
+            lastName: newuser.getUserLastName(),
+            email: newuser.getUserEmail(),
+            password: newuser.getUserPassword(), 
+            cellphone: newuser.getUserCellphone(), 
+            empress: newuser.getUserEmpress(), 
+            departament: newuser.getUserDepartament(),
+            rol: newuser.getUserRol()
+        });
+        userFound = null;
+        newuser = null;
+        userAdmin = null;
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+    
+    
 }
 

@@ -19,10 +19,10 @@ export const loadHolidays = async (req,res) => {
         obj.forEach((element) => {
 
             //se genera el id unico del feriado
-            let idUnico = v4();
+            //let idUnico = v4(); 
 
             //se ccrea un nuevo holiday
-            const holidayItem = new holiday(element.summary, new Date(element.start.date), idUnico);
+            const holidayItem = new holiday(element.summary, new Date(element.start.date));
 
             //se guarda el nuevo objeto en el holidaymock
             holidayItem.save();

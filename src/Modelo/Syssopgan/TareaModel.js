@@ -3,7 +3,7 @@
 import { DataTypes } from 'sequelize';
 import {sequelize} from '../sequelize.js'; 
 
-const Tarea = sequelize.define('Tarea', {
+const Tarea = sequelize.define('tarea', {
   id_tarea: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -30,7 +30,7 @@ const Tarea = sequelize.define('Tarea', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Proyecto', // Nombre de la tabla de referencia
+      model: 'proyecto', // Nombre de la tabla de referencia
       key: 'id_proyecto', // Clave primaria en la tabla de referencia
     },
   },
@@ -38,7 +38,7 @@ const Tarea = sequelize.define('Tarea', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Servicio', // Nombre de la tabla de referencia
+      model: 'servicio', // Nombre de la tabla de referencia
       key: 'id_servicio', // Clave primaria en la tabla de referencia
     },
   },

@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import {sequelize} from '../sequelize.js'; 
 
-    const ClienteReplica = sequelize.define('Cliente', {
+    const ClienteReplica = sequelize.define('cliente', {
     id_cliente: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
