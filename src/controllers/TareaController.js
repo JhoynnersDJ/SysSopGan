@@ -75,6 +75,7 @@ class TareaController {
             // obtener tarifa por hora de un proyecto
             const hourlyRate = project.tarifa
             const rate = calculateRate(date, start_time, end_time, hourlyRate)
+            console.log(rate.totalRate);
             // guardar en la base de datos
             await Tarea.create(
                 { fecha: date, hora_inicio:start_time, hora_fin:end_time, total_hora: rate.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rate.isHoliday },
