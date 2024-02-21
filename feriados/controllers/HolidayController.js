@@ -43,13 +43,13 @@ export const getHolidays = async (req,res) => {
     try {
 
         //busca los feriados
-        const all = await holidayMock.getHolidays();
+        const all = await holiday.getHolidays();
 
         if (!all) return res.status(400).json({message: 'No hay feriados'});
-
+        
         //devuelve un json de los feriados como response
         res.json(all);
-
+        //all = null;
     } catch (error) {
         return res.status(500).json({message: 'Something goes wrong'});
     }
@@ -170,3 +170,4 @@ export const deleteHoliday = async (req, res) => {
     }
 
 }
+

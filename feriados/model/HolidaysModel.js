@@ -23,6 +23,10 @@ export default class holidays {
         holidayMock.save(this);
     }
 
+    static getHolidays(){
+        return holidayMock.getHolidays();
+    }
+
     static findOne(id){
         return holidayMock.findOne(id);
     }

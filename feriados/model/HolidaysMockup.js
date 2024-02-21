@@ -78,9 +78,10 @@ async function findOneByDate(date){
 export default class holidayMockup extends holidayPort{
     holidays = [];
 
-    getHolidays (){
+    static getHolidays (){
         return this.holidays;
     }
+
     static save(holiday){
         
         saveHoliday(holiday);
