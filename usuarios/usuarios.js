@@ -16,7 +16,7 @@ router.post('/login',validateSchema(loginSchema), login);
 router.post('/logout',authRequired, logout);
 
 //obtener datos del usuario
-router.get('/perfil', authRequired, rolRequired('usuario'), profile);
+router.get('/perfil', authRequired, profile);
 
 //actualizar rol del usuario
 router.post('/actualizar-rol',authRequired, validateSchema(updateRolfromAdmin), updateRol);

@@ -14,13 +14,13 @@ export default class holidays {
     getHolidayId() { return this.id; }
 
     //sets de los atributos de user
-    setHolidayName(name) { this.name = name;}
-    setHolidayDate(date) { this.date = date;}    
+    setHolidayName(name,id) { return holidayMock.updateName(name,id);}
+    setHolidayDate(date,id) { return holidayMock.updateDate(date,id);}    
     setHolidayId(id) { this.id = id;}
 
 
-    save(){
-        holidayMock.save(this);
+    static save(hol){
+        return holidayMock.save(hol);
     }
 
     static getHolidays(){

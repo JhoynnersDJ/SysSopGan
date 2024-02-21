@@ -67,17 +67,14 @@ export const createHoliday = async (req, res) => {
         //si consigue el feriado lanza un mensaje de feriado con fecha repetida
         if (holidayFound) return res.status(404).json({message: "Holiday Found, repeated date"});
 
-        //se genera el id unico del feriado
-        let idUnico = v4();
-        
         //se ccrea un nuevo holiday
-        const holidayItem = new holiday(name, new Date(date), idUnico);
+        const holidayItem = new holiday(name, new Date(date));
 
         //se guarda el nuevo objeto en el holidaymock
-        holidayItem.save();
+        const newhol = await holiday.save(holidayItem);
 
         //se devuelve como respuesta el feriado creado
-        res.json(holidayItem);
+        res.json(newhol);
     } catch (error) {
         return res.status(500).json({message: "falta un campo"});
     }
@@ -95,10 +92,10 @@ export const updateHoliday = async (req, res) => {
         if (!holidayFound) return res.status(404).json({message: "Holiday not Found"});
 
         //si se introdujo un nombre se actualiza
-        if (name) holidayFound.setHolidayName(name);
+        if (name) holidayFound.setHolidayName(name,req.params.id);
 
         //si se introdujo un nombre se actualiza
-        if (date) holidayFound.setHolidayDate(date);
+        if (date) holidayFound.setHolidayDate(date,req.params.id);
 
         //se devuelve como respuesta el feriado actualizado
         res.json(holidayFound);

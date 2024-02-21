@@ -8,8 +8,9 @@ class holidayPort{
 
 //guarda al feriado para persistencia
 async function saveHoliday(holiday) {
-    await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
+    const newhol = await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
         {fields: [ 'nombre', 'fecha']});
+    return newhol;
     //holidays.holidays.push(holiday);
 }
 
@@ -75,6 +76,32 @@ async function findOneByDate(date){
     return null;*/
 }
 
+async function updateName(name,id){
+
+    const holidayFound = await Feriado.findOne(
+        {
+            where: { id : id} 
+        }
+    );
+    if(!holidayFound) return null;
+    
+    holidayFound.nombre = name;
+    return holidayFound.save();
+}
+
+async function updateDate(date,id){
+
+    const holidayFound = await Feriado.findOne(
+        {
+            where: { id : id} 
+        }
+    );
+    if(!holidayFound) return null;
+    
+    holidayFound.fecha = date;
+    return holidayFound.save();
+}
+
 export default class holidayMockup extends holidayPort{
     holidays = [];
 
@@ -84,7 +111,7 @@ export default class holidayMockup extends holidayPort{
 
     static save(holiday){
         
-        saveHoliday(holiday);
+        return saveHoliday(holiday);
         //console.log(holidays);
     }
 
@@ -102,6 +129,12 @@ export default class holidayMockup extends holidayPort{
 
     static deleteOne(id){
         return deleteOne(id);
+    }
+    static updateName(name,id){
+        return updateName(name,id)
+    }
+    static updateDate(date,id){
+        return updateDate(date,id)
     }
     
 }
