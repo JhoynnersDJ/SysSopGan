@@ -45,7 +45,7 @@ export const getHolidays = async (req,res) => {
         //busca los feriados
         const all = await holiday.getHolidays();
 
-        if (!all) return res.status(400).json({message: 'No hay feriados'});
+        if (!all) return res.status(500).json({message: 'No hay feriados'});
         
         //devuelve un json de los feriados como response
         res.json(all);
@@ -76,7 +76,7 @@ export const createHoliday = async (req, res) => {
         //se devuelve como respuesta el feriado creado
         res.json(newhol);
     } catch (error) {
-        return res.status(500).json({message: "falta un campo"});
+        return res.status(500).json({message: error.message});
     }
 }
 
@@ -89,7 +89,7 @@ export const updateHoliday = async (req, res) => {
         const holidayFound = await holiday.findOne(req.params.id);
 
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
-        if (!holidayFound) return res.status(404).json({message: "Holiday not Found"});
+        if (!holidayFound) return res.status(500).json({message: "Holiday not Found"});
 
         //si se introdujo un nombre se actualiza
         if (name) holidayFound.setHolidayName(name,req.params.id);
@@ -100,7 +100,7 @@ export const updateHoliday = async (req, res) => {
         //se devuelve como respuesta el feriado actualizado
         res.json(holidayFound);
     } catch (error) {
-        return res.status(404).json({message: error.message});
+        return res.status(500).json({message: error.message});
     }
 
 }
@@ -113,12 +113,12 @@ export const getHoliday = async (req, res) => {
         const holidayFound = await holiday.findOne(req.params.id);
 
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
-        if (!holidayFound) return res.status(404).json({message: "Holiday not Found"});   
+        if (!holidayFound) return res.status(500).json({message: "Holiday not Found"});   
         
         //se devuelve como respuesta el feriado encontrado
         res.json(holidayFound);
     } catch (error) {
-        return res.status(404).json({message: error.message});
+        return res.status(500).json({message: error.message});
     }
 
 }
@@ -130,18 +130,18 @@ export const getHolidayByDate = async (req, res) => {
         const holidayFound = await holiday.findOneByDate(new Date(req.params.date));
 
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
-        if (!holidayFound) return res.status(404).json({message: "Holiday not Found"});   
+        if (!holidayFound) return res.status(500).json({message: "Holiday not Found"});   
         
         //busca un feriado por id
         const holidayFound2 = await holiday.findOneByDate(new Date(date));
 
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
-        if (!holidayFound2) return res.status(404).json({message: "Holiday not Found"});
+        if (!holidayFound2) return res.status(500).json({message: "Holiday not Found"});
         
         //se devuelve como respuesta el feriado encontrado
         res.json(holidayFound);
     } catch (error) {
-        return res.status(404).json({message: error.message});
+        return res.status(500).json({message: error.message});
     }
 
 }
@@ -155,7 +155,7 @@ export const deleteHoliday = async (req, res) => {
         const holidayFound = await holiday.findOne(req.params.id);
 
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
-        if (!holidayFound) return res.status(404).json({message: "Holiday not Found"});
+        if (!holidayFound) return res.status(500).json({message: "Holiday not Found"});
 
         //se elimina el dia feriado por id
         holiday.deleteOne(req.params.id);
@@ -163,7 +163,7 @@ export const deleteHoliday = async (req, res) => {
         //se devuelve como respuesta el feriado eliminado
         res.json(holidayFound);
     } catch (error) {
-        return res.status(404).json({message: error.message});
+        return res.status(500).json({message: error.message});
     }
 
 }
