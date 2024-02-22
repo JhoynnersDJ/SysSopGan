@@ -16,13 +16,16 @@ export const loadHolidays = async (req,res) => {
         const obj = JSON.parse(JSON.stringify(items.items));
 
         //los objetos son convertidos a holidays y guardados en el holidaysMock
-        obj.forEach((element) => {
+        obj.forEach(async (element) => {
 
-            //se genera el id unico del feriado
-            let idUnico = v4();
+            //busca un feriado por id
+            const holidayFound = await holiday.findOneByDate(new Date(element.start.date));
+
+            //si consigue el feriado lanza un mensaje de feriado no encontrado
+            if (holidayFound) return;
 
             //se ccrea un nuevo holiday
-            const holidayItem = new holiday(element.summary, new Date(element.start.date), idUnico);
+            const holidayItem = new holiday(element.summary, new Date(element.start.date));
 
             //se guarda el nuevo objeto en el holidaymock
             holidayItem.save();
@@ -40,11 +43,13 @@ export const getHolidays = async (req,res) => {
     try {
 
         //busca los feriados
-        const all = await holidayMock.getHolidays();
+        const all = await holiday.getHolidays();
 
+        if (!all) return res.status(500).json({message: 'No hay feriados'});
+        
         //devuelve un json de los feriados como response
         res.json(all);
-
+        //all = null;
     } catch (error) {
         return res.status(500).json({message: 'Something goes wrong'});
     }
@@ -60,21 +65,18 @@ export const createHoliday = async (req, res) => {
         const holidayFound = await holiday.findOneByDate(new Date(date));
 
         //si consigue el feriado lanza un mensaje de feriado con fecha repetida
-        if (holidayFound) return res.status(404).json({message: "Holiday Found, repeated date"});
+        if (holidayFound) return res.status(500).json({message: "Holiday Found, repeated date"});
 
-        //se genera el id unico del feriado
-        let idUnico = v4();
-        
         //se ccrea un nuevo holiday
-        const holidayItem = new holiday(name, new Date(date), idUnico);
+        const holidayItem = new holiday(name, new Date(date));
 
         //se guarda el nuevo objeto en el holidaymock
-        holidayItem.save();
+        const newhol = await holiday.save(holidayItem);
 
         //se devuelve como respuesta el feriado creado
-        res.json(holidayItem);
+        res.json(newhol);
     } catch (error) {
-        return res.status(500).json({message: "falta un campo"});
+        return res.status(500).json({message: error.message});
     }
 }
 
@@ -87,18 +89,18 @@ export const updateHoliday = async (req, res) => {
         const holidayFound = await holiday.findOne(req.params.id);
 
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
-        if (!holidayFound) return res.status(404).json({message: "Holiday not Found"});
+        if (!holidayFound) return res.status(500).json({message: "Holiday not Found"});
 
         //si se introdujo un nombre se actualiza
-        if (name) holidayFound.setHolidayName(name);
+        if (name) holidayFound.setHolidayName(name,req.params.id);
 
         //si se introdujo un nombre se actualiza
-        if (date) holidayFound.setHolidayDate(date);
+        if (date) holidayFound.setHolidayDate(date,req.params.id);
 
         //se devuelve como respuesta el feriado actualizado
         res.json(holidayFound);
     } catch (error) {
-        return res.status(404).json({message: error.message});
+        return res.status(500).json({message: error.message});
     }
 
 }
@@ -111,29 +113,35 @@ export const getHoliday = async (req, res) => {
         const holidayFound = await holiday.findOne(req.params.id);
 
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
-        if (!holidayFound) return res.status(404).json({message: "Holiday not Found"});   
+        if (!holidayFound) return res.status(500).json({message: "Holiday not Found"});   
         
         //se devuelve como respuesta el feriado encontrado
         res.json(holidayFound);
     } catch (error) {
-        return res.status(404).json({message: error.message});
+        return res.status(500).json({message: error.message});
     }
 
 }
 
 export const getHolidayByDate = async (req, res) => {
     try {
-
+        const {date} = req.body;
         //busca un feriado por id
         const holidayFound = await holiday.findOneByDate(new Date(req.params.date));
 
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
-        if (!holidayFound) return res.status(404).json({message: "Holiday not Found"});    
+        if (!holidayFound) return res.status(500).json({message: "Holiday not Found"});   
+        
+        //busca un feriado por id
+        const holidayFound2 = await holiday.findOneByDate(new Date(date));
+
+        //si no consigue el feriado lanza un mensaje de feriado no encontrado
+        if (!holidayFound2) return res.status(500).json({message: "Holiday not Found"});
         
         //se devuelve como respuesta el feriado encontrado
         res.json(holidayFound);
     } catch (error) {
-        return res.status(404).json({message: error.message});
+        return res.status(500).json({message: error.message});
     }
 
 }
@@ -147,7 +155,7 @@ export const deleteHoliday = async (req, res) => {
         const holidayFound = await holiday.findOne(req.params.id);
 
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
-        if (!holidayFound) return res.status(404).json({message: "Holiday not Found"});
+        if (!holidayFound) return res.status(500).json({message: "Holiday not Found"});
 
         //se elimina el dia feriado por id
         holiday.deleteOne(req.params.id);
@@ -155,7 +163,8 @@ export const deleteHoliday = async (req, res) => {
         //se devuelve como respuesta el feriado eliminado
         res.json(holidayFound);
     } catch (error) {
-        return res.status(404).json({message: error.message});
+        return res.status(500).json({message: error.message});
     }
 
 }
+

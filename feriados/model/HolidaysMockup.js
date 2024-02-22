@@ -1,4 +1,5 @@
-import holiday from './HolidaysModel.js';
+import holidays from './HolidaysModel.js';
+import {Feriado} from '../../src/Modelo/Syssopgan/FeriadoModel.js'
 
 class holidayPort{
     save(holiday){}
@@ -6,23 +7,43 @@ class holidayPort{
 }
 
 //guarda al feriado para persistencia
-function saveHoliday(holiday) {
-    holidays.holidays.push(holiday);
+async function saveHoliday(holiday) {
+    const newhol = await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
+        {fields: [ 'nombre', 'fecha']});
+    return newhol;
+    //holidays.holidays.push(holiday);
 }
 
 //busca en la lista de feriados una fecha pasada por parametro
-function findOne(id){
-    return holidays.holidays.find((holidays) => holidays.id == id);
+async function findOne(id){
+    const holidayFound = await Feriado.findOne(
+        {
+            where: { id : id} 
+        }
+    );
+    if(!holidayFound) return null;
+    
+    const newHoliday = new holidays(holidayFound.dataValues.nombre, holidayFound.dataValues.fecha, holidayFound.dataValues.id);
+    
+    return newHoliday;
+    //return holidays.holidays.find((holidays) => holidays.id == id);
 }
 
 //devuelve todos los feriados guardados
-function getHolidays(date){
-    return holidays.holidays;
+async function getHolidays(date){
+    const allHolidays = await Feriado.findAll();
+    return allHolidays;
+    //return holidays.holidays;
 }
 
 //elimina un feriado por id
-function deleteOne(id){
-    hol = [];
+async function deleteOne(id){
+    const deleteHoliday = await Feriado.destroy({
+        where: {
+          id: id
+        },
+      });
+    /*hol = [];
     for(var i = 0; i < holidays.holidays.length; i++) {
         if (holidays.holidays[i].id != id) {
             hol.push(holidays.holidays[i]);
@@ -30,12 +51,20 @@ function deleteOne(id){
     }
     //holidays.holidays.forEach((holiday) => {if(holiday.id != id) {hol.push(holidays)}});
     holidays.holidays = hol;
-    hol =[];
+    hol =[];*/
 }
 
 //encuentra un feriado por fecha
-function findOneByDate(date){
-    //date.setHours(0,0,0,0);
+async function findOneByDate(date){
+    const holidayFound = await Feriado.findOne(
+        {
+            where: { fecha : date} 
+        }
+    );
+    if(!holidayFound) return null;
+    const newHoliday = new holidays(holidayFound.dataValues.nombre, holidayFound.dataValues.fecha, holidayFound.dataValues.id);
+    return holidayFound;
+    /*//date.setHours(0,0,0,0);
     for(var i = 0; i < holidays.holidays.length; i++) {
         let day = holidays.holidays[i].date;
         //day.setHours(0,0,0,0);
@@ -44,18 +73,45 @@ function findOneByDate(date){
         }
         //date = null;
     }
-    return null;
+    return null;*/
+}
+
+async function updateName(name,id){
+
+    const holidayFound = await Feriado.findOne(
+        {
+            where: { id : id} 
+        }
+    );
+    if(!holidayFound) return null;
+    
+    holidayFound.nombre = name;
+    return holidayFound.save();
+}
+
+async function updateDate(date,id){
+
+    const holidayFound = await Feriado.findOne(
+        {
+            where: { id : id} 
+        }
+    );
+    if(!holidayFound) return null;
+    
+    holidayFound.fecha = date;
+    return holidayFound.save();
 }
 
 export default class holidayMockup extends holidayPort{
     holidays = [];
 
-    getHolidays (){
+    static getHolidays (){
         return this.holidays;
     }
+
     static save(holiday){
         
-        saveHoliday(holiday);
+        return saveHoliday(holiday);
         //console.log(holidays);
     }
 
@@ -74,9 +130,15 @@ export default class holidayMockup extends holidayPort{
     static deleteOne(id){
         return deleteOne(id);
     }
+    static updateName(name,id){
+        return updateName(name,id)
+    }
+    static updateDate(date,id){
+        return updateDate(date,id)
+    }
     
 }
 
-let holidays = new holidayMockup();
+//let holidays = new holidayMockup();
 let hol = [];
 //let day =new Date();

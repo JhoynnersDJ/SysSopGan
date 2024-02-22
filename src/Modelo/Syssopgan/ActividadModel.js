@@ -36,3 +36,4 @@ const Servicio = sequelize.define('servicio', {
   });
 
 export  {Servicio};
+
