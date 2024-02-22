@@ -30,9 +30,18 @@ async function findOne(id){
 }
 
 //devuelve todos los feriados guardados
-async function getHolidays(date){
+async function getHolidays(){
     const allHolidays = await Feriado.findAll();
     return allHolidays;
+    //return holidays.holidays;
+}
+
+async function getHolidaysDate(){
+    const allHolidays = await Feriado.findAll();
+    let dates = [];
+    allHolidays.forEach((holiday) => dates.push(holiday.dataValues.fecha))    
+    console.log(dates);
+    return dates;
     //return holidays.holidays;
 }
 
@@ -135,6 +144,10 @@ export default class holidayMockup extends holidayPort{
     }
     static updateDate(date,id){
         return updateDate(date,id)
+    }
+
+    static getHolidaysDate(){
+        return getHolidaysDate();
     }
     
 }
