@@ -42,7 +42,7 @@ await sequelize.sync({ force: false }).then(() => {
 
 
 //Middleware para usuario
-app.use('/usuario', userRouter);
+app.use('/usuarios', userRouter);
 
 //Middleware para feriados
 app.use('/feriados', holidaysRouter);
@@ -54,16 +54,16 @@ app.use('/proyectos', ProyectoRouter);
 app.use('/rol', RolRouter);
 
 //Middleware para actividades
-app.use('/servicio', ServicioRouter);
+app.use('/servicios', ServicioRouter);
 
 //Middleware para tareas
-app.use('/tarea', TareaRouter);
+app.use('/tareas', TareaRouter);
 
 //Middleware para tareas
 app.use('/responsable-tecnico', ResponsableTecnicoRouter);
 
 //Middleware para replica cliente
-app.use('/cliente', ReplicaClienteRouter);
+app.use('/clientes', ReplicaClienteRouter);
 
 app.listen(port, () => {
   console.log(`La aplicación está corriendo en http://${host}:${port}`);

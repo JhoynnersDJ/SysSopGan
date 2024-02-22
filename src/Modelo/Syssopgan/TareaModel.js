@@ -35,7 +35,7 @@ const Tarea = sequelize.define('tarea', {
     },
   },
   id_servicio_fk: {
-    type: DataTypes.UUID,
+    type: DataTypes.STRING,
     allowNull: false,
     references: {
       model: 'servicio', // Nombre de la tabla de referencia

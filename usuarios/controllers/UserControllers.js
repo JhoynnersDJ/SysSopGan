@@ -16,7 +16,7 @@ export const register = async (req, res) => {
         const userFound = await user.findOne(email);
         
         //si se encuentra el email se da el siguiente mensaje de error
-        if (userFound) return res.status(400).json(["The email alredy exists"]);
+        if (userFound) return res.status(202).json(["The email alredy exists"]);
         
         //se cifra la contraseña
         const passwordHash = await bcrypt.hash(password, 10);
@@ -37,7 +37,7 @@ export const register = async (req, res) => {
         //se envia de respuesta el token yy los datos ingresados
         res.cookie('token', token);
        
-        res.json({
+        res.status(201).json({
             id: newuser.getUserId(),
             name: newuser.getUserName(),
             lastName: newuser.getUserLastName(),
