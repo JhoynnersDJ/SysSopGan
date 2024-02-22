@@ -39,7 +39,7 @@
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-        model: ClienteReplica, // Nombre de la tabla de referencia
+        model: 'cliente', // Nombre de la tabla de referencia
         key: 'id_cliente', // Clave primaria en la tabla de referencia
         },
     },

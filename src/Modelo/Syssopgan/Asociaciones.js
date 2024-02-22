@@ -55,6 +55,10 @@ Tarea.belongsTo(Proyecto, { targetKey:'id_proyecto', foreignKey: 'id_proyecto_fk
 Servicio.hasMany(Tarea, { foreignKey:'id_servicio_fk'});
 Tarea.belongsTo(Servicio, { targetKey:'id_servicio', foreignKey: 'id_servicio_fk'});
 
+ // Asociación entre ReplicaResponsableCliente y ClienteReplica
+ ReplicaResponsableCliente.belongsTo(ClienteReplica, { foreignKey: 'id_cliente_fk' });
+ ClienteReplica.hasMany(ReplicaResponsableCliente, { foreignKey: 'id_cliente_fk' });
+
 
 // exportar los modelos con sus respectivas relaciones
 export { Proyecto, ClienteReplica, ReplicaResponsableCliente, ResponsableTecnico, Usuario, Tarea, Servicio }

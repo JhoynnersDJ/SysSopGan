@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import {sequelize} from '../sequelize.js'; 
-import {ClienteReplica} from './ReplicaClienteModel.js';
+import  {ClienteReplica} from '../Syssopgan/ReplicaClienteModel.js'; 
 
 const ReplicaResponsableCliente = sequelize.define('responsable_cliente', {
     id_responsable_cliente: {

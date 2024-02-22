@@ -46,7 +46,6 @@ const Tarea = sequelize.define('tarea', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
   },
-  
 },
 {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt
