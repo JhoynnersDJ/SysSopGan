@@ -30,7 +30,7 @@ const Tarea = sequelize.define('tarea', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Proyecto', // Nombre de la tabla de referencia
+      model: 'proyecto', // Nombre de la tabla de referencia
       key: 'id_proyecto', // Clave primaria en la tabla de referencia
     },
   },
@@ -38,7 +38,7 @@ const Tarea = sequelize.define('tarea', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Servicio', // Nombre de la tabla de referencia
+      model: 'servicio', // Nombre de la tabla de referencia
       key: 'id_servicio', // Clave primaria en la tabla de referencia
     },
   },
@@ -46,7 +46,6 @@ const Tarea = sequelize.define('tarea', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
   },
-  
 },
 {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt

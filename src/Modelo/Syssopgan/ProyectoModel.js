@@ -23,7 +23,7 @@
         type: DataTypes.UUID,
         allowNull: true,
         references: {
-        model: 'Responsable_Tecnico', // Nombre de la tabla de referencia
+        model: 'responsable_tecnico', // Nombre de la tabla de referencia
         key: 'id_responsable_tec', // Clave primaria en la tabla de referencia
         },
     },
@@ -31,7 +31,7 @@
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-        model: 'Usuario', // Nombre de la tabla de referencia
+        model: 'usuario', // Nombre de la tabla de referencia
         key: 'id_us', // Clave primaria en la tabla de referencia
         },
     },
@@ -39,7 +39,7 @@
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-        model: ClienteReplica, // Nombre de la tabla de referencia
+        model: 'cliente', // Nombre de la tabla de referencia
         key: 'id_cliente', // Clave primaria en la tabla de referencia
         },
     },
