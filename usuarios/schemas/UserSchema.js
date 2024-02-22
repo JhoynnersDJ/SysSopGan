@@ -18,11 +18,14 @@ export const registerSchema = z.object({
     }).min(6, {
         message: 'Password must be at least 6 characters'
     }),
-    cellphone: z.number({
-        required_error: 'cellphone is required, in number'
+    cellphone: z.string({
+        required_error: 'cellphone is required, in string'
     }),
     empress: z.string({
         required_error: 'empress is required, in string'
+    }),
+    cargo: z.string({
+        required_error: 'cargo is required, in string'
     }),
     departament: z.string({
         required_error: 'departament is required, in string'
@@ -44,4 +47,15 @@ export const loginSchema = z.object({
         message: 'Password must be at least 6 characters'
     })
 })
+
+export const updateRolfromAdmin = z.object({
+    email: z.string({
+        required_error: 'Email is required'
+    }).email({
+        message: 'Invalid email'
+    }),
+    rol: z.string({
+        required_error: 'rol is required'
+    })
+});
 
