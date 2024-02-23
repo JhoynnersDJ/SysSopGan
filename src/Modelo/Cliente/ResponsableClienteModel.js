@@ -13,6 +13,10 @@ nombre_responsable_cl: {
     type: DataTypes.STRING,
     allowNull: false,
 },
+cargo: {
+    type: DataTypes.STRING,
+    allowNull: false,
+},
 id_cliente_fk: {
     type: DataTypes.UUID,
     allowNull: true,

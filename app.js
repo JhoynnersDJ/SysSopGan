@@ -7,6 +7,7 @@ import cors from "cors";
 import userRouter from "./usuarios/usuarios.js";
 import holidaysRouter from "./feriados/feriados.js"
 import {sequelize} from './src/Modelo/sequelize.js';
+import {sequelizeClients} from './src/Modelo/sequelize.js';
 // Importar el router de proyectos
 import ProyectoRouter from './src/routes/ProyectoRouter.js';
 // Importar el router de rol
@@ -18,9 +19,9 @@ import TareaRouter from './src/routes/TareaRouter.js';
 // Importar el router de responsable tecnico
 import ResponsableTecnicoRouter from './src/routes/ResponsableTecnicoRouter.js';
 // Importar el router de replica cliente
-import ReplicaClienteRouter from './src/routes/ReplicaClienteRouter.js';
+import ReplicaClienteRouter from './src/routes/ClienteRouter.js';
 // Importar el router de replica cliente
-import ReplicaResponsableClienteRouter from './src/routes/ReplicaResponsableCliente.js';
+import ReplicaResponsableClienteRouter from './src/routes/ResponsableCliente.js';
 
 import {loadHolidays} from "./feriados/controllers/HolidayController.js"
 
@@ -41,6 +42,11 @@ app.use(cookieParser());
 await sequelize.sync({ force: false }).then(() => {
   console.log('Modelo sincronizado con la base de datos');
 });
+//Sincronizacion de la base de datos de clientes
+await sequelizeClients.sync({ force: false }).then(() => {
+  console.log('Modelo sincronizado con la base de datos');
+});
+
 
 
 //Middleware para usuario
