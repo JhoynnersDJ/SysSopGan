@@ -1,5 +1,6 @@
 import {Tarea} from "../Modelo/Syssopgan/Asociaciones.js"
 import { calculateRate } from "../services/tarifa.js"
+import { convertTo12HourFormat } from "../services/FormatHours.js.js"
 import {Proyecto} from "../Modelo/Syssopgan/ProyectoModel.js"
 import {Servicio} from "../Modelo/Syssopgan/ServicioModel.js"
 
@@ -73,8 +74,8 @@ class TareaController {
             }
 
             // Extraemos las horas de inicio y fin.
-            let startHour = parseInt(start_time.split(':')[0]);
-            let endHour = parseInt(end_time.split(':')[0]);
+            let startHour = convertTo12HourFormat(start_time);
+            let endHour = convertTo12HourFormat(end_time);
 
             // Si el técnico trabajo hasta el día siguiente...
             if (endHour < startHour) {

@@ -42,7 +42,8 @@ export function calculateRate(startDate, startTime, endTime, hourlyRate) {
 
     // Determinamos si el día de trabajo es un fin de semana o un día festivo.
     let dayOfWeek = endDate.getDay();
-    let isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    let isSunday = dayOfWeek === 0 
+    let isSaturday = dayOfWeek === 6;
     let isHoliday = holidays.includes(endDate.toISOString().split('T')[0]);
 
     // Calculamos el multiplicador de la tarifa basándonos en si es un fin de semana o un día festivo.

@@ -164,6 +164,7 @@ class ProyectoController {
             if (!project) {
                 return res.status(404).json({message: 'Proyecto no encontrado'})
             }
+            // crea el PDF despues de que se confirma el Id de Proyecto
             const stream = res.writeHead(200, {
                 "Content-Type": "application/pdf",
                 "Content-Disposition": "attachment; filename=Reportes.pdf"
