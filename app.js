@@ -7,7 +7,6 @@ import cors from "cors";
 import userRouter from "./usuarios/usuarios.js";
 import holidaysRouter from "./feriados/feriados.js"
 import {sequelize} from './src/Modelo/sequelize.js';
-import {sequelizeClients} from './src/Modelo/sequelize.js';
 // Importar el router de proyectos
 import ProyectoRouter from './src/routes/ProyectoRouter.js';
 // Importar el router de rol
@@ -19,9 +18,9 @@ import TareaRouter from './src/routes/TareaRouter.js';
 // Importar el router de responsable tecnico
 import ResponsableTecnicoRouter from './src/routes/ResponsableTecnicoRouter.js';
 // Importar el router de replica cliente
-import ClienteRouter from './src/routes/ClienteRouter.js';
+import ReplicaClienteRouter from './src/routes/ReplicaClienteRouter.js';
 // Importar el router de replica cliente
-import ResponsableClienteRouter from './src/routes/ResponsableCliente.js';
+import ReplicaResponsableClienteRouter from './src/routes/ReplicaResponsableCliente.js';
 
 import {loadHolidays} from "./feriados/controllers/HolidayController.js"
 
@@ -42,11 +41,6 @@ app.use(cookieParser());
 await sequelize.sync({ force: false }).then(() => {
   console.log('Modelo sincronizado con la base de datos');
 });
-//Sincronizacion de la base de datos de clientes
-await sequelizeClients.sync({ force: false }).then(() => {
-  console.log('Modelo sincronizado con la base de datos');
-});
-
 
 
 //Middleware para usuario
@@ -71,10 +65,10 @@ app.use('/tareas', TareaRouter);
 app.use('/responsable-tecnico', ResponsableTecnicoRouter);
 
 //Middleware para replica cliente
-app.use('/clientes', ClienteRouter);
+app.use('/clientes', ReplicaClienteRouter);
 
 //Middleware para replica cliente
-app.use('/responsable-cliente', ResponsableClienteRouter);
+app.use('/responsable-cliente', ReplicaResponsableClienteRouter);
 
 app.listen(port, () => {
   console.log(`La aplicación está corriendo en http://${host}:${port}`);

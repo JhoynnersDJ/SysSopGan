@@ -1,22 +1,11 @@
-import { Cliente } from "../Modelo/Cliente/AsociacionesCliente.js";
-import { ResponsableCliente } from "../Modelo/Cliente/ResponsableClienteModel.js";
+import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
 
-class ClienteController {
+class ReplicaResponsableClienteController {
     // devuelve todas las actividades
     static async index (req, res) {
         try {
             // buscar todos los registros
-            const clients = await Cliente.findAll({
-                include: [
-                  {
-                    model: ResponsableCliente,
-                    attributes: [
-                        ['id_responsable_cliente', 'id_responsable'],
-                        ['nombre_responsable_cl', 'nombre_responsable']
-                    ]
-                  }
-                ]
-              })
+            const clients = await ReplicaResponsableCliente.findAll()
             if (!clients) {
                 return res.status(500).json({message: 'No hay clientes registrados en la base de datos'})
             }
@@ -32,17 +21,7 @@ class ClienteController {
             // capturar datos
             const { id } = req.params
             // comprobar si existe
-            const client = await Cliente.findByPk(id,{
-                include: [
-                  {
-                    model: ResponsableCliente,
-                    attributes: [
-                        ['id_responsable_cliente', 'id_responsable'],
-                        ['nombre_responsable_cl', 'nombre_responsable']
-                    ]
-                  }
-                ]
-              })
+            const client = await ReplicaResponsableCliente.findByPk(id)
             if (!client) {
                 return res.status(404).json({message: 'Cliente no encontrado'})
             }
@@ -56,11 +35,11 @@ class ClienteController {
     static async create (req, res){
         try {
             // capturar datos
-            const { name, location } = req.body
+            const { name, Position, location } = req.body
             // guardar en la base de datos
-            await Cliente.create(
-                { nombre_cliente: name, ubicacion: location },
-                { fields: ['nombre_cliente', 'ubicacion'] }
+            await ClienteReplica.create(
+                { nombre_cliente: name, cargo:Position, ubicacion: location },
+                { fields: ['nombre_cliente', 'cargo', 'ubicacion'] }
               )
             res.status(201).json({ message: 'Cliente registrado correctamente' })
         } catch (error) {
@@ -69,4 +48,4 @@ class ClienteController {
     }
 }
 
-export default ClienteController
+export default ReplicaResponsableClienteController
