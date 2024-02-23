@@ -26,6 +26,8 @@ class ProyectoController {
                                 // where: {
                                 //     responsable_cliente: '44b39dfc-c3a7-4a24-a76b-6756bc07f629'
                                 // }
+
+                                // este comentario es una prueba
                             }
                         ]
                     },
