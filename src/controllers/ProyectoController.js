@@ -181,40 +181,26 @@ class ProyectoController {
 
     static async pdf (req, res){
         try {
-            // capturar datos
-            const { id } = req.params
-            // buscar el proyecto segun su id junto con las tareas correspondientes
-            const project = await Proyecto.findByPk(id, {
-                include: [
-                    {
-                      model: Tarea,
-                      attributes: [['fecha',
-                      'hora_inicio',
-                      'hora_fin',
-                      'total_hora',
-                      'id_servicio_fk',]]
-                    }
-                  ]
-              })
-            // comprobar si existe el proyecto
-            if (!project) {
-                return res.status(404).json({message: 'Proyecto no encontrado'})
-            }
-            // crea el PDF despues de que se confirma el Id de Proyecto
-            const stream = res.writeHead(200, {
-                "Content-Type": "application/pdf",
-                "Content-Disposition": "attachment; filename=Reportes.pdf"
-            })
-    
-            crearPDF(
-            (data) => stream.write(data),
-            () => stream.end()
-            )
-
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
+           // capturar datos
+           const { id } = req.params
+           // buscar el proyecto segun su id junto con el nombre del tecnico responable
+           const project = await Proyecto.findByPk(id, {
+               include: [
+                 {
+                   model: Tarea,
+                   attributes: [['hora_inicio', 'hora_fin']]
+                 },
+               ]
+             })
+           // comprobar si existe el proyecto
+           if (!project) {
+               return res.status(404).json({message: 'Proyecto no encontrado'})
+           }
+           res.status(200).json(project)
+       } catch (error) {
+           res.status(500).json({ message: error.message });
+       }
+   }
 
  // Generar GRAFICOS de proyecto
 
