@@ -12,14 +12,9 @@ import {sequelize} from '../sequelize.js';
         type: DataTypes.STRING,
         allowNull: false,
     },
-    cargo: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     ubicacion: {
         type:DataTypes.STRING,
         allowNull:true,
-
     },   
     }, {
         timestamps: false, // Desactivar las columnas createdAt y updatedAt
