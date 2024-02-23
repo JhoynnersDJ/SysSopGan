@@ -4,6 +4,8 @@ import { ClienteReplica } from "../Modelo/Syssopgan/Asociaciones.js";
 import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
 import { ResponsableTecnico } from "../Modelo/Syssopgan/ResponsableTecnicoModel.js";
 import { Usuario } from "../Modelo/Syssopgan/UsuarioModel.js";
+import {Tarea} from "../Modelo/Syssopgan/Asociaciones.js"
+import { crearPDF } from "../libs/Pdfkit.js";
 
 class ProyectoController {
     // devuelve todos los proyectos
@@ -203,6 +205,7 @@ class ProyectoController {
             res.status(500).json({ message: error.message });
         }
     }
+<<<<<<< HEAD
 
     // eliminar un proyecto
     static async delete (req, res){
@@ -225,5 +228,57 @@ class ProyectoController {
         }
     }
 }
+=======
+>>>>>>> 6054b4dff599b3a6ca206290d9d22b059e4aa8aa
 
+    // Generar PDF de proyecto
+
+    static async pdf (req, res){
+        try {
+           // capturar datos
+           const { id } = req.params
+           // buscar el proyecto segun su id junto con el nombre del tecnico responable
+           const project = await Proyecto.findByPk(id, {
+               include: [
+                 {
+                   model: Tarea,
+                   attributes: [['hora_inicio', 'hora_fin']]
+                 },
+               ]
+             })
+           // comprobar si existe el proyecto
+           if (!project) {
+               return res.status(404).json({message: 'Proyecto no encontrado'})
+           }
+           res.status(200).json(project)
+       } catch (error) {
+           res.status(500).json({ message: error.message });
+       }
+   }
+
+ // Generar GRAFICOS de proyecto
+
+    static async graph (req, res){
+        try {
+            // capturar datos
+            const { id } = req.params
+            // buscar el proyecto segun su id junto con las horas totales
+            const project = await Proyecto.findByPk(id, {
+                include: [
+                    {
+                      model: Tarea,
+                      attributes: [[
+                      'total_hora',]]
+                    }
+                  ]
+              })
+            // comprobar si existe el proyecto
+            if (!project) {
+                return res.status(404).json({message: 'Proyecto no encontrado'})
+            }
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+}
 export default ProyectoController
