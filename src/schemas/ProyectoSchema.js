@@ -14,8 +14,10 @@ export const createEschema = z.object({
         }).max(255, {
             message: 'Nombre debe tener 255 o menos carácteres'
         }),
-    id_responsible_technician: z.string({
+    id_technician: z.string({
         invalid_type_error: 'Id del técnico debe ser tipo cadena de carácteres'
+        }).uuid({
+            message: "Id del técnico debe ser tipo UUID"
         }).nullable(),
     id_user: z.string({
         required_error: 'Id del usuario es requerido',
@@ -32,8 +34,12 @@ export const createEschema = z.object({
     status: z.number({
         required_error: 'Estado es requerido',
         invalid_type_error: 'Estado debe ser tipo numérico'
+    }),
+    start_date: z.coerce.date({
+        required_error: "Fecha de inicio es requerido",
+        invalid_type_error: "La fecha de inicio debe ser una cadena de caráteres y formato ISO 8601",
     })
-}).partial()
+})
 
 //se asegura que los campos ingresados al actualizar un proyecto sean validos
 export const updateEschema = z.object({
@@ -47,7 +53,7 @@ export const updateEschema = z.object({
         }).max(255, {
             message: 'Nombre debe tener 255 o menos carácteres'
         }),
-    id_responsible_technician: z.string({
+    id_technician: z.string({
         invalid_type_error: 'Id del técnico debe ser tipo cadena de carácteres'
         }).uuid({
             message: "Id del técnico debe ser tipo UUID"
