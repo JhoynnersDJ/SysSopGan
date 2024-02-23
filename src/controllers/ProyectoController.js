@@ -21,7 +21,12 @@ class ProyectoController {
                         include: [
                             {
                                 model: ReplicaResponsableCliente, // Incluye la asociación ReplicaResponsableCliente dentro de ClienteReplica
-                                attributes: ['nombre_responsable_cl'] // Selecciona los atributos deseados de ReplicaResponsableCliente
+                                attributes: ['nombre_responsable_cl'], // Selecciona los atributos deseados de ReplicaResponsableCliente
+                                // where: {
+                                //     responsable_cliente: '44b39dfc-c3a7-4a24-a76b-6756bc07f629'
+                                // }
+
+                                // este comentario es una prueba
                             }
                         ]
                     },
