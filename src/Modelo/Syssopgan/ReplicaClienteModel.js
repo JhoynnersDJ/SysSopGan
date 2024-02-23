@@ -15,7 +15,6 @@ import {sequelize} from '../sequelize.js';
     ubicacion: {
         type:DataTypes.STRING,
         allowNull:true,
-
     },   
     }, {
         timestamps: false, // Desactivar las columnas createdAt y updatedAt
