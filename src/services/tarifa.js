@@ -1,4 +1,7 @@
-const holidays = ['2024-02-11', '2024-12-25'];
+import holidayMockup from '../../feriados/model/HolidaysMockup.js'
+
+//const holidays = ['2024-02-11', '2024-12-25'];
+const holidays = await holidayMockup.getHolidaysDate();
 
 export function calculateRate(startDate, startTime, endTime, hourlyRate) {
     // Convertimos la fecha de inicio a un objeto Date.

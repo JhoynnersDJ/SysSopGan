@@ -1,22 +1,11 @@
-import { ClienteReplica } from "../Modelo/Syssopgan/Asociaciones.js";
 import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
 
-class ReplicaClienteController {
+class ReplicaResponsableClienteController {
     // devuelve todas las actividades
     static async index (req, res) {
         try {
             // buscar todos los registros
-            const clients = await ClienteReplica.findAll({
-                include: [
-                  {
-                    model: ReplicaResponsableCliente,
-                    attributes: [
-                        ['id_responsable_cliente', 'id_responsable'],
-                        ['nombre_responsable_cl', 'nombre_responsable']
-                    ]
-                  }
-                ]
-              })
+            const clients = await ReplicaResponsableCliente.findAll()
             if (!clients) {
                 return res.status(500).json({message: 'No hay clientes registrados en la base de datos'})
             }
@@ -32,17 +21,7 @@ class ReplicaClienteController {
             // capturar datos
             const { id } = req.params
             // comprobar si existe
-            const client = await ClienteReplica.findByPk(id,{
-                include: [
-                  {
-                    model: ReplicaResponsableCliente,
-                    attributes: [
-                        ['id_responsable_cliente', 'id_responsable'],
-                        ['nombre_responsable_cl', 'nombre_responsable']
-                    ]
-                  }
-                ]
-              })
+            const client = await ReplicaResponsableCliente.findByPk(id)
             if (!client) {
                 return res.status(404).json({message: 'Cliente no encontrado'})
             }
@@ -69,4 +48,4 @@ class ReplicaClienteController {
     }
 }
 
-export default ReplicaClienteController
+export default ReplicaResponsableClienteController

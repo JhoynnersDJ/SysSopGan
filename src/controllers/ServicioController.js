@@ -35,11 +35,11 @@ class ServicioController {
     static async create (req, res){
         try {
             // capturar datos
-            const { name, description, type, category, platform } = req.body
+            const {id_service, name, description, type, category, platform } = req.body
             // guardar en la base de datos
             await Servicio.create(
-                { nombre: name, descripcion:description, tipo: type, categoria: category, plataforma: platform},
-                { fields: ['nombre', 'descripcion', 'tipo', 'categoria', 'plataforma'] }
+                { id_servicio: id_service, nombre: name, descripcion:description, tipo: type, categoria: category, plataforma: platform},
+                { fields: ['id_servicio','nombre', 'descripcion', 'tipo', 'categoria', 'plataforma'] }
               )
             res.status(201).json({ message: 'Servicio creado correctamente' })
         } catch (error) {

@@ -2,6 +2,12 @@ import z from "zod"
 
 //se asegura que los campos ingresados al crear un rol sean validos
 export const createEschema = z.object({
+    id_service: z.string({
+        required_error: 'ID es requerido',
+        invalid_type_error: 'ID debe ser tipo cadena de carácteres'
+        }).max(36,{
+            message: 'ID debe tener 36 o menos carácteres'
+        }),
     name: z.string({
         required_error: 'Nombre es requerido',
         invalid_type_error: 'Nombre debe ser tipo cadena de carácteres'

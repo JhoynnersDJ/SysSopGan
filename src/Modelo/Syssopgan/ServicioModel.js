@@ -5,10 +5,10 @@ import {sequelize} from '../sequelize.js';
 
 const Servicio = sequelize.define('servicio', {
   id_servicio: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,
+    unique: true,
   },
   nombre: {
     type: DataTypes.STRING,

@@ -2,13 +2,14 @@ import userMock from'./UsersMockup.js';
 
 //clase que define la estructura del usuario del sistema
 export class user {
-    constructor(name,lastName, email, password, cellphone, empress, departament, rol, id) {
+    constructor(name,lastName, email, password, cellphone, empress,cargo, departament, rol, id) {
         this.name = name;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.cellphone = cellphone;
         this.empress = empress;
+        this.cargo = cargo;
         this.departament = departament;
         this.rol = rol;
         this.id = id;
@@ -23,17 +24,18 @@ export class user {
     getUserCellphone() { return this.cellphone; }
     getUserEmpress() { return this.empress; }
     getUserDepartament() { return this.departament; }
-    getUserRol() { return this.rol.getUseRol(); }
+    getUserRol() { return this.rol.nameRol; }
 
     //sets de los atributos de user
     setname(name) { this.name = name;}
     setUserEmail(email) { this.email = email;}
     setUserPassword(password) { this.password = password;}
     setUserId(id) { this.id = id;}
+    setUserRol(rol) {this.rol = rol}
 
 
-    save(){
-        userMock.save(this);
+    static save(user){
+        return userMock.save(user);
     }
 
     static findOne(email){
@@ -42,6 +44,10 @@ export class user {
 
     static findOneById(id){
         return userMock.findOneById(id);
+    }
+
+    static updateRol(rol, email){
+        return userMock.updateRol(rol, email);
     }
 
 }

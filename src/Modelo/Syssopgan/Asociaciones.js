@@ -5,6 +5,8 @@ import { ResponsableTecnico } from "./ResponsableTecnicoModel.js";
 import { Usuario } from "./UsuarioModel.js";
 import { Tarea } from "./TareaModel.js";
 import { Servicio } from "./ServicioModel.js";
+import { ReplicaResponsableCliente } from "./ReplicaResponsableClienteModel.js";
+import { Rol } from "./RolModel.js"
 
 
 // Asociaciones relacionadas a ClienteReplica
@@ -13,6 +15,11 @@ import { Servicio } from "./ServicioModel.js";
 // Definir la relación de uno a muchos con ClienteReplica y Proyecto
 ClienteReplica.hasMany(Proyecto, { foreignKey:'id_cliente_fk'});
 Proyecto.belongsTo(ClienteReplica, { targetKey:'id_cliente', foreignKey: 'id_cliente_fk'});
+
+// Un cliente tiene muchos responsables clientes
+// Definir la relación de uno a muchos con ClienteReplica y ReplicaResponsableCliente
+ClienteReplica.hasMany(ReplicaResponsableCliente, { foreignKey:'id_cliente_fk'});
+ReplicaResponsableCliente.belongsTo(ClienteReplica, { targetKey:'id_cliente', foreignKey: 'id_cliente_fk'});
 
 
 // Asociaciones relacionadas a ResponsableTecnico
@@ -29,6 +36,8 @@ Proyecto.belongsTo(ResponsableTecnico, { targetKey:'id_responsable_tec', foreign
 // Definir la relación de uno a muchos con Usuario y Proyecto
 Usuario.hasMany(Proyecto, { foreignKey:'id_usuario_fk'});
 Proyecto.belongsTo(Usuario, { targetKey:'id_us', foreignKey: 'id_usuario_fk' });
+Rol.hasOne(Usuario, { foreignKey:'id_rolref'});
+Usuario.belongsTo(Rol, { targetKey:'id_rol', foreignKey: 'id_rolref' })
 
 
 // Asociaciones relacionadas a Proyecto
@@ -46,6 +55,10 @@ Tarea.belongsTo(Proyecto, { targetKey:'id_proyecto', foreignKey: 'id_proyecto_fk
 Servicio.hasMany(Tarea, { foreignKey:'id_servicio_fk'});
 Tarea.belongsTo(Servicio, { targetKey:'id_servicio', foreignKey: 'id_servicio_fk'});
 
+ // Asociación entre ReplicaResponsableCliente y ClienteReplica
+ ReplicaResponsableCliente.belongsTo(ClienteReplica, { foreignKey: 'id_cliente_fk' });
+ ClienteReplica.hasMany(ReplicaResponsableCliente, { foreignKey: 'id_cliente_fk' });
+
 
 // exportar los modelos con sus respectivas relaciones
-export { Proyecto, ClienteReplica, ResponsableTecnico, Usuario, Tarea, Servicio }
+export { Proyecto, ClienteReplica, ReplicaResponsableCliente, ResponsableTecnico, Usuario, Tarea, Servicio }

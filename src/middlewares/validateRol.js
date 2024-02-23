@@ -1,7 +1,7 @@
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
 import jwt from "jsonwebtoken";
 
-export const rolRequired  = (rol) => (req, res, next) => {
+export const rolRequired  = (rol, rol2, rol3) => (req, res, next) => {
     //obtiene el usuario del request
     const {token} = req.cookies;
     //console.log(token)
@@ -15,7 +15,7 @@ export const rolRequired  = (rol) => (req, res, next) => {
         if (err) return res.status(403).json({message: "Invalid Token"});
 
         //verifica si el usuario tiene el rol correccto
-        if (rol != user.rol) return res.status(403).json({message: "You are not allowed to access this"});
+        if (rol != user.rol || rol2 != user.rol || rol3 != user.rol) return res.status(403).json({message: "You are not allowed to access this"});
         req.user = user
         
         next()

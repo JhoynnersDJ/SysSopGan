@@ -8,7 +8,7 @@ import {Rol} from './RolModel.js';
 const Usuario = sequelize.define('usuario', {
   id_us: {
     type: DataTypes.UUID,
-    defaultValue: () => uuidv4(),
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
   nombre: {
@@ -55,7 +55,7 @@ const Usuario = sequelize.define('usuario', {
     type: DataTypes.UUID, // Tipo de datos UUID para la clave externa del rol
     allowNull: false,
     references: {
-      model: Rol, // Nombre del modelo de la tabla a la que se hace referencia
+      model: 'rol', // Nombre del modelo de la tabla a la que se hace referencia
       key: 'id_rol', // Clave primaria de la tabla a la que se hace referencia
     },
   },
