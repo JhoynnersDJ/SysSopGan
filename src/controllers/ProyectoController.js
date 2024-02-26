@@ -9,7 +9,7 @@ import { crearPDF } from "../libs/Pdfkit.js";
 
 class ProyectoController {
     // devuelve todos los proyectos
-    static async index (req, res) {
+    static async index(req, res) {
         try {
             // Buscar todos los registros de proyecto junto al nombre del técnico responsable
             const projects = await Proyecto.findAll({
@@ -42,11 +42,11 @@ class ProyectoController {
                     }
                 ]
             });
-        
+
             if (!projects || projects.length === 0) {
                 return res.status(500).json({ message: 'No hay proyectos registrados' });
             }
-        
+
             const formattedProjects = projects.map(project => ({
                 id_proyecto: project.dataValues.id_proyecto,
                 tarifa: project.dataValues.tarifa,
@@ -69,42 +69,42 @@ class ProyectoController {
     }
 
     // devuelve un proyecto por su ID
-    static async getById (req, res){
+    static async getById(req, res) {
         try {
             // capturar datos
             const { id } = req.params
             // buscar el proyecto segun su id junto con el nombre del tecnico responable
             const project = await Proyecto.findByPk(id, {
                 include: [
-                  {
-                    model: ResponsableTecnico,
-                    attributes: [['nombre_responsable_tec', 'nombre']]
-                  },
-                  {
-                    model: ClienteReplica,
-                    attributes: [['nombre_cliente', 'nombre']],
-                    include: [
-                        {
-                          model: ReplicaResponsableCliente,
-                          attributes: [
-                              ['id_responsable_cliente', 'id_responsable'],
-                              ['nombre_responsable_cl', 'nombre_responsable']
-                          ]
-                        }
-                      ]
-                  },
-                  {
-                    model: Usuario,
-                    attributes: [
-                        'nombre',
-                        'apellido'
-                    ]
-                  }
+                    {
+                        model: ResponsableTecnico,
+                        attributes: [['nombre_responsable_tec', 'nombre']]
+                    },
+                    {
+                        model: ClienteReplica,
+                        attributes: [['nombre_cliente', 'nombre']],
+                        include: [
+                            {
+                                model: ReplicaResponsableCliente,
+                                attributes: [
+                                    ['id_responsable_cliente', 'id_responsable'],
+                                    ['nombre_responsable_cl', 'nombre_responsable']
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        model: Usuario,
+                        attributes: [
+                            'nombre',
+                            'apellido'
+                        ]
+                    }
                 ]
-              })
+            })
             // comprobar si existe el proyecto
             if (!project) {
-                return res.status(404).json({message: 'Proyecto no encontrado'})
+                return res.status(404).json({ message: 'Proyecto no encontrado' })
             }
             res.status(200).json(project)
         } catch (error) {
@@ -113,12 +113,11 @@ class ProyectoController {
     }
 
     // crear un proyecto
-    static async create (req, res){
+    static async create(req, res) {
         try {
             // capturar datos
-            const { hourly_rate, name, id_user, status, id_client} = req.body
-            // const { hourly_rate, name, id_user, status, id_client, id_responsible_client} = req.body
-            let {id_responsible_technician} = req.body
+            const { hourly_rate, name, id_user, status, id_client } = req.body
+            let { id_responsible_technician } = req.body
             // si id_responsible_technician es una cadena vacia
             if (id_responsible_technician === "") {
                 id_responsible_technician = null
@@ -128,18 +127,18 @@ class ProyectoController {
                 // comprobar si existe el responsable tecnico
                 const technicianFound = await ResponsableTecnico.findByPk(id_responsible_technician)
                 if (!technicianFound) {
-                    return res.status(404).json({message: 'Responsable técnico no encontrado'})
+                    return res.status(404).json({ message: 'Responsable técnico no encontrado' })
                 }
-            } 
+            }
             // comprobar si existe el usuario
             const userFound = await Usuario.findByPk(id_user)
             if (!userFound) {
-                return res.status(404).json({message: 'Usuario no encontrado'})
+                return res.status(404).json({ message: 'Usuario no encontrado' })
             }
             // comprobar si existe el cliente
             const clientFound = await ClienteReplica.findByPk(id_client)
             if (!clientFound) {
-                return res.status(404).json({message: 'Cliente no encontrado'})
+                return res.status(404).json({ message: 'Cliente no encontrado' })
             }
             // fecha de inicio
             const now = new Date();
@@ -147,31 +146,31 @@ class ProyectoController {
             console.log(start_date)
             // guardar en la base de datos
             await Proyecto.create(
-                { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_responsible_technician, id_usuario_fk:id_user, id_cliente_fk: id_client, status, fecha_inicio: start_date},
-                { fields: ['tarifa', 'status', 'nombre_proyecto', 'id_responsable_tecnico_fk', 'id_usuario_fk',  'id_cliente_fk', 'fecha_inicio' ] }
+                { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk: id_responsible_technician, id_usuario_fk: id_user, id_cliente_fk: id_client, status, fecha_inicio: start_date },
+                { fields: ['tarifa', 'status', 'nombre_proyecto', 'id_responsable_tecnico_fk', 'id_usuario_fk', 'id_cliente_fk', 'fecha_inicio'] }
             )
-            res.status(201).json({message: 'Proyecto creado correctamente'});
+            res.status(201).json({ message: 'Proyecto creado correctamente' });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
 
     // actualiza un proyecto
-    static async update (req, res){
+    static async update(req, res) {
         try {
             // capturar datos
             const { id } = req.params
             const { hourly_rate, name, id_user, status, start_date, id_client } = req.body
-            let {id_responsible_technician} = req.body
+            let { id_responsible_technician } = req.body
             // comprobar si existe el proyecto
             const projectFound = await Proyecto.findByPk(id)
             if (!projectFound) {
                 return res.status(404).json({ message: 'Proyecto no encontrado' })
-            } 
+            }
             // comprobar si existe el responsable tecnico
             const technicianFound = await ResponsableTecnico.findByPk(id_technician)
             if (!technicianFound) {
-                return res.status(404).json({message: 'Responsable técnico no encontrado'})
+                return res.status(404).json({ message: 'Responsable técnico no encontrado' })
             }
             // si id_responsible_technician es una cadena vacia
             if (id_responsible_technician === "") {
@@ -182,33 +181,32 @@ class ProyectoController {
                 // comprobar si existe el responsable tecnico
                 const technicianFound = await ResponsableTecnico.findByPk(id_responsible_technician)
                 if (!technicianFound) {
-                    return res.status(404).json({message: 'Responsable técnico no encontrado'})
+                    return res.status(404).json({ message: 'Responsable técnico no encontrado' })
                 }
-            } 
+            }
             // comprobar si existe el usuario
             const userFound = await Usuario.findByPk(id_user)
             if (!userFound) {
-                return res.status(404).json({message: 'Usuario no encontrado'})
+                return res.status(404).json({ message: 'Usuario no encontrado' })
             }
             // comprobar si existe el cliente
             const clientFound = await ClienteReplica.findByPk(id_client)
             if (!clientFound) {
-                return res.status(404).json({message: 'Cliente no encontrado'})
+                return res.status(404).json({ message: 'Cliente no encontrado' })
             }
             // guardar el proyecto en la base de datos
             await Proyecto.update(
-            { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk:id_responsible_technician, id_usuario_fk:id_user, id_cliente_fk: id_client, status, fecha_inicio: start_date },
-            { where: { id_proyecto: id } }
+                { tarifa: hourly_rate, nombre_proyecto: name, id_responsable_tecnico_fk: id_responsible_technician, id_usuario_fk: id_user, id_cliente_fk: id_client, status, fecha_inicio: start_date },
+                { where: { id_proyecto: id } }
             )
             res.status(200).json({ message: 'Proyecto actualizado correctamente' })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
-<<<<<<< HEAD
 
     // eliminar un proyecto
-    static async delete (req, res){
+    static async delete(req, res) {
         try {
             // capturar id
             const { id } = req.params
@@ -219,46 +217,40 @@ class ProyectoController {
             }
             // eliminar un proyecto de la base de datos
             await Proyecto.destroy(
-            { where: { id_proyecto: id}
-            }
+                { where: { id_proyecto: id } }
             )
             res.status(200).json({ message: 'Proyecto eliminado correctamente' })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
-}
-=======
->>>>>>> 6054b4dff599b3a6ca206290d9d22b059e4aa8aa
 
     // Generar PDF de proyecto
-
-    static async pdf (req, res){
+    static async pdf(req, res) {
         try {
-           // capturar datos
-           const { id } = req.params
-           // buscar el proyecto segun su id junto con el nombre del tecnico responable
-           const project = await Proyecto.findByPk(id, {
-               include: [
-                 {
-                   model: Tarea,
-                   attributes: [['hora_inicio', 'hora_fin']]
-                 },
-               ]
-             })
-           // comprobar si existe el proyecto
-           if (!project) {
-               return res.status(404).json({message: 'Proyecto no encontrado'})
-           }
-           res.status(200).json(project)
-       } catch (error) {
-           res.status(500).json({ message: error.message });
-       }
-   }
+            // capturar datos
+            const { id } = req.params
+            // buscar el proyecto segun su id junto con el nombre del tecnico responable
+            const project = await Proyecto.findByPk(id, {
+                include: [
+                    {
+                        model: Tarea,
+                        attributes: [['hora_inicio', 'hora_fin']]
+                    },
+                ]
+            })
+            // comprobar si existe el proyecto
+            if (!project) {
+                return res.status(404).json({ message: 'Proyecto no encontrado' })
+            }
+            res.status(200).json(project)
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 
- // Generar GRAFICOS de proyecto
-
-    static async graph (req, res){
+    // Generar GRAFICOS de proyecto
+    static async graph(req, res) {
         try {
             // capturar datos
             const { id } = req.params
@@ -266,19 +258,21 @@ class ProyectoController {
             const project = await Proyecto.findByPk(id, {
                 include: [
                     {
-                      model: Tarea,
-                      attributes: [[
-                      'total_hora',]]
+                        model: Tarea,
+                        attributes: [['total_hora', 'total_hora']]
                     }
-                  ]
-              })
+                ]
+            })
             // comprobar si existe el proyecto
             if (!project) {
-                return res.status(404).json({message: 'Proyecto no encontrado'})
+                return res.status(404).json({ message: 'Proyecto no encontrado' })
             }
+            res.status(200).json(project)
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
 }
+
+
 export default ProyectoController
