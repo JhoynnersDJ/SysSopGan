@@ -12,6 +12,7 @@ import {sequelize} from '../sequelize.js';
         type: DataTypes.STRING,
         allowNull: false,
     },
+
     ubicacion: {
         type:DataTypes.STRING,
         allowNull:true,
