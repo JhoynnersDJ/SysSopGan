@@ -30,12 +30,19 @@ ResponsableTecnico.hasMany(Proyecto, { foreignKey:'id_responsable_tecnico_fk'});
 Proyecto.belongsTo(ResponsableTecnico, { targetKey:'id_responsable_tec', foreignKey: 'id_responsable_tecnico_fk' });
 
 
-// Asociaciones relacionadas a ResponsableTecnico
+// Asociaciones relacionadas a Usuario
 
 // Un usuario tiene muchos proyectos
 // Definir la relación de uno a muchos con Usuario y Proyecto
 Usuario.hasMany(Proyecto, { foreignKey:'id_usuario_fk'});
 Proyecto.belongsTo(Usuario, { targetKey:'id_us', foreignKey: 'id_usuario_fk' });
+
+
+// Asociaciones relacionadas a Usuario
+
+// Un rol lo tienen muchos usuarios
+// Definir la relación de uno a muchos con Rol y Usuario
+// hay que revisar esta relacion
 Rol.hasOne(Usuario, { foreignKey:'id_rolref'});
 Usuario.belongsTo(Rol, { targetKey:'id_rol', foreignKey: 'id_rolref' })
 
@@ -48,16 +55,12 @@ Proyecto.hasMany(Tarea, { foreignKey:'id_proyecto_fk'});
 Tarea.belongsTo(Proyecto, { targetKey:'id_proyecto', foreignKey: 'id_proyecto_fk'});
 
 
-// Asociaciones relacionadas a Proyecto
+// Asociaciones relacionadas a Servicio
 
 // Un servicio tiene muchas tareas
 // Definir la relación de uno a muchos con Servicio y Tarea
 Servicio.hasMany(Tarea, { foreignKey:'id_servicio_fk'});
 Tarea.belongsTo(Servicio, { targetKey:'id_servicio', foreignKey: 'id_servicio_fk'});
-
- // Asociación entre ReplicaResponsableCliente y ClienteReplica
- ReplicaResponsableCliente.belongsTo(ClienteReplica, { foreignKey: 'id_cliente_fk' });
- ClienteReplica.hasMany(ReplicaResponsableCliente, { foreignKey: 'id_cliente_fk' });
 
 
 // exportar los modelos con sus respectivas relaciones
