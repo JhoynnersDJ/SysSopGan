@@ -19,11 +19,11 @@ import TareaRouter from './src/routes/TareaRouter.js';
 // Importar el router de responsable tecnico
 import ResponsableTecnicoRouter from './src/routes/ResponsableTecnicoRouter.js';
 // Importar el router de replica cliente
-import ReplicaClienteRouter from './src/routes/ReplicaClienteRouter.js';
+// import ReplicaClienteRouter from './src/routes/ReplicaClienteRouter.js';
 // Importar el router de cliente
 import ClienteRouter from './src/routes/ClienteRouter.js';
 // Importar el router de replica del responsable cliente
-import ReplicaResponsableClienteRouter from './src/routes/ReplicaResponsableCliente.js';
+// import ReplicaResponsableClienteRouter from './src/routes/ReplicaResponsableCliente.js';
 // Importar el router del responsable  cliente
 import ResponsableClienteRouter from './src/routes/ResponsableCliente.js';
 
