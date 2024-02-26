@@ -11,4 +11,8 @@ ProyectoRouter.get('/seleccionar/:id', ProyectoController.getById)
 ProyectoRouter.post('/crear', validateSchema(createEschema), ProyectoController.create)
 ProyectoRouter.post('/actualizar/:id', validateSchema(updateEschema), ProyectoController.update)
 
+// Endpoints de Generar Reportes y Generar Graficos
+ProyectoRouter.get('/reporteproyecto/:id', ProyectoController.pdf)
+ProyectoRouter.get('/Graficaproyecto/:id', ProyectoController.graph)
+
 export default ProyectoRouter

@@ -45,34 +45,61 @@ export function calculateRate(startDate, startTime, endTime, hourlyRate) {
 
     // Determinamos si el día de trabajo es un fin de semana o un día festivo.
     let dayOfWeek = endDate.getDay();
-    let isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    let isSunday = dayOfWeek === 0 
+    let isSaturday = dayOfWeek === 6;
     let isHoliday = holidays.includes(endDate.toISOString().split('T')[0]);
 
     // Calculamos el multiplicador de la tarifa basándonos en si es un fin de semana o un día festivo.
     let rateMultiplier = 1;
+    let yes = 0;
 
-    if (isWeekend & isHoliday) {
-        rateMultiplier = 3;
+    if (isSunday & isHoliday) {
+        rateMultiplier = 2;
+        yes = 1
     }
+    else if (isSaturday & isHoliday) {
+        rateMultiplier = 2;
+        yes = 1
+    }
+    else if (isSunday) {
+        rateMultiplier = 2;
+        yes = 1
+    } 
     else if (isHoliday) {
         rateMultiplier = 2;
+        yes = 1
     } 
-    else if (isWeekend) {
+    else if (isSaturday) {
         rateMultiplier = 1.5;
+        yes = 1
     } 
     else  {
         rateMultiplier = 1;
+        yes = 0
     }
 
     // Devolvemos el total de la tarifa y las horas trabajadas.
-    return {
-        totalRate: (dayHours + nightHours * 1.5) * hourlyRate * rateMultiplier,
-        totalHours: totalHours,
-        dayHours: dayHours,
-        nightHours: nightHours,
-        isHoliday: isHoliday,
-        dayOfWeek: dayOfWeek 
-    };
+    //yes es usado para saber si es un dia especial si no lo es las horas nocturnas se cobran extras
+        if (yes==1) {
+            return {
+                totalRate: (dayHours + nightHours) * hourlyRate * rateMultiplier,
+                totalHours: totalHours,
+                dayHours: dayHours,
+                nightHours: nightHours,
+                isHoliday: isHoliday,
+                dayOfWeek: dayOfWeek 
+            };
+        }
+        else { 
+            return {
+                totalRate: (dayHours + nightHours * 1.5) * hourlyRate * rateMultiplier,
+                totalHours: totalHours,
+                dayHours: dayHours,
+                nightHours: nightHours,
+                isHoliday: isHoliday,
+                dayOfWeek: dayOfWeek 
+            }
+        }
 }
 
 
