@@ -76,10 +76,6 @@ app.use('/clientes', ReplicaClienteRouter);
 //Middleware para replica cliente
 app.use('/responsable-cliente', ReplicaResponsableClienteRouter);
 
-//Middleware para replica cliente
-
-//Middleware para replica cliente
-
 app.listen(port, () => {
   console.log(`La aplicación está corriendo en http://${host}:${port}`);
 });
