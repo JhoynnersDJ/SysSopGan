@@ -35,7 +35,7 @@ export const register = async (req, res) => {
         const token = await createAccessToken({ id: newuser.getUserId(), rol: userSaved.getUseRol() });
         
         //se envia de respuesta el token yy los datos ingresados
-        res.cookie('token', token);
+        res.cookie('authToken', token);
        
         res.status(200).json({
             id: newuser.getUserId(),
@@ -46,7 +46,8 @@ export const register = async (req, res) => {
             cellphone: newuser.getUserCellphone(), 
             empress: newuser.getUserEmpress(), 
             departament: newuser.getUserDepartament(),
-            rol: userSaved.getUseRol()
+            rol: userSaved.getUseRol(),
+            authToken: token
         });
         console.log('Se creo el usuario correctamente');
         //userFound = null;
@@ -80,14 +81,15 @@ export const login = async (req, res) => {
         const token = await createAccessToken({ id: userFound.getUserId(), rol: userFound.getUserRol() });
 
         //se envia de respuesta el token y los datos ingresados
-        res.cookie('token', token);
+        res.cookie('authToken', token);
         res.status(200).json({
             id: userFound.getUserId(),
             username: userFound.getUserName(),
-            email: userFound.getUserEmail()
+            email: userFound.getUserEmail(),
+            authToken: token
         });
         console.log(`El usuario ${userFound.getUserName()} a iniciado sesion`);
-        userFound = null;
+        //userFound = null;
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -99,7 +101,7 @@ export const logout = (req, res) => {
     console.log()
     if(!req.cookies.token) return res.status(202).json({ message: "No has iniciado sesion" });
     //se le agota el tiempo de vida de la cookie
-    res.cookie('token', "", {
+    res.cookie('authToken', "", {
         expires: new Date(0)
     })
     res.status(200).json({ message: "Se cerro sesion exitosamente" });
@@ -125,7 +127,7 @@ export const profile = async (req, res) => {
         departament: userFound.getUserDepartament(),
         rol: userFound.getUserRol()
     });
-    userFound = null;
+    //userFound = null;
 
 } 
 
@@ -159,10 +161,7 @@ export const updateRol = async (req,res) => {
             empress: newuser.getUserEmpress(), 
             departament: newuser.getUserDepartament(),
             rol: newuser.getUserRol()
-        });
-        userFound = null;
-        newuser = null;
-        userAdmin = null;
+        });        
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

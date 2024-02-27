@@ -39,8 +39,7 @@ async function getHolidays(){
 async function getHolidaysDate(){
     const allHolidays = await Feriado.findAll();
     let dates = [];
-    allHolidays.forEach((holiday) => dates.push(holiday.dataValues.fecha))    
-    console.log(dates);
+    allHolidays.forEach((holiday) => dates.push(holiday.dataValues.fecha)) 
     return dates;
     //return holidays.holidays;
 }

@@ -3,13 +3,13 @@ import jwt from "jsonwebtoken";
 
 export const authRequired  = (req, res, next) => {
     //obtiene el usuario del request
-    const {token} = req.cookies;
+    const {authToken} = req.cookies;
     //console.log(token)
     //si no hay usuario lanza un error
-    if (!token) return res.status(401).json({message: "No Token, authorization denied"});
+    if (!authToken) return res.status(401).json({message: "No Token, authorization denied"});
     
     //se verifica el token
-    jwt.verify(token,TOKEN_SECRET, (err, user) => {
+    jwt.verify(authToken,TOKEN_SECRET, (err, user) => {
            
         if (err) return res.status(403).json({message: "Invalid Token"});
 
