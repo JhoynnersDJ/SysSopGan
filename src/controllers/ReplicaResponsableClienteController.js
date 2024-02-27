@@ -1,4 +1,6 @@
 import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
+import { ResponsableCliente } from "../Modelo/Cliente/ResponsableClienteModel.js";
+import { Cliente } from "../Modelo/Cliente/ClienteModel.js";
 
 class ReplicaResponsableClienteController {
     // devuelve todas las actividades
@@ -31,21 +33,30 @@ class ReplicaResponsableClienteController {
         }
     }
 
-    // crear un cliente
-    static async create (req, res){
+    // Crear un responsable de cliente
+    static async create(req, res) {
         try {
-            // capturar datos
-            const { name, Position, location } = req.body
-            // guardar en la base de datos
-            await ClienteReplica.create(
-                { nombre_cliente: name, cargo:Position, ubicacion: location },
-                { fields: ['nombre_cliente', 'cargo', 'ubicacion'] }
-              )
-            res.status(201).json({ message: 'Cliente registrado correctamente' })
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
+            // Capturar datos
+            const { nombre_responsable_cl, cargo, id_cliente_fk } = req.body;
+
+            // Verificar si el cliente existe
+            const cliente = await Cliente.findByPk(id_cliente_fk);
+            if (!cliente) {
+            return res.status(404).json({ message: 'Cliente no encontrado' });
+            }
+
+        // Guardar en la base de datos
+        await ResponsableCliente.create({
+            nombre_responsable_cl: nombre_responsable_cl,
+            cargo: cargo,
+            id_cliente_fk: id_cliente_fk
+        });
+
+        res.status(201).json({ message: 'Responsable de cliente registrado correctamente' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
+}
 }
 
 export default ReplicaResponsableClienteController
