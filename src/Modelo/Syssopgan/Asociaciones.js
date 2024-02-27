@@ -11,15 +11,18 @@ import { Rol } from "./RolModel.js"
 
 // Asociaciones relacionadas a ClienteReplica
 
-// Un cliente tiene muchos proyectos
-// Definir la relación de uno a muchos con ClienteReplica y Proyecto
-ClienteReplica.hasMany(Proyecto, { foreignKey:'id_cliente_fk'});
-Proyecto.belongsTo(ClienteReplica, { targetKey:'id_cliente', foreignKey: 'id_cliente_fk'});
-
 // Un cliente tiene muchos responsables clientes
 // Definir la relación de uno a muchos con ClienteReplica y ReplicaResponsableCliente
 ClienteReplica.hasMany(ReplicaResponsableCliente, { foreignKey:'id_cliente_fk'});
 ReplicaResponsableCliente.belongsTo(ClienteReplica, { targetKey:'id_cliente', foreignKey: 'id_cliente_fk'});
+
+
+// Asociaciones relacionadas a ClienteReplica
+
+// Un responsable cliente tiene muchos proyectos
+// Definir la relación de uno a muchos con ReplicaResponsableCliente y Proyecto
+ReplicaResponsableCliente.hasMany(Proyecto, { foreignKey:'id_responsable_cliente_fk'});
+Proyecto.belongsTo(ReplicaResponsableCliente, { targetKey:'id_responsable_cliente', foreignKey: 'id_responsable_cliente_fk'});
 
 
 // Asociaciones relacionadas a ResponsableTecnico

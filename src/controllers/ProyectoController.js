@@ -1,7 +1,7 @@
 import date from 'date-and-time';
 import { Proyecto } from "../Modelo/Syssopgan/Asociaciones.js";
-import { ClienteReplica } from "../Modelo/Syssopgan/Asociaciones.js";
-import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
+import { ClienteReplica } from "../Modelo/Syssopgan/ReplicaClienteModel.js";
+import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/Asociaciones.js";
 import { ResponsableTecnico } from "../Modelo/Syssopgan/ResponsableTecnicoModel.js";
 import { Usuario } from "../Modelo/Syssopgan/UsuarioModel.js";
 import {Tarea} from "../Modelo/Syssopgan/Asociaciones.js"
@@ -19,12 +19,13 @@ class ProyectoController {
                         as: 'responsable_tecnico'
                     },
                     {
-                        model: ClienteReplica,
-                        as: 'cliente',
+                        model: ReplicaResponsableCliente,
+                        as: 'responsable_cliente',
                         include: [
                             {
-                                model: ReplicaResponsableCliente, // Incluye la asociación ReplicaResponsableCliente dentro de ClienteReplica
-                                attributes: ['nombre_responsable_cl'], // Selecciona los atributos deseados de ReplicaResponsableCliente
+                                model: ClienteReplica, // Incluye la asociación ReplicaResponsableCliente dentro de ClienteReplica
+                                as: 'cliente',
+                                attributes: ['nombre_cliente'], // Selecciona los atributos deseados de ReplicaResponsableCliente
                             }
                         ]
                     },
@@ -44,22 +45,22 @@ class ProyectoController {
             }
 
             // formato de los datos para mayor legibilidad
-            const formattedProjects = projects.map(project => ({
-                id_proyecto: project.dataValues.id_proyecto,
-                tarifa: project.dataValues.tarifa,
-                nombre_proyecto: project.dataValues.nombre_proyecto,
-                id_responsable_tecnico_fk: project.dataValues.id_responsable_tecnico_fk,
-                id_usuario_fk: project.dataValues.id_usuario_fk,
-                id_cliente_fk: project.dataValues.id_cliente_fk,
-                status: project.dataValues.status,
-                fecha_inicio: project.dataValues.fecha_inicio,
-                total_proyecto: project.dataValues.total_proyecto,
-                nombre_responsable_tec: project.responsable_tecnico ? project.responsable_tecnico.dataValues.nombre_responsable_tec : null,
-                nombre_cliente: project.cliente ? project.cliente.dataValues.nombre_cliente : null,
-                nombre_responsable_cl: project.cliente && project.cliente.responsable_cliente ? project.cliente.responsable_cliente.nombre_responsable_cl : null,
-                nombre_usuario: `${project.usuario.dataValues.nombre} ${project.usuario.dataValues.apellido}`
-            }));
-            res.status(200).json(formattedProjects);
+            // const formattedProjects = projects.map(project => ({
+            //     id_proyecto: project.dataValues.id_proyecto,
+            //     tarifa: project.dataValues.tarifa,
+            //     nombre_proyecto: project.dataValues.nombre_proyecto,
+            //     id_responsable_tecnico_fk: project.dataValues.id_responsable_tecnico_fk,
+            //     id_usuario_fk: project.dataValues.id_usuario_fk,
+            //     id_cliente_fk: project.dataValues.id_cliente_fk,
+            //     status: project.dataValues.status,
+            //     fecha_inicio: project.dataValues.fecha_inicio,
+            //     total_proyecto: project.dataValues.total_proyecto,
+            //     nombre_responsable_tec: project.responsable_tecnico ? project.responsable_tecnico.dataValues.nombre_responsable_tec : null,
+            //     nombre_cliente: project.cliente ? project.cliente.dataValues.nombre_cliente : null,
+            //     nombre_responsable_cl: project.cliente && project.cliente.responsable_cliente ? project.cliente.responsable_cliente.nombre_responsable_cl : null,
+            //     nombre_usuario: `${project.usuario.dataValues.nombre} ${project.usuario.dataValues.apellido}`
+            // }));
+            res.status(200).json(projects);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
