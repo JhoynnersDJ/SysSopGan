@@ -20,12 +20,8 @@ import TareaRouter from './src/routes/TareaRouter.js';
 import ResponsableTecnicoRouter from './src/routes/ResponsableTecnicoRouter.js';
 // Importar el router de replica cliente
 import ReplicaClienteRouter from './src/routes/ReplicaClienteRouter.js';
-// Importar el router de cliente
-import ClienteRouter from './src/routes/ClienteRouter.js';
 // Importar el router de replica del responsable cliente
 import ReplicaResponsableClienteRouter from './src/routes/ReplicaResponsableCliente.js';
-// Importar el router del responsable  cliente
-import ResponsableClienteRouter from './src/routes/ResponsableCliente.js';
 
 import {loadHolidays} from "./feriados/controllers/HolidayController.js"
 
@@ -75,16 +71,14 @@ app.use('/tareas', TareaRouter);
 app.use('/responsable-tecnico', ResponsableTecnicoRouter);
 
 //Middleware para replica cliente
-app.use('/clientes', ClienteRouter);
+app.use('/clientes', ReplicaClienteRouter);
 
 //Middleware para replica cliente
-app.use('/responsable-cliente', ResponsableClienteRouter);
+app.use('/responsable-cliente', ReplicaResponsableClienteRouter);
 
 //Middleware para replica cliente
-app.use('/rclientes', ClienteRouter);
 
 //Middleware para replica cliente
-app.use('/responsable-cliente', ResponsableClienteRouter);
 
 app.listen(port, () => {
   console.log(`La aplicación está corriendo en http://${host}:${port}`);
