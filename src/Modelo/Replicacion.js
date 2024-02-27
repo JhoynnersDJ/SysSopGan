@@ -1,6 +1,6 @@
-import { Cliente } from "./Cliente/ClienteModel.js";
+import { Cliente } from "./Cliente/AsociacionesCliente.js";
 import { ClienteReplica } from "./Syssopgan/ReplicaClienteModel.js";
-import { ResponsableCliente } from "./Cliente/ResponsableClienteModel.js";
+import { ResponsableCliente } from "./Cliente/AsociacionesCliente.js";
 import { ReplicaResponsableCliente } from "./Syssopgan/ReplicaResponsableClienteModel.js";
 
 

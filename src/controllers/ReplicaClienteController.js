@@ -1,5 +1,6 @@
 import { ClienteReplica } from "../Modelo/Syssopgan/Asociaciones.js";
 import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
+import { Cliente } from "../Modelo/Cliente/ClienteModel.js";
 
 class ReplicaClienteController {
     // devuelve todas las actividades
@@ -58,7 +59,7 @@ class ReplicaClienteController {
             // capturar datos
             const { name, Position, location } = req.body
             // guardar en la base de datos
-            await ClienteReplica.create(
+            await Cliente.create(
                 { nombre_cliente: name, cargo:Position, ubicacion: location },
                 { fields: ['nombre_cliente', 'cargo', 'ubicacion'] }
               )
