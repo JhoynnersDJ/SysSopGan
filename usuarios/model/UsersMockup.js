@@ -2,6 +2,11 @@ import {user, userRol} from './UserModel.js';
 import {Rol} from '../../src/Modelo/Syssopgan/RolModel.js';
 import {Usuario} from '../../src/Modelo/Syssopgan/UsuarioModel.js';
 
+
+import ibmdb from "ibm_db"
+
+let connStr = "DATABASE=SYSSOP;HOSTNAME=192.168.1.28;UID=db2inst1;PWD=H0l41324%;PORT=25000;PROTOCOL=TCPIP";
+
 class userPort{
     save(user){}
     findOne(email){}
@@ -15,7 +20,25 @@ async function saveUser(user) {
             where: { nombre : "usuario"} 
         }
     );
+
     if (!rol) return null;
+
+    let con;
+    ibmdb.open(connStr,
+        function(err,conn) {
+          if (err) return console.log(err);
+          conn.query("INSERT INTO TECNICO.USUARIO (ID_US, NOMBRE, APELLIDO, EMAIL, NUM_TEL, PASSWORD, EMPRESA, CARGO, DEPARTAMENTO, TOKEN, ULTIMA_CONEXION, ID_ROLREF) VALUES('"+user.id+"', '"+user.name+"', '"+user.lastName+"', '"+user.email+"', '"+user.cellphone+"', '"+user.password+"', '"+user.empress+"', '"+user.cargo+"', '"+user.departament+"', '"+null+"', '2023-02-02 00:00:00.000000', '"+rol.dataValues.id_rol+"');",
+            function (err, rows) {
+              if (err) console.log(err);
+              else
+              { console.log(rows);
+               }
+               conn.close(function () {
+                 console.log('done');
+               });
+            });
+        });
+    
     try {
     const user1 = await Usuario.create(
         {nombre: user.name, apellido: user.lastName, email: user.email, password: user.password, id_rolref: rol.dataValues.id_rol,
@@ -41,13 +64,29 @@ async function findOne(email){
         }
     )
     //console.log(user1);
-    if (!user1) return null;
-
+    
     const rol = await Rol.findOne(
         {
             where: { id_rol : user1.dataValues.id_rolref} 
         }
-    )    
+    ) 
+    ibmdb.open(connStr,
+        function(err,conn) {
+          if (err) return console.log(err);
+          conn.query("SELECT * FROM TECNICO.USUARIO AS USU JOIN TECNICO.ROL AS ROL ON USU.ID_ROLREF = ROL.ID_ROL WHERE EMAIL = '"+email+"';",
+            function (err, data) {
+              if (err) console.log(err);
+              else
+              { console.log(data);
+               }
+               conn.close(function () {
+                 console.log('done');
+               });
+            });
+        });
+    if (!user1) return null;
+
+       
     const newuser = new user(user1.dataValues.nombre,user1.dataValues.apellido, user1.dataValues.email, user1.dataValues.password,
         user1.dataValues.num_tel, user1.dataValues.empresa,user1.dataValues.cargo, user1.dataValues.departamento, 
         new userRol(rol.dataValues.id_rol, rol.dataValues.nombre, rol.dataValues.descripcion), user1.dataValues.id_us);
