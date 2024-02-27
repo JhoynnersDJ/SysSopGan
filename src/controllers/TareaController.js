@@ -25,7 +25,21 @@ class TareaController {
             if (!tasks) {
                 return res.status(500).json({message: 'No hay tareas registradas'})
             }
-            res.status(200).json(tasks)
+            // formato de los datos para mayor legibilidad
+            const formattedTasks = tasks.map(task => ({
+                id_area: task.dataValues.id_tarea,
+                fecha: task.dataValues.fecha,
+                hora_inicio: task.dataValues.hora_inicio,
+                hora_fin: task.dataValues.hora_fin,
+                total_hora: task.dataValues.total_hora,
+                feriado: task.dataValues.feriado_fk,
+                id_proyecto: task.dataValues.id_proyecto_fk,
+                nombre_proyecto: task.proyecto.dataValues.nombre,
+                id_servicio: task.dataValues.id_servicio_fk,
+                nombre_servicio: task.servicio.dataValues.nombre,
+            }));
+            // enviar los datos
+            res.status(200).json(formattedTasks)
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -34,7 +48,7 @@ class TareaController {
     // devuelve una tarea segun el ID
     static async getById (req, res){
         try {
-            // capturar datos
+            // capturar id de tarea
             const { id } = req.params
             // comprobar si existe
             const taskFound = await Tarea.findByPk(id, {
@@ -52,7 +66,74 @@ class TareaController {
             if (!taskFound) {
                 return res.status(404).json({message: 'Tarea no encontrada'})
             }
-            res.status(200).json(taskFound)
+            // formato los datos para mayor legibilidad
+            const formattedTask = {
+                id_area: taskFound.dataValues.id_tarea,
+                fecha: taskFound.dataValues.fecha,
+                hora_inicio: taskFound.dataValues.hora_inicio,
+                hora_fin: taskFound.dataValues.hora_fin,
+                total_hora: taskFound.dataValues.total_hora,
+                feriado: taskFound.dataValues.feriado_fk,
+                id_proyecto: taskFound.dataValues.id_proyecto_fk,
+                nombre_proyecto: taskFound.proyecto.dataValues.nombre,
+                id_servicio: taskFound.dataValues.id_servicio_fk,
+                nombre_servicio: taskFound.servicio.dataValues.nombre,
+            };
+            // enviar los datos
+            res.status(200).json(formattedTask)
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    // devuelve las tareas de un proyecto
+    static async getByProject (req, res){
+        try {
+            // capturar id de proyecto
+            const { id } = req.params
+            // comprobar si existe el proyecto
+            const projectFound = await Proyecto.findByPk(id)
+            if (!projectFound) {
+                return res.status(404).json({ message: 'Proyecto no encontrado' })
+            }
+            // obtener todas las tareas de proyecto
+            const tasks = await Tarea.findAll({
+                attributes: [
+                    'id_tarea',
+                    'fecha',
+                    'hora_inicio',
+                    'hora_fin',
+                    'total_hora',
+                    'id_servicio_fk',
+                    'feriado_fk'
+                ],
+                where: {
+                    id_proyecto_fk: id
+                },
+                include: [
+                    {
+                      model: Servicio,
+                      attributes: ['nombre']
+                    }
+                  ]
+            })
+            // si no se encuentran tareas
+            if (!tasks) {
+                return res.status(500).json({message: 'Este proyecto no tiene tareas'})
+            }
+            // formato los datos para mayor legibilidad
+            const formattedTasks = tasks.map(task => ({
+                id_tarea: task.dataValues.id_tarea,
+                fecha: task.dataValues.fecha,
+                hora_inicio: task.dataValues.hora_inicio,
+                hora_fin: task.dataValues.hora_fin,
+                total_hora: task.dataValues.total_hora,
+                feriado: task.dataValues.feriado_fk,
+                id_servicio: task.dataValues.id_servicio_fk,
+                nombre_servicio: task.servicio.dataValues.nombre,
+            }));            
+            // enviar los datos
+            res.status(200).json(formattedTasks)
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

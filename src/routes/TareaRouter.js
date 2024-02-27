@@ -8,6 +8,7 @@ const TareaRouter = Router()
 // Endpoints
 TareaRouter.get('/todos', TareaController.index)
 TareaRouter.get('/seleccionar/:id', TareaController.getById)
+TareaRouter.get('/proyecto/:id', TareaController.getByProject)
 TareaRouter.post('/crear', /*validateSchema(createEschema),*/ TareaController.create)
 TareaRouter.post('/actualizar/:id', TareaController.update)
 

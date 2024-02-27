@@ -8,6 +8,7 @@ const ProyectoRouter = Router()
 // Endpoints
 ProyectoRouter.get('/todos', ProyectoController.index)
 ProyectoRouter.get('/seleccionar/:id', ProyectoController.getById)
+ProyectoRouter.get('/cliente/:id', ProyectoController.getByClient)
 ProyectoRouter.post('/crear', validateSchema(createEschema), ProyectoController.create)
 ProyectoRouter.post('/actualizar/:id', validateSchema(updateEschema), ProyectoController.update)
 

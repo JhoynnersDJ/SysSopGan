@@ -11,7 +11,7 @@ class ProyectoController {
     // devuelve todos los proyectos
     static async index(req, res) {
         try {
-            // Buscar todos los registros de proyecto junto al nombre del técnico responsable
+            // Buscar todos los registros de proyecto junto con los datos de los modelos asociados
             const projects = await Proyecto.findAll({
                 include: [
                     {
@@ -25,11 +25,6 @@ class ProyectoController {
                             {
                                 model: ReplicaResponsableCliente, // Incluye la asociación ReplicaResponsableCliente dentro de ClienteReplica
                                 attributes: ['nombre_responsable_cl'], // Selecciona los atributos deseados de ReplicaResponsableCliente
-                                // where: {
-                                //     responsable_cliente: '44b39dfc-c3a7-4a24-a76b-6756bc07f629'
-                                // }
-
-                                // este comentario es una prueba
                             }
                         ]
                     },
@@ -43,10 +38,12 @@ class ProyectoController {
                 ]
             });
 
+            // si no hay proyectos registrados en la base de datos
             if (!projects || projects.length === 0) {
                 return res.status(500).json({ message: 'No hay proyectos registrados' });
             }
 
+            // formato de los datos para mayor legibilidad
             const formattedProjects = projects.map(project => ({
                 id_proyecto: project.dataValues.id_proyecto,
                 tarifa: project.dataValues.tarifa,
@@ -107,6 +104,59 @@ class ProyectoController {
                 return res.status(404).json({ message: 'Proyecto no encontrado' })
             }
             res.status(200).json(project)
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    // devuelve los proyectos segun cliente
+    static async getByClient(req, res) {
+        try {
+            // capturar id de cliente
+            const { id } = req.params
+            // comprobar si existe el cliente
+            const clientFound = await ClienteReplica.findByPk(id)
+            if (!clientFound) {
+                return res.status(404).json({ message: 'Cliente no encontrado' })
+            }
+            // buscar el proyecto segun el id del cliente
+            const projects = await Proyecto.findAll({
+                where:{
+                    id_cliente_fk: id
+                },
+                // include: [
+                //     {
+                //         model: ResponsableTecnico,
+                //         attributes: [['nombre_responsable_tec', 'nombre']]
+                //     },
+                //     {
+                //         model: ClienteReplica,
+                //         attributes: [['nombre_cliente', 'nombre']],
+                //         include: [
+                //             {
+                //                 model: ReplicaResponsableCliente,
+                //                 attributes: [
+                //                     ['id_responsable_cliente'],
+                //                     ['nombre_responsable_cl', 'nombre_responsable_cliente']
+                //                 ]
+                //             }
+                //         ]
+                //     },
+                //     {
+                //         model: Usuario,
+                //         attributes: [
+                //             'nombre',
+                //             'apellido'
+                //         ]
+                //     }
+                // ]
+            })
+            // si no se encuentran proyectos
+            if (!projects) {
+                return res.status(500).json({message: 'Este cliente no tiene proyectos'})
+            }
+            // enviar los datos
+            res.status(200).json(projects)
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
