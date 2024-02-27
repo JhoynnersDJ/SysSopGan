@@ -38,29 +38,27 @@ class ProyectoController {
                     }
                 ]
             });
-
             // si no hay proyectos registrados en la base de datos
             if (!projects || projects.length === 0) {
                 return res.status(500).json({ message: 'No hay proyectos registrados' });
             }
-
             // formato de los datos para mayor legibilidad
-            // const formattedProjects = projects.map(project => ({
-            //     id_proyecto: project.dataValues.id_proyecto,
-            //     tarifa: project.dataValues.tarifa,
-            //     nombre_proyecto: project.dataValues.nombre_proyecto,
-            //     id_responsable_tecnico_fk: project.dataValues.id_responsable_tecnico_fk,
-            //     id_usuario_fk: project.dataValues.id_usuario_fk,
-            //     id_cliente_fk: project.dataValues.id_cliente_fk,
-            //     status: project.dataValues.status,
-            //     fecha_inicio: project.dataValues.fecha_inicio,
-            //     total_proyecto: project.dataValues.total_proyecto,
-            //     nombre_responsable_tec: project.responsable_tecnico ? project.responsable_tecnico.dataValues.nombre_responsable_tec : null,
-            //     nombre_cliente: project.cliente ? project.cliente.dataValues.nombre_cliente : null,
-            //     nombre_responsable_cl: project.cliente && project.cliente.responsable_cliente ? project.cliente.responsable_cliente.nombre_responsable_cl : null,
-            //     nombre_usuario: `${project.usuario.dataValues.nombre} ${project.usuario.dataValues.apellido}`
-            // }));
-            res.status(200).json(projects);
+            const formattedProjects = projects.map(project => ({
+                id_proyecto: project.dataValues.id_proyecto,
+                tarifa: project.dataValues.tarifa,
+                nombre_proyecto: project.dataValues.nombre_proyecto,
+                id_responsable_tecnico_fk: project.dataValues.id_responsable_tecnico_fk,
+                id_usuario_fk: project.dataValues.id_usuario_fk,
+                id_responsable_cliente_fk: project.dataValues.id_responsable_cliente_fk,
+                status: project.dataValues.status,
+                fecha_inicio: project.dataValues.fecha_inicio,
+                // total_proyecto: project.dataValues.total_proyecto,
+                nombre_responsable_tec: project.responsable_tecnico ? project.responsable_tecnico.dataValues.nombre_responsable_tec : null,
+                nombre_cliente: project.responsable_cliente ? project.responsable_cliente.cliente.nombre_cliente : null,
+                nombre_responsable_cl: project.responsable_cliente ? project.responsable_cliente.nombre_responsable_cl : null,
+                nombre_usuario: `${project.usuario.dataValues.nombre} ${project.usuario.dataValues.apellido}`
+            }));
+            res.status(200).json(formattedProjects);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -122,40 +120,96 @@ class ProyectoController {
             }
             // buscar el proyecto segun el id del cliente
             const projects = await Proyecto.findAll({
-                where:{
-                    id_cliente_fk: id
-                },
-                // include: [
-                //     {
-                //         model: ResponsableTecnico,
-                //         attributes: [['nombre_responsable_tec', 'nombre']]
-                //     },
-                //     {
-                //         model: ClienteReplica,
-                //         attributes: [['nombre_cliente', 'nombre']],
-                //         include: [
-                //             {
-                //                 model: ReplicaResponsableCliente,
-                //                 attributes: [
-                //                     ['id_responsable_cliente'],
-                //                     ['nombre_responsable_cl', 'nombre_responsable_cliente']
-                //                 ]
-                //             }
-                //         ]
-                //     },
-                //     {
-                //         model: Usuario,
-                //         attributes: [
-                //             'nombre',
-                //             'apellido'
-                //         ]
-                //     }
-                // ]
+                include: [
+                    {
+                        model: ResponsableTecnico,
+                        attributes: [['nombre_responsable_tec', 'nombre']]
+                    },
+                    {
+                        model: ReplicaResponsableCliente,
+                        attributes: [['nombre_responsable_cl', 'nombre']],
+                        where: {
+                            id_cliente_fk: id
+                        },
+                        include: [
+                            {
+                                model: ClienteReplica,
+                                attributes: [
+                                    ['nombre_cliente', 'nombre']
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        model: Usuario,
+                        attributes: [
+                            'nombre',
+                            'apellido'
+                        ]
+                    }
+                ]
             })
             // si no se encuentran proyectos
-            if (!projects) {
+            if (!projects || projects.length === 0) {
                 return res.status(500).json({message: 'Este cliente no tiene proyectos'})
             }
+            // formato de los datos
+            
+            // enviar los datos
+            res.status(200).json(projects)
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    // devuelve los proyectos segun usuario
+    static async getByUser(req, res) {
+        try {
+            // capturar id de usuario
+            const { id } = req.params
+            // comprobar si existe el usuario
+            const userFound = await Usuario.findByPk(id)
+            if (!userFound) {
+                return res.status(404).json({ message: 'Usuario no encontrado' })
+            }
+            // buscar el proyecto segun el id del usuario
+            const projects = await Proyecto.findAll({
+                where:{
+                    id_usuario_fk: id
+                },
+                include: [
+                    {
+                        model: ResponsableTecnico,
+                        attributes: [['nombre_responsable_tec', 'nombre']]
+                    },
+                    {
+                        model: ReplicaResponsableCliente,
+                        attributes: [['nombre_responsable_cl', 'nombre']],
+                        include: [
+                            {
+                                model: ClienteReplica,
+                                attributes: [
+                                    'id_cliente',
+                                    ['nombre_cliente', 'nombre']
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        model: Usuario,
+                        attributes: [
+                            'nombre',
+                            'apellido'
+                        ]
+                    }
+                ]
+            })
+            // si no se encuentran proyectos
+            if (!projects || projects.length === 0) {
+                return res.status(500).json({message: 'Este usuario no tiene proyectos'})
+            }
+            // formato de los datos
+
             // enviar los datos
             res.status(200).json(projects)
         } catch (error) {

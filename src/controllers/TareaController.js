@@ -118,7 +118,7 @@ class TareaController {
                   ]
             })
             // si no se encuentran tareas
-            if (!tasks) {
+            if (tasks.length === 0 || !tasks) {
                 return res.status(500).json({message: 'Este proyecto no tiene tareas'})
             }
             // formato los datos para mayor legibilidad

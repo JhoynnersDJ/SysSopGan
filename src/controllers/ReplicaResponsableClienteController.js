@@ -1,37 +1,84 @@
 import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
 import { ResponsableCliente } from "../Modelo/Cliente/ResponsableClienteModel.js";
 import { Cliente } from "../Modelo/Cliente/ClienteModel.js";
+import { ClienteReplica } from "../Modelo/Syssopgan/ReplicaClienteModel.js";
 
 class ReplicaResponsableClienteController {
-    // devuelve todas las actividades
+    // devuelve todas los responsables clientes
     static async index (req, res) {
         try {
             // buscar todos los registros
-            const clients = await ReplicaResponsableCliente.findAll()
-            if (!clients) {
+            const responsibles_client = await ReplicaResponsableCliente.findAll()
+            // si no hay responsables cliente
+            if (!responsibles_client) {
                 return res.status(500).json({message: 'No hay clientes registrados en la base de datos'})
             }
-            res.status(200).json(clients)
+            // enviar datos
+            res.status(200).json(responsibles_client)
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
 
-    // devuelve un cliente segun su ID
+    // devuelve un responsable cliente segun su ID
     static async getById (req, res){
         try {
-            // capturar datos
+            // capturar id de responsable cliente
             const { id } = req.params
             // comprobar si existe
-            const client = await ReplicaResponsableCliente.findByPk(id)
-            if (!client) {
+            const responsible_client = await ReplicaResponsableCliente.findByPk(id)
+            if (!responsible_client) {
                 return res.status(404).json({message: 'Cliente no encontrado'})
             }
-            res.status(200).json(client)
+            // envia datos
+            res.status(200).json(responsible_client)
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
+
+    // devuelve los responsables cliente de un cliente
+    static async getByClient (req, res){
+        try {
+            // capturar id de cliente
+            const { id } = req.params
+            // comprobar si existe el cliente
+            const clientFound = await ClienteReplica.findByPk(id)
+            if (!clientFound) {
+                return res.status(404).json({ message: 'Cliente no encontrado' })
+            }
+            // obtener todos los responsables cliente de un cliente
+            const responsibles_client = await ReplicaResponsableCliente.findAll({
+                attributes: [
+                    'id_responsable_cliente',
+                    ['nombre_responsable_cl', 'nombre'],
+                    'cargo',
+                    'id_cliente_fk'
+                ],
+                where: {
+                    id_cliente_fk: id
+                },
+                include: [
+                    {
+                      model: ClienteReplica,
+                      attributes: [
+                        ['nombre_cliente', 'nombre']
+                    ]
+                    }
+                  ]
+            })
+            // si no se encuentran tareas
+            if (responsibles_client.length === 0 || !responsibles_client) {
+                return res.status(500).json({message: 'Este cliente no tiene responsables'})
+            }
+            // formato los datos para mayor legibilidad
+          
+            // enviar los datos
+            res.status(200).json(responsibles_client)
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }    
 
     // Crear un responsable de cliente
     static async create(req, res) {
