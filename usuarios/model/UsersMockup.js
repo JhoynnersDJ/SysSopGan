@@ -64,7 +64,7 @@ async function findOne(email){
         }
     )
     //console.log(user1);
-    
+    if (!user1) return null;
     const rol = await Rol.findOne(
         {
             where: { id_rol : user1.dataValues.id_rolref} 
@@ -77,14 +77,14 @@ async function findOne(email){
             function (err, data) {
               if (err) console.log(err);
               else
-              { console.log(data);
+              { console.log(data[0]);
                }
                conn.close(function () {
                  console.log('done');
                });
             });
         });
-    if (!user1) return null;
+    
 
        
     const newuser = new user(user1.dataValues.nombre,user1.dataValues.apellido, user1.dataValues.email, user1.dataValues.password,
@@ -97,6 +97,22 @@ async function findOne(email){
 
 //devuelve un objeto tipi usuario por id
 async function findOneById(id){
+    
+    ibmdb.open(connStr,
+        function(err,conn) {
+          if (err) return console.log(err);
+          conn.query("SELECT * FROM TECNICO.USUARIO AS USU JOIN TECNICO.ROL AS ROL ON USU.ID_ROLREF = ROL.ID_ROL WHERE ID_US = '"+id+"';",
+            function (err, data) {
+              if (err) console.log(err);
+              else
+              { console.log(data[0]);
+               }
+               conn.close(function () {
+                 console.log('done');
+               });
+            });
+        });
+    
     const user1 = await Usuario.findByPk(id, {
         include: [
             {

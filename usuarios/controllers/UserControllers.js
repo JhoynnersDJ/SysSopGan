@@ -99,7 +99,7 @@ export const login = async (req, res) => {
 //finalizar sesion del usuario
 export const logout = (req, res) => {
     console.log()
-    if(!req.cookies.token) return res.status(202).json({ message: "No has iniciado sesion" });
+    if(!req.cookies.authToken) return res.status(202).json({ message: "No has iniciado sesion" });
     //se le agota el tiempo de vida de la cookie
     res.cookie('authToken', "", {
         expires: new Date(0)
