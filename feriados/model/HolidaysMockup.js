@@ -1,16 +1,61 @@
 import holidays from './HolidaysModel.js';
 import {Feriado} from '../../src/Modelo/Syssopgan/FeriadoModel.js'
+import  {v4 } from "uuid";
+import ibmdb from "ibm_db"
+
+let connStr = "DATABASE=SYSSOP;HOSTNAME=192.168.1.28;UID=db2inst1;PWD=H0l41324%;PORT=25000;PROTOCOL=TCPIP";
 
 class holidayPort{
     save(holiday){}
     findOne(email){}
 }
 
+async function getidmax(){
+    return await ibmdb.open(connStr,
+        function(err,conn) {
+         if (err) return console.log('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+            conn.query("SELECT MAX(ID) FROM TECNICO.FERIADO",
+          function (err, data) {
+             if (err) console.log(err);
+             else
+             { 
+               console.log(data[0]['1']);  
+               return data[0]['1']+1;
+              }
+              conn.close(function () {
+                //console.log('done');
+              });
+           });
+       });
+       //console.log(id)
+       //return id;
+}
+
 //guarda al feriado para persistencia
 async function saveHoliday(holiday) {
-    const newhol = await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
-        {fields: [ 'nombre', 'fecha']});
-    return newhol;
+    //console.log(holiday.date);
+    const id = v4().split('-')[0];
+    console.log(id)
+        //console.log(id)
+        //console.log(`INSERT INTO TECNICO.FERIADO(ID, NOMBRE, FECHA) VALUES (${id}`+", '"+holiday.name+"', '"+holiday.date+"');")
+        const user2 = await ibmdb.open(connStr,
+            function(err,conn) {
+              if (err) return console.log(err);
+            conn.query("INSERT INTO TECNICO.FERIADO(ID, NOMBRE, FECHA) VALUES ('"+id+"', '"+holiday.name+"', '"+holiday.date+"');",
+               function (err, data) {
+                  if (err) console.log(err);
+                  else
+                  { //console.log(data[0]);  return data[0] ;
+                    //console.log(data);
+                   }
+                   conn.close(function () {
+                     console.log('done');
+                   });
+                });
+            });
+    /*const newhol = await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
+        {fields: [ 'nombre', 'fecha']});*/
+    return user2;
     //holidays.holidays.push(holiday);
 }
 
@@ -64,14 +109,31 @@ async function deleteOne(id){
 
 //encuentra un feriado por fecha
 async function findOneByDate(date){
-    const holidayFound = await Feriado.findOne(
+    console.log(date);
+    const user2 = await ibmdb.open(connStr,
+        function(err,conn) {
+          if (err) return console.log('err');
+           conn.query(`SELECT * FROM TECNICO.FERIADO WHERE FECHA =${date};`,
+           function (err, data) {
+              if (err) console.log(err);
+              else
+              { console.log('estoy aquii');  return data[0] ;
+               }
+               conn.close(function () {
+                 console.log('termine con mi perro 400');
+               });
+            });
+        });
+    
+    console.log(user2)
+    /*const holidayFound = await Feriado.findOne(
         {
             where: { fecha : date} 
         }
     );
-    if(!holidayFound) return null;
-    const newHoliday = new holidays(holidayFound.dataValues.nombre, holidayFound.dataValues.fecha, holidayFound.dataValues.id);
-    return holidayFound;
+    if(!holidayFound) return null;*/
+    
+    return user2;
     /*//date.setHours(0,0,0,0);
     for(var i = 0; i < holidays.holidays.length; i++) {
         let day = holidays.holidays[i].date;

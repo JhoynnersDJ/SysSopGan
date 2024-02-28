@@ -17,18 +17,18 @@ export const loadHolidays = async (req,res) => {
 
         //los objetos son convertidos a holidays y guardados en el holidaysMock
         obj.forEach(async (element) => {
-
+            const datef = new Date(element.start.date);
             //busca un feriado por id
-            const holidayFound = await holiday.findOneByDate(new Date(element.start.date));
+            const holidayFound = await holiday.findOneByDate(datef.toISOString().split('T')[0]);
 
             //si consigue el feriado lanza un mensaje de feriado no encontrado
-            if (holidayFound) return;
+            if (holidayFound) {console.log(holidayFound); return };
 
             //se ccrea un nuevo holiday
-            const holidayItem = new holiday(element.summary, new Date(element.start.date));
+            //const holidayItem = new holiday(element.summary, datef.toISOString().split('T')[0]);
 
             //se guarda el nuevo objeto en el holidaymock
-            holidayItem.save();
+            //await holiday.save(holidayItem);
             
         });
         

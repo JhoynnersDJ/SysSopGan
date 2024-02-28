@@ -97,21 +97,35 @@ async function findOne(email){
 
 //devuelve un objeto tipi usuario por id
 async function findOneById(id){
-    
-    ibmdb.open(connStr,
+    //let user2;
+    const user2 = await ibmdb.open(connStr,
         function(err,conn) {
           if (err) return console.log(err);
-          conn.query("SELECT * FROM TECNICO.USUARIO AS USU JOIN TECNICO.ROL AS ROL ON USU.ID_ROLREF = ROL.ID_ROL WHERE ID_US = '"+id+"';",
-            function (err, data) {
+           conn.query("SELECT * FROM TECNICO.USUARIO WHERE ID_US = '"+id+"';",
+           function (err, data) {
               if (err) console.log(err);
               else
-              { console.log(data[0]);
+              { console.log(data[0]);  return data ;
                }
                conn.close(function () {
                  console.log('done');
                });
             });
         });
+        /*ibmdb.open(connStr,
+            function(err,conn) {
+              if (err) return console.log(err);
+              conn.query("SELECT * FROM TECNICO.ROL WHERE ID_ROL = '"+user2.ID_ROLREF+"';",
+                function (err, data) {
+                  if (err) console.log(err);
+                  else
+                  { console.log(data[0]);
+                   }
+                   conn.close(function () {
+                     console.log('done');
+                   });
+                });
+            });*/
     
     const user1 = await Usuario.findByPk(id, {
         include: [
