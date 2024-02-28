@@ -272,12 +272,17 @@ class ProyectoController {
             const pdfPath = await crearPDF(id, project);
             //console.log(project); // para ver todo el objeto datos
             //console.log(project.id_proyecto); // para ver el objeto dataValues
-            //console.log(project.hora_fin); // para ver la propiedad hora_fin
+            //console.log(pdfPath); // para ver la propiedad hora_fin
             
             // Enviar el PDF como una respuesta de tipo stream
             const file = fs.createReadStream(pdfPath);
-            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment');
+            //res.setHeader('Content-Disposition', 'attachment; filename=${pdfPath}.pdf');
+            //res.setHeader('Content-Type', 'application/pdf');
+            //res.download(pdfPath);
+            //res.setHeader('Content-Type', 'application/pdf');
             file.pipe(res);
+            res.sendFile(pdfPath)
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

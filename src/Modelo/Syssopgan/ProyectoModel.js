@@ -51,6 +51,10 @@ fecha_inicio: {
     type: DataTypes.DATEONLY,
     allowNull: false,
 },
+total_proyecto: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
 }, {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt
 

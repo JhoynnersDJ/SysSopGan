@@ -117,16 +117,16 @@ static async create (req, res){
             // Generamos dos registros, uno para cada día.
             let rateDay1 = calculateRate(date, startHour, '24:00', project.tarifa);
             await Tarea.create(
-                { fecha: date, hora_inicio:startHour, hora_fin: '24:00', total_hora: rateDay1.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay1.isHoliday },
-                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk'] }
+                { fecha: date, hora_inicio:startHour, hora_fin: '24:00', total_hora: rateDay1.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay1.isHoliday, total_tarifa: rateDay1.totalRate },
+                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk','total_tarifa'] }
             )
                 
             let nextDay = new Date(date);
             nextDay.setDate(nextDay.getDate() + 1);
             let rateDay2 = calculateRate(nextDay.toISOString().split('T')[0], '00:00', endHour, project.tarifa);
             await Tarea.create(
-                { fecha: nextDay.toISOString().split('T')[0], hora_inicio: '00:00', hora_fin: endHour, total_hora: rateDay2.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay2.isHoliday },
-                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk'] }
+                { fecha: nextDay.toISOString().split('T')[0], hora_inicio: '00:00', hora_fin: endHour, total_hora: rateDay2.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay2.isHoliday, total_tarifa: rateDay2.totalRate},
+                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk' ,'total_tarifa'] }
             )
             res.status(201).json({ message: 'Tarea creada correctamente' })
         } else {
@@ -136,8 +136,8 @@ static async create (req, res){
             let rateDay1 = calculateRate(date, converted_start_time, '00:00', project.tarifa);
             // guardar en la base de datos
             await Tarea.create(
-                { fecha: date, hora_inicio:startHour, hora_fin: '00:00', total_hora: rateDay1.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay1.isHoliday },
-                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk'] }
+                { fecha: date, hora_inicio:startHour, hora_fin: '00:00', total_hora: rateDay1.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay1.isHoliday, total_tarifa: rateDay1.totalRate },
+                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk','total_tarifa'] }
             )
             // Calculamos la tarifa para el día siguiente
             let nextDay = new Date(date);
@@ -146,8 +146,8 @@ static async create (req, res){
             let rateDay2 = calculateRate(nextDay, '00:00', converted_end_time, project.tarifa);
             // guardar en la base de datos
             await Tarea.create(
-                { fecha: nextDay, hora_inicio: '00:00', hora_fin: endHour, total_hora: rateDay2.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay2.isHoliday },
-                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk'] }
+                { fecha: nextDay, hora_inicio: '00:00', hora_fin: endHour, total_hora: rateDay2.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rateDay2.isHoliday, total_tarifa: rateDay2.totalRate  },
+                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk','total_tarifa'] }
             )
             res.status(201).json({ message: 'Tareas creadas correctamente' })
         } else {
@@ -155,8 +155,8 @@ static async create (req, res){
             const rate = calculateRate(date, converted_start_time, converted_end_time, project.tarifa)
             // guardar en la base de datos
             await Tarea.create(
-                { fecha: date, hora_inicio:startHour, hora_fin:endHour, total_hora: rate.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rate.isHoliday },
-                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk'] }
+                { fecha: date, hora_inicio:startHour, hora_fin:endHour, total_hora: rate.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rate.isHoliday, total_tarifa: rate.totalRate},
+                { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk','total_tarifa'] }
             )
             res.status(201).json({ message: 'Tarea creada correctamente' })
         }

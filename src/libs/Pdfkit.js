@@ -18,18 +18,17 @@ export async function crearPDF(id, project) {
 
     // Generar el HTML
     const html = generarHTML(project,fecha2);
-
+    
     // Cargar el HTML en Puppeteer
     await page.setContent(html, {waitUntil: 'networkidle0'});
 
     // Crear el nombre del archivo con la fecha y la ID del proyecto
-    const pdfPath = `report_${id}_${fecha}.pdf`;
+    const pdfPath = path.resolve(`PDF/report_${id}_${fecha}.pdf`);
     
     // Crear el PDF
     await page.pdf({path: pdfPath, 
                     format: 'A4',
                     displayHeaderFooter: true,
-
     });
 
     await browser.close();
