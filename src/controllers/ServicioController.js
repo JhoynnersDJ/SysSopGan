@@ -1,7 +1,7 @@
 import { Servicio } from "../Modelo/Syssopgan/ServicioModel.js";
 
 class ServicioController {
-    // devuelve todaos los servicios
+    // devuelve todos los servicios
     static async index (req, res) {
         try {
             // buscar todos los registros
@@ -18,7 +18,7 @@ class ServicioController {
     // devuelve un servicio segun su ID
     static async getById (req, res){
         try {
-            // capturar datos
+            // capturar id de servicio
             const { id } = req.params
             // comprobar si existe
             const service = await Servicio.findByPk(id)
@@ -35,10 +35,10 @@ class ServicioController {
     static async create (req, res){
         try {
             // capturar datos
-            const {id_service, name, description, type, category, platform } = req.body
+            const {id_servicio, nombre, descripcion, tipo, categoria, plataforma } = req.body
             // guardar en la base de datos
             await Servicio.create(
-                { id_servicio: id_service, nombre: name, descripcion:description, tipo: type, categoria: category, plataforma: platform},
+                { id_servicio, nombre, descripcion, tipo, categoria, plataforma},
                 { fields: ['id_servicio','nombre', 'descripcion', 'tipo', 'categoria', 'plataforma'] }
               )
             res.status(201).json({ message: 'Servicio creado correctamente' })

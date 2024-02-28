@@ -66,9 +66,9 @@ class TareaController {
             if (!taskFound) {
                 return res.status(404).json({message: 'Tarea no encontrada'})
             }
-            // formato los datos para mayor legibilidad
-            const formattedTask = {
-                id_area: taskFound.dataValues.id_tarea,
+            // envio y formato de los datos
+            res.status(200).json({
+                id_tarea: taskFound.dataValues.id_tarea,
                 fecha: taskFound.dataValues.fecha,
                 hora_inicio: taskFound.dataValues.hora_inicio,
                 hora_fin: taskFound.dataValues.hora_fin,
@@ -78,9 +78,7 @@ class TareaController {
                 nombre_proyecto: taskFound.proyecto.dataValues.nombre,
                 id_servicio: taskFound.dataValues.id_servicio_fk,
                 nombre_servicio: taskFound.servicio.dataValues.nombre,
-            };
-            // enviar los datos
-            res.status(200).json(formattedTask)
+            })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -119,7 +117,7 @@ class TareaController {
             })
             // si no se encuentran tareas
             if (tasks.length === 0 || !tasks) {
-                return res.status(500).json({message: 'Este proyecto no tiene tareas'})
+                return res.status(204).json({message: 'Este proyecto no tiene tareas', data: []})
             }
             // formato los datos para mayor legibilidad
             const formattedTasks = tasks.map(task => ({
@@ -215,6 +213,26 @@ class TareaController {
             { where: { id_tarea: id } }
             )
             res.status(200).json({ message: 'Tarea actualizada correctamente' })
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    // eliminar una
+    static async delete(req, res) {
+        try {
+            // capturar id de tarea
+            const { id } = req.params
+            // comprobar si existe la tarea
+            const taskFound = await Tarea.findByPk(id)
+            if (!taskFound) {
+                return res.status(404).json({ message: 'Tarea no encontrada' })
+            }
+            // eliminar una tarea de la base de datos
+            await Tarea.destroy(
+                { where: { id_tarea: id } }
+            )
+            res.status(200).json({ message: 'Tarea eliminada correctamente' })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

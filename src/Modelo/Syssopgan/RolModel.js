@@ -5,9 +5,9 @@ import {sequelize } from '../sequelize.js';
 
 const Rol = sequelize.define('rol', {
   id_rol: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.STRING,
     primaryKey: true,
+    unique: true
   },
   nombre: {
     type: DataTypes.STRING,

@@ -11,7 +11,8 @@ ProyectoRouter.get('/seleccionar/:id', ProyectoController.getById)
 ProyectoRouter.get('/cliente/:id', ProyectoController.getByClient)
 ProyectoRouter.get('/usuario/:id', ProyectoController.getByUser)
 ProyectoRouter.post('/crear', validateSchema(createEschema), ProyectoController.create)
-ProyectoRouter.post('/actualizar/:id', validateSchema(updateEschema), ProyectoController.update)
+ProyectoRouter.post('/actualizar/:id', /*validateSchema(updateEschema)*/ ProyectoController.update)
+ProyectoRouter.delete('/eliminar/:id', ProyectoController.delete)
 
 // Endpoints de Generar Reportes y Generar Graficos
 ProyectoRouter.get('/reporteproyecto/:id', ProyectoController.pdf)

@@ -2,13 +2,13 @@ import z from "zod"
 
 //se asegura que los campos ingresados al registrar un responsable tecnico sean validos
 export const createEschema = z.object({
-    name: z.string({
+    nombre: z.string({
         required_error: 'Nombre es requerido',
         invalid_type_error: 'Nombre debe ser tipo cadena de carácteres'
         }).max(100, {
             message: 'Nombre debe tener 100 o menos carácteres'
         }),
-    position: z.string({
+    cargo: z.string({
         invalid_type_error: 'Cargo debe ser tipo cadena de carácteres'
         }).nullable(),
     email: z.string({
@@ -23,13 +23,13 @@ export const createEschema = z.object({
 
 //se asegura que los campos ingresados al actualizar un responsable tecnico sean validos
 export const updateEschema = z.object({
-    name: z.string({
+    nombre: z.string({
         required_error: 'Nombre es requerido',
         invalid_type_error: 'Nombre debe ser tipo cadena de carácteres'
         }).max(100, {
             message: 'Nombre debe tener 100 o menos carácteres'
         }),
-    position: z.string({
+    cargo: z.string({
         invalid_type_error: 'Cargo debe ser tipo cadena de carácteres'
         }).nullable(),
     email: z.string({
