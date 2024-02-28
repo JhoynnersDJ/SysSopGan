@@ -1,4 +1,5 @@
 import date from 'date-and-time';
+import fs from 'fs';
 import { Proyecto } from "../Modelo/Syssopgan/Asociaciones.js";
 import { ClienteReplica } from "../Modelo/Syssopgan/Asociaciones.js";
 import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
@@ -6,6 +7,7 @@ import { ResponsableTecnico } from "../Modelo/Syssopgan/ResponsableTecnicoModel.
 import { Usuario } from "../Modelo/Syssopgan/UsuarioModel.js";
 import {Tarea} from "../Modelo/Syssopgan/Asociaciones.js"
 import { crearPDF } from "../libs/Pdfkit.js";
+import {Servicio} from "../Modelo/Syssopgan/ServicioModel.js"
 
 class ProyectoController {
     // devuelve todos los proyectos
@@ -235,15 +237,47 @@ class ProyectoController {
                 include: [
                     {
                         model: Tarea,
-                        attributes: [['hora_inicio', 'hora_fin']]
+                        attributes: ['id_tarea','fecha','hora_inicio', 'hora_fin','total_hora'],
+                        include: [
+                            {
+                                model: Servicio,
+                                attributes: ['nombre']
+                            }
+                        ]
                     },
+                    {
+                        model: ClienteReplica,
+                        attributes: ['nombre_cliente'],
+                        include: [
+                            {
+                                model: ReplicaResponsableCliente, // Incluye la asociación ReplicaResponsableCliente dentro de ClienteReplica
+                                attributes: ['nombre_responsable_cl'], // Selecciona los atributos deseados de ReplicaResponsableCliente
+                            }
+                        ]
+                    },
+                    {
+                        model: Usuario,
+                        attributes: [
+                            'nombre',
+                            'apellido'
+                        ]
+                    }
                 ]
             })
             // comprobar si existe el proyecto
             if (!project) {
                 return res.status(404).json({ message: 'Proyecto no encontrado' })
             }
-            res.status(200).json(project)
+            // Generar el PDF y obtener la ruta del archivo
+            const pdfPath = await crearPDF(id, project);
+            //console.log(project); // para ver todo el objeto datos
+            //console.log(project.id_proyecto); // para ver el objeto dataValues
+            //console.log(project.hora_fin); // para ver la propiedad hora_fin
+            
+            // Enviar el PDF como una respuesta de tipo stream
+            const file = fs.createReadStream(pdfPath);
+            res.setHeader('Content-Type', 'application/pdf');
+            file.pipe(res);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -267,7 +301,7 @@ class ProyectoController {
             if (!project) {
                 return res.status(404).json({ message: 'Proyecto no encontrado' })
             }
-            res.status(200).json(project)
+            res.sendFile(path.resolve(dirname, pdfPath));
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
