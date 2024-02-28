@@ -13,7 +13,7 @@ ProyectoRouter.post('/crear', validateSchema(createEschema), ProyectoController.
 ProyectoRouter.post('/actualizar/:id', validateSchema(updateEschema), ProyectoController.update)
 
 // Endpoints de Generar Reportes y Generar Graficos
-ProyectoRouter.get('/reporteproyecto/:id', ProyectoController.pdf)
-ProyectoRouter.get('/Graficaproyecto/:id', ProyectoController.graph)
+ProyectoRouter.get('/reporte/:id', ProyectoController.pdf)
+//ProyectoRouter.get('/Graficaproyecto/:id', ProyectoController.graph)
 
 export default ProyectoRouter

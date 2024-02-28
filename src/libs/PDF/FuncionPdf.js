@@ -1,13 +1,13 @@
 export function generarHTML(project,fecha2) {
 
     // Obtener el nombre del cliente, o una cadena vacía si no hay cliente o nombre
-    let nombreCliente = project.cliente ? project.cliente.get('nombre_cliente') : '';
+    let nombreCliente = project.responsable_clientes ? project.responsable_clientes.get('nombre_responsable_cl') : '';
 
     // Obtener el cliente del proyecto
         let cliente = project.cliente;
 
     // Obtener el nombre del responsable del cliente, o una cadena vacía si no hay responsable o nombre
-    let nombreResponsable = "..."//cliente.responsable_clientes ? cliente.responsable_clientes.get('nombre_responsable_cl') : '';
+    let nombreResponsable = project.responsable_clientes ? project.responsable_clientes.get('nombre_responsable_cl') : '';
 
     function compararFechas(a, b) {
         // Convertir las fechas a objetos Date

@@ -228,7 +228,7 @@ class ProyectoController {
     }
 
     // Generar PDF de proyecto
-    static async pdf(req, res) {
+   static async pdf(req, res) {
         try {
             // capturar datos
             const { id } = req.params
@@ -284,7 +284,7 @@ class ProyectoController {
     }
 
     // Generar GRAFICOS de proyecto
-    static async graph(req, res) {
+   static async graph(req, res) {
         try {
             // capturar datos
             const { id } = req.params

@@ -65,7 +65,18 @@ static async create (req, res){
         // capturar datos
         const { date, start_time, end_time, id_project, id_service } = req.body
         // comprobar si existe el proyecto
-        const project = await Proyecto.findByPk(id_project)
+        const project = await Proyecto.findByPk(id_project,{
+            attributes: [
+                'id_proyecto',
+                'tarifa',
+                'nombre_proyecto',
+                'id_responsable_tecnico_fk',
+                'id_usuario_fk',
+                'id_responsable_cliente_fk',
+                'status',
+                'fecha_inicio'
+            ]
+        })
         if (!project) {
             return res.status(404).json({message: 'Proyecto no encontrado'})
         }
@@ -84,7 +95,7 @@ static async create (req, res){
         let date2_ms = new Date().getTime();
         // calculamos la diferecia
         let difference_ms = date2_ms - date1_ms;
-        // Y si la da un resultado negativo la fecha esta en el futuro
+        // Y si la da un resultado negativo la fecha esta en el futuro id_cliente_fk
         if (difference_ms < 0) {
             return res.status(400).json({message: 'La fecha no puede ser en el futuro'});
         }
