@@ -212,9 +212,12 @@ static async create (req, res){
                 ],
                  where: {id_tarea: id },
             })
-            if (!projectt) {
-                return res.status(404).json({message: 'Tarea no encontrado en ese Proyecto'})
-             }
+            const task = await Tarea.findOne({
+                where: { id_tarea: id, id_proyecto_fk: id_project },
+            });
+            if (!task) {
+                return res.status(404).json({message: 'Tarea no encontrada en ese proyecto'});
+            }
             // comprobar si existe el servicio
             const serviceFound = await Servicio.findByPk(id_service)
             if (!serviceFound) {
@@ -245,10 +248,10 @@ static async create (req, res){
                     // guardar en la base de datos
                     await Tarea.update(
                         { hora_inicio:startHour, hora_fin:endHour, total_hora: rate.totalHours, id_servicio_fk: id_service, total_tarifa: rate.totalRate},
-                        { fields: ['hora_inicio', 'hora_fin', 'total_hora', 'id_servicio_fk', 'total_tarifa'] },
-                        { where: { id_tarea: id , id_proyecto_fk:id_project } }
+                        { fields: ['hora_inicio', 'hora_fin', 'total_hora', 'id_servicio_fk', 'total_tarifa'], 
+                        where: { id_tarea: id , id_proyecto_fk:id_project } }
                     )
-                        res.status(201).json({ message: 'Tarea creada correctamente' })
+                        res.status(200).json({ message: 'Tarea Actualizada correctamente' })
                 }
              }
         } catch (error) {
