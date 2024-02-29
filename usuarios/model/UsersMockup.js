@@ -24,22 +24,25 @@ async function saveUser(user) {
     if (!rol) return null;
 
     let con;
-    ibmdb.open(connStr,
-        function(err,conn) {
-          if (err) return console.log(err);
-          conn.query("INSERT INTO TECNICO.USUARIO (ID_US, NOMBRE, APELLIDO, EMAIL, NUM_TEL, PASSWORD, EMPRESA, CARGO, DEPARTAMENTO, TOKEN, ULTIMA_CONEXION, ID_ROLREF) VALUES('"+user.id+"', '"+user.name+"', '"+user.lastName+"', '"+user.email+"', '"+user.cellphone+"', '"+user.password+"', '"+user.empress+"', '"+user.cargo+"', '"+user.departament+"', '"+null+"', '2023-02-02 00:00:00.000000', '"+rol.dataValues.id_rol+"');",
-            function (err, rows) {
-              if (err) console.log(err);
-              else
-              { console.log(rows);
-               }
-               conn.close(function () {
-                 console.log('done');
-               });
-            });
-        });
-    
     try {
+    ibmdb.open(connStr, function(err, conn) {
+    if (err) return console.log(err);
+        conn.query(
+            "INSERT INTO TECNICO.USUARIO (ID_US, NOMBRE, APELLIDO, EMAIL, NUM_TEL, PASSWORD, EMPRESA, CARGO, DEPARTAMENTO, TOKEN, ULTIMA_CONEXION, ID_ROLREF) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [user.id, user.name, user.lastName, user.email, user.cellphone, user.password, user.empress, user.cargo, user.departament, null, '2023-02-02 00:00:00.000000', rol.dataValues.id_rol],
+            function(err, rows) {
+                if (err) console.log(err);
+                else {
+                    console.log(rows);
+                }
+                conn.close(function() {
+                    console.log('done');
+                });
+            }
+        );
+    });
+    
+    
     const user1 = await Usuario.create(
         {nombre: user.name, apellido: user.lastName, email: user.email, password: user.password, id_rolref: rol.dataValues.id_rol,
         empresa: user.empress, cargo: user.cargo, num_tel: user.cellphone, departamento: user.departament, id_us: user.id},
@@ -70,20 +73,19 @@ async function findOne(email){
             where: { id_rol : user1.dataValues.id_rolref} 
         }
     ) 
-    ibmdb.open(connStr,
-        function(err,conn) {
-          if (err) return console.log(err);
-          conn.query("SELECT * FROM TECNICO.USUARIO AS USU JOIN TECNICO.ROL AS ROL ON USU.ID_ROLREF = ROL.ID_ROL WHERE EMAIL = '"+email+"';",
-            function (err, data) {
-              if (err) console.log(err);
-              else
-              { console.log(data[0]);
-               }
-               conn.close(function () {
-                 console.log('done');
-               });
+    ibmdb.open(connStr, function(err, conn) {
+        if (err) return console.log(err);
+        conn.query("SELECT * FROM TECNICO.USUARIO AS USU JOIN TECNICO.ROL AS ROL ON USU.ID_ROLREF = ROL.ID_ROL WHERE EMAIL = ?;", [email],
+        function(err, data) {
+            if (err) console.log(err);
+            else {
+                console.log(data[0]);
+            }
+            conn.close(function() {
+                console.log('done');
             });
         });
+    });
     
 
        
@@ -98,34 +100,33 @@ async function findOne(email){
 //devuelve un objeto tipi usuario por id
 async function findOneById(id){
     //let user2;
-    const user2 = await ibmdb.open(connStr,
-        function(err,conn) {
-          if (err) return console.log(err);
-           conn.query("SELECT * FROM TECNICO.USUARIO WHERE ID_US = '"+id+"';",
-           function (err, data) {
-              if (err) console.log(err);
-              else
-              { console.log(data[0]);  return data ;
-               }
-               conn.close(function () {
-                 console.log('done');
-               });
-            });
+
+
+    const user2 = await  new Promise((resolve, reject) => {
+    ibmdb.open(connStr, (err, conn) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+        return;
+      }
+
+      conn.query("SELECT * FROM TECNICO.USUARIO WHERE ID_US = '" + id + "';", (err, data) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+          return;
+        }
+
+        console.log(data[0]);
+        conn.close(() => {
+          console.log('done');
         });
-        /*ibmdb.open(connStr,
-            function(err,conn) {
-              if (err) return console.log(err);
-              conn.query("SELECT * FROM TECNICO.ROL WHERE ID_ROL = '"+user2.ID_ROLREF+"';",
-                function (err, data) {
-                  if (err) console.log(err);
-                  else
-                  { console.log(data[0]);
-                   }
-                   conn.close(function () {
-                     console.log('done');
-                   });
-                });
-            });*/
+        resolve(data);
+      });
+    });
+  });
+
+       
     
     const user1 = await Usuario.findByPk(id, {
         include: [

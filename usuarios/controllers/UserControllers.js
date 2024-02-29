@@ -39,13 +39,13 @@ export const register = async (req, res) => {
        
         res.status(200).json({
             id: newuser.getUserId(),
-            name: newuser.getUserName(),
-            lastName: newuser.getUserLastName(),
+            nombre: newuser.getUserName(),
+            apellido: newuser.getUserLastName(),
             email: newuser.getUserEmail(),
             password: newuser.getUserPassword(), 
-            cellphone: newuser.getUserCellphone(), 
-            empress: newuser.getUserEmpress(), 
-            departament: newuser.getUserDepartament(),
+            num_tel: newuser.getUserCellphone(), 
+            empresa: newuser.getUserEmpress(), 
+            departamento: newuser.getUserDepartament(),
             rol: userSaved.getUseRol(),
             authToken: token
         });
@@ -84,7 +84,7 @@ export const login = async (req, res) => {
         res.cookie('authToken', token);
         res.status(200).json({
             id: userFound.getUserId(),
-            username: userFound.getUserName(),
+            nombre: userFound.getUserName(),
             email: userFound.getUserEmail(),
             authToken: token
         });
@@ -118,13 +118,13 @@ export const profile = async (req, res) => {
     //manda una respuesta con los datos del usuario encontrados
     res.status(200).json({
         id: userFound.getUserId(),
-        name: userFound.getUserName(),
-        lastName: userFound.getUserLastName(),
+        nombre: userFound.getUserName(),
+        apellido: userFound.getUserLastName(),
         email: userFound.getUserEmail(),
         password: userFound.getUserPassword(), 
-        cellphone: userFound.getUserCellphone(), 
-        empress: userFound.getUserEmpress(), 
-        departament: userFound.getUserDepartament(),
+        num_tel: userFound.getUserCellphone(), 
+        empresa: userFound.getUserEmpress(), 
+        departamento: userFound.getUserDepartament(),
         rol: userFound.getUserRol()
     });
     //userFound = null;
@@ -153,13 +153,13 @@ export const updateRol = async (req,res) => {
 
         res. status(200).json({
             id: newuser.getUserId(),
-            name: newuser.getUserName(),
-            lastName: newuser.getUserLastName(),
+            nombre: newuser.getUserName(),
+            apellido: newuser.getUserLastName(),
             email: newuser.getUserEmail(),
             password: newuser.getUserPassword(), 
-            cellphone: newuser.getUserCellphone(), 
+            num_tel: newuser.getUserCellphone(), 
             empress: newuser.getUserEmpress(), 
-            departament: newuser.getUserDepartament(),
+            departamento: newuser.getUserDepartament(),
             rol: newuser.getUserRol()
         });        
     } catch (error) {

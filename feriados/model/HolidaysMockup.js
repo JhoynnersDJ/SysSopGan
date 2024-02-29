@@ -10,73 +10,93 @@ class holidayPort{
     findOne(email){}
 }
 
-async function getidmax(){
-    return await ibmdb.open(connStr,
-        function(err,conn) {
-         if (err) return console.log('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-            conn.query("SELECT MAX(ID) FROM TECNICO.FERIADO",
-          function (err, data) {
-             if (err) console.log(err);
-             else
-             { 
-               console.log(data[0]['1']);  
-               return data[0]['1']+1;
-              }
-              conn.close(function () {
-                //console.log('done');
-              });
-           });
-       });
-       //console.log(id)
-       //return id;
-}
 
 //guarda al feriado para persistencia
 async function saveHoliday(holiday) {
     //console.log(holiday.date);
     const id = v4().split('-')[0];
-    console.log(id)
-        //console.log(id)
-        //console.log(`INSERT INTO TECNICO.FERIADO(ID, NOMBRE, FECHA) VALUES (${id}`+", '"+holiday.name+"', '"+holiday.date+"');")
-        const user2 = await ibmdb.open(connStr,
-            function(err,conn) {
-              if (err) return console.log(err);
-            conn.query("INSERT INTO TECNICO.FERIADO(ID, NOMBRE, FECHA) VALUES ('"+id+"', '"+holiday.name+"', '"+holiday.date+"');",
-               function (err, data) {
-                  if (err) console.log(err);
-                  else
-                  { //console.log(data[0]);  return data[0] ;
-                    //console.log(data);
-                   }
-                   conn.close(function () {
-                     console.log('done');
-                   });
-                });
-            });
-    /*const newhol = await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
-        {fields: [ 'nombre', 'fecha']});*/
-    return user2;
+    //DB2
+    /*const conn = await ibmdb.open(connStr);
+    try {
+        await conn.query(
+            `INSERT INTO TECNICO.FERIADO(ID, NOMBRE, FECHA) VALUES ('${id}', '${holiday.name}', '${holiday.date}')`
+        );
+        console.log('done');
+    } catch (err) {
+        console.error(err);
+    } finally {
+        conn.close();
+    }*/
+    const newhol = await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
+        {fields: [ 'nombre', 'fecha']});
+    return newhol;
     //holidays.holidays.push(holiday);
 }
 
 //busca en la lista de feriados una fecha pasada por parametro
 async function findOne(id){
-    const holidayFound = await Feriado.findOne(
+    //DB2
+    /*var holidayFound = await Feriado.findOne(
         {
             where: { id : id} 
         }
-    );
-    if(!holidayFound) return null;
+    );*/
+    //DB2
+    /*var holidayFound2 = await new Promise((resolve, reject) => {
+        ibmdb.open(connStr, async (err, conn) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+                try {
+                    const data = await conn.query(`SELECT * FROM TECNICO.FERIADO WHERE ID = '${id}'`);
+                    conn.close(() => {
+                        // console.log('done');
+                    });
+                    resolve(data[0]);
+                } catch (err) {
+                    console.log(err);
+                    reject(err);
+                }
+            }
+        });
+        });
+    if(holidayFound) return new holidays(holidayFound.dataValues.nombre, holidayFound.dataValues.fecha, holidayFound.dataValues.id);
+    if(holidayFound2) return new holidays(holidayFound.dataValues.NOMBRE, holidayFound.dataValues.FECHA, holidayFound.dataValues.ID);*/
     
-    const newHoliday = new holidays(holidayFound.dataValues.nombre, holidayFound.dataValues.fecha, holidayFound.dataValues.id);
+    if(!holidayFound) return null
     
-    return newHoliday;
+    return holidayFound;
     //return holidays.holidays.find((holidays) => holidays.id == id);
 }
 
 //devuelve todos los feriados guardados
 async function getHolidays(){
-    const allHolidays = await Feriado.findAll();
+    var allHolidays = await Feriado.findAll();
+
+    //DB2
+    /*var allHolidays2 = await new Promise((resolve, reject) => {
+        ibmdb.open(connStr, async (err, conn) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+                try {
+                    const data = await conn.query(`SELECT * FROM TECNICO.FERIADO`);
+                    conn.close(() => {
+                        // console.log('done');
+                    });
+                    resolve(data);
+                } catch (err) {
+                    console.log(err);
+                    reject(err);
+                }
+            }
+        });
+        });
+    if(!allHolidays) allHolidays = allHolidays2;
+    if(!allHolidays2) return null;*/
+    if(!allHolidays) return null;
     return allHolidays;
     //return holidays.holidays;
 }
@@ -84,7 +104,29 @@ async function getHolidays(){
 async function getHolidaysDate(){
     const allHolidays = await Feriado.findAll();
     let dates = [];
-    allHolidays.forEach((holiday) => dates.push(holiday.dataValues.fecha)) 
+    allHolidays.forEach((holiday) => dates.push(holiday.dataValues.fecha));
+
+    //DB2
+    /*var allHolidays2 = await new Promise((resolve, reject) => {
+        ibmdb.open(connStr, async (err, conn) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+                try {
+                    const data = await conn.query(`SELECT * FROM TECNICO.FERIADO`);
+                    conn.close(() => {
+                        // console.log('done');
+                    });
+                    resolve(data);
+                } catch (err) {
+                    console.log(err);
+                    reject(err);
+                }
+            }
+        });
+        });
+    allHolidays2.forEach((holiday) => dates.push(holiday.FECHA));*/
     return dates;
     //return holidays.holidays;
 }
@@ -96,6 +138,31 @@ async function deleteOne(id){
           id: id
         },
       });
+      //DB2
+    /*await new Promise((resolve, reject) => {
+        ibmdb.open(connStr, (err, conn) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+                return;
+            }
+            conn.query("DELETE FROM TECNICO.FERIADO WHERE ID = '"+id+"'", async (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                    return;
+                }
+                conn.close(async (err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                        return;
+                    }
+                    resolve(data);
+                });
+            });
+        });
+    });*/
     /*hol = [];
     for(var i = 0; i < holidays.holidays.length; i++) {
         if (holidays.holidays[i].id != id) {
@@ -109,31 +176,37 @@ async function deleteOne(id){
 
 //encuentra un feriado por fecha
 async function findOneByDate(date){
-    console.log(date);
-    const user2 = await ibmdb.open(connStr,
-        function(err,conn) {
-          if (err) return console.log('err');
-           conn.query(`SELECT * FROM TECNICO.FERIADO WHERE FECHA =${date};`,
-           function (err, data) {
-              if (err) console.log(err);
-              else
-              { console.log('estoy aquii');  return data[0] ;
-               }
-               conn.close(function () {
-                 console.log('termine con mi perro 400');
-               });
-            });
-        });
+    //DB2
+    /*var holidayFound2 = await new Promise((resolve, reject) => {
+    ibmdb.open(connStr, async (err, conn) => {
+        if (err) {
+            console.log(err);
+            reject(err);
+        } else {
+            try {
+                const data = await conn.query(`SELECT * FROM TECNICO.FERIADO WHERE FECHA = '${date}'`);
+                conn.close(() => {
+                    // console.log('done');
+                });
+                resolve(data[0]);
+            } catch (err) {
+                console.log(err);
+                reject(err);
+            }
+        }
+    });
+    });*/
+        
     
-    console.log(user2)
-    /*const holidayFound = await Feriado.findOne(
+    var holidayFound = await Feriado.findOne(
         {
             where: { fecha : date} 
         }
     );
-    if(!holidayFound) return null;*/
-    
-    return user2;
+    /*if(!holidayFound) holidayFound = holidayFound2;
+    if(!holidayFound2) return null;*/
+    if(!holidayFound) return null;
+    return holidayFound2;
     /*//date.setHours(0,0,0,0);
     for(var i = 0; i < holidays.holidays.length; i++) {
         let day = holidays.holidays[i].date;
