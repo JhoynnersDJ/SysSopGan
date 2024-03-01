@@ -1,26 +1,16 @@
 import { ClienteReplica } from "../Modelo/Syssopgan/Asociaciones.js";
 import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
-import { Cliente } from "../Modelo/Cliente/ClienteModel.js";
+import { Cliente } from "../Modelo/Replicacion.js";
 
 class ReplicaClienteController {
-    // devuelve todos las clientes
+    // devuelve todos los registros 
     static async index (req, res) {
         try {
-            // buscar todos los registros de cliente junto a su modelo asociado
-            const clients = await ClienteReplica.findAll({
-                include: [
-                  {
-                    model: ReplicaResponsableCliente,
-                    attributes: [
-                        ['id_responsable_cliente', 'id_responsable'],
-                        ['nombre_responsable_cl', 'nombre_responsable']
-                    ]
-                  }
-                ]
-              })
+            // buscar todos los registros de replica cliente
+            const clients = await ClienteReplica.findAll()
             // si no hay clientes
             if (!clients) {
-                return res.status(500).json({message: 'No hay clientes registrados en la base de datos'})
+                return res.status(204).json({message: 'No hay clientes registrados en la base de datos', data: []})
             }
             // envia los datos
             res.status(200).json(clients)
@@ -35,17 +25,7 @@ class ReplicaClienteController {
             // capturar id de cliente
             const { id } = req.params
             // comprobar si existe
-            const client = await ClienteReplica.findByPk(id,{
-                include: [
-                  {
-                    model: ReplicaResponsableCliente,
-                    attributes: [
-                        ['id_responsable_cliente', 'id_responsable'],
-                        ['nombre_responsable_cl', 'nombre_responsable']
-                    ]
-                  }
-                ]
-              })
+            const client = await ClienteReplica.findByPk(id)
             // si no hay cliente
             if (!client) {
                 return res.status(404).json({message: 'Cliente no encontrado'})
@@ -61,11 +41,11 @@ class ReplicaClienteController {
     static async create (req, res){
         try {
             // capturar datos
-            const { name, Position, location } = req.body
+            const { nombre_cliente, ubicacion } = req.body
             // guardar en la base de datos
             await Cliente.create(
-                { nombre_cliente: name, cargo:Position, ubicacion: location },
-                { fields: ['nombre_cliente', 'cargo', 'ubicacion'] }
+                { nombre_cliente: nombre_cliente, ubicacion: ubicacion },
+                { fields: ['nombre_cliente', 'ubicacion'] }
               )
             res.status(201).json({ message: 'Cliente registrado correctamente' })
         } catch (error) {

@@ -2,7 +2,6 @@
 
     import { DataTypes } from 'sequelize';
     import {sequelize} from '../sequelize.js'; 
-    import { ClienteReplica } from './ReplicaClienteModel.js';
 
     const Proyecto = sequelize.define('proyecto', {
     id_proyecto: {
@@ -12,6 +11,10 @@
         allowNull: false,
         },
     tarifa: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+    },
+    total_proyecto: {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
