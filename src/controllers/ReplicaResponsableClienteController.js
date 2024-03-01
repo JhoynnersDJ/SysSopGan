@@ -99,7 +99,31 @@ class ReplicaResponsableClienteController {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
-    }    
+    } 
+    
+    static async create(req, res) {
+        try {
+          // Captura de datos del cuerpo de la solicitud
+          const { nombre_responsable_cl, cargo, id_cliente } = req.body;
+    
+          // Verificar si el cliente existe
+          const cliente = await Cliente.findByPk(id_cliente);
+          if (!cliente) {
+            return res.status(404).json({ message: 'Cliente no encontrado' });
+          }
+    
+          // Crear el responsable del cliente
+          const responsableCliente = await ResponsableCliente.create({
+            nombre_responsable_cl,
+            cargo,
+            id_cliente_fk: id_cliente, 
+          });
+    
+          res.status(201).json({ message: 'Responsable de cliente creado correctamente', responsableCliente });
+        } catch (error) {
+          res.status(500).json({ message: error.message });
+        }
+      }
 }
 
 export default ReplicaResponsableClienteController

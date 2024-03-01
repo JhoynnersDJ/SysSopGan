@@ -1,6 +1,6 @@
 import { ClienteReplica } from "../Modelo/Syssopgan/Asociaciones.js";
 import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
-import { Cliente } from "../Modelo/Cliente/ClienteModel.js";
+import { Cliente } from "../Modelo/Replicacion.js";
 
 class ReplicaClienteController {
     // devuelve todos los registros 
@@ -32,6 +32,22 @@ class ReplicaClienteController {
             }
             // envia los datos
             res.status(200).json(client)
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    // crear un cliente
+    static async create (req, res){
+        try {
+            // capturar datos
+            const { nombre_cliente, ubicacion } = req.body
+            // guardar en la base de datos
+            await Cliente.create(
+                { nombre_cliente: nombre_cliente, ubicacion: ubicacion },
+                { fields: ['nombre_cliente', 'ubicacion'] }
+              )
+            res.status(201).json({ message: 'Cliente registrado correctamente' })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
