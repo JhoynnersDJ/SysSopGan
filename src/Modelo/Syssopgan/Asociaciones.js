@@ -46,6 +46,7 @@ Proyecto.belongsTo(Usuario, { targetKey:'id_us', foreignKey: 'id_usuario_fk' });
 // hay que revisar esta relacion
 // Un rol lo tienen muchos usuarios
 // Definir la relación de uno a muchos con Rol y Usuario
+
 Rol.hasMany(Usuario, { foreignKey:'id_rolref'});
 Usuario.belongsTo(Rol, { targetKey:'id_rol', foreignKey: 'id_rolref' })
 
