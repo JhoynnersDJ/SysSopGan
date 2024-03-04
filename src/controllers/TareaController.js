@@ -1,4 +1,4 @@
-import {Tarea} from "../Modelo/Syssopgan/Asociaciones.js"
+import {Tarea} from "../Modelo/Syssopgan/Hooks.js"
 import { calculateRate } from "../services/tarifa.js"
 import { convertTo12HourFormat } from "../services/FormatHours.js"
 import { convertTo24HourFormat } from "../services/FormatHours.js"
@@ -32,6 +32,7 @@ class TareaController {
                 hora_inicio: task.dataValues.hora_inicio,
                 hora_fin: task.dataValues.hora_fin,
                 total_hora: task.dataValues.total_hora,
+                total_tarifa: task.dataValues.total_tarifa,
                 feriado: task.dataValues.feriado_fk,
                 id_proyecto: task.dataValues.id_proyecto_fk,
                 nombre_proyecto: task.proyecto.dataValues.nombre,
@@ -73,6 +74,7 @@ class TareaController {
                 hora_inicio: taskFound.dataValues.hora_inicio,
                 hora_fin: taskFound.dataValues.hora_fin,
                 total_hora: taskFound.dataValues.total_hora,
+                total_tarifa: taskFound.dataValues.total_tarifa,
                 feriado: taskFound.dataValues.feriado_fk,
                 id_proyecto: taskFound.dataValues.id_proyecto_fk,
                 nombre_proyecto: taskFound.proyecto.dataValues.nombre,
@@ -103,7 +105,8 @@ class TareaController {
                     'hora_fin',
                     'total_hora',
                     'id_servicio_fk',
-                    'feriado_fk'
+                    'feriado_fk',
+                    'total_tarifa'
                 ],
                 where: {
                     id_proyecto_fk: id
@@ -126,6 +129,7 @@ class TareaController {
                 hora_inicio: task.dataValues.hora_inicio,
                 hora_fin: task.dataValues.hora_fin,
                 total_hora: task.dataValues.total_hora,
+                total_tarifa: task.dataValues.total_tarifa,
                 feriado: task.dataValues.feriado_fk,
                 id_servicio: task.dataValues.id_servicio_fk,
                 nombre_servicio: task.servicio.dataValues.nombre,
@@ -328,9 +332,10 @@ static async create (req, res){
                     await Tarea.update(
                         { hora_inicio:startHour, hora_fin:endHour, total_hora: rate.totalHours, id_servicio_fk: id_service, total_tarifa: rate.totalRate},
                         { fields: ['hora_inicio', 'hora_fin', 'total_hora', 'id_servicio_fk', 'total_tarifa'], 
-                        where: { id_tarea: id , id_proyecto_fk:id_project } }
+                        where: { id_tarea: id , id_proyecto_fk:id_project },
+                        individualHooks:true } //habilita el hook para actualizar el total_proyecto del modelo Proyecto
                     )
-                        res.status(200).json({ message: 'Tarea Actualizada correctamente' })
+                    res.status(200).json({message: 'Tarea actualizada correctamente'})
                 }
              }
         } catch (error) {
@@ -338,7 +343,7 @@ static async create (req, res){
         }
     }
 
-    // eliminar una
+    // eliminar una tarea
     static async delete(req, res) {
         try {
             // capturar id de tarea
@@ -350,7 +355,8 @@ static async create (req, res){
             }
             // eliminar una tarea de la base de datos
             await Tarea.destroy(
-                { where: { id_tarea: id } }
+                { where: { id_tarea: id },
+                individualHooks: true } //habilita el hook afterDestroy para actualizar el total_proyecto del modelo Proyecto
             )
             res.status(200).json({ message: 'Tarea eliminada correctamente' })
         } catch (error) {
