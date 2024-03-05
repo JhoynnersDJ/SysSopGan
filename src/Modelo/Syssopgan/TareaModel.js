@@ -49,7 +49,11 @@ const Tarea = sequelize.define('tarea', {
   total_tarifa: {
     type: DataTypes.FLOAT,
     allowNull: false,
-}
+},
+status_tarea: {
+  type: DataTypes.BOOLEAN,
+  allowNull: false,
+},
 },
 {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt
