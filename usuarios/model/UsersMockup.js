@@ -1,210 +1,380 @@
-import {user, userRol} from './UserModel.js';
-import {Rol} from '../../src/Modelo/Syssopgan/RolModel.js';
-import {Usuario} from '../../src/Modelo/Syssopgan/UsuarioModel.js';
+import { user, userRol } from "./UserModel.js";
+import { Rol } from "../../src/Modelo/Syssopgan/RolModel.js";
+import { Usuario } from "../../src/Modelo/Syssopgan/UsuarioModel.js";
+import "dotenv/config";
 
+import ibmdb from "ibm_db";
 
-import ibmdb from "ibm_db"
+const dbSelect = process.env.SELECT_DB;
 
-let connStr = "DATABASE=SYSSOP;HOSTNAME=192.168.1.28;UID=db2inst1;PWD=H0l41324%;PORT=25000;PROTOCOL=TCPIP";
+let connStr =
+  "DATABASE=" +
+  process.env.DATABASE +
+  ";HOSTNAME=" +
+  process.env.HOSTNAME +
+  ";UID=" +
+  process.env.UID +
+  ";PWD=" +
+  process.env.PWD +
+  ";PORT=" +
+  process.env.PORT_DB2 +
+  ";PROTOCOL=" +
+  process.env.PROTOCOL;
 
-class userPort{
-    save(user){}
-    findOne(email){}
-}
 
 //guarda al usuario para persistencia
 async function saveUser(user) {
+  try {
+    if (dbSelect == "MYSQL") {
+      const rol = await Rol.findOne({
+        where: { nombre: "usuario" },
+      });
 
-    const rol = await Rol.findOne(
+      if (!rol) return null;
+
+      const user1 = await Usuario.create(
         {
-            where: { nombre : "usuario"} 
+          nombre: user.nombre,
+          apellido: user.apellido,
+          email: user.email,
+          password: user.password,
+          id_rolref: rol.dataValues.id_rol,
+          empresa: user.empresa,
+          cargo: user.cargo,
+          num_tel: user.num_tel,
+          departamento: user.departamento,
+          id_us: user.id_us,
+        },
+        {
+          fields: [
+            "nombre",
+            "apellido",
+            "email",
+            "password",
+            "id_rolref",
+            "empresa",
+            "cargo",
+            "num_tel",
+            "departamento",
+            "id_us",
+          ],
         }
-    );
+      );
 
-    if (!rol) return null;
-
-    let con;
-    try {
-    ibmdb.open(connStr, function(err, conn) {
-    if (err) return console.log(err);
-        conn.query(
-            "INSERT INTO TECNICO.USUARIO (ID_US, NOMBRE, APELLIDO, EMAIL, NUM_TEL, PASSWORD, EMPRESA, CARGO, DEPARTAMENTO, TOKEN, ULTIMA_CONEXION, ID_ROLREF) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [user.id, user.name, user.lastName, user.email, user.cellphone, user.password, user.empress, user.cargo, user.departament, null, '2023-02-02 00:00:00.000000', rol.dataValues.id_rol],
-            function(err, rows) {
-                if (err) console.log(err);
-                else {
-                    console.log(rows);
-                }
-                conn.close(function() {
-                    console.log('done');
-                });
-            }
-        );
-    });
-    
-    
-    const user1 = await Usuario.create(
-        {nombre: user.name, apellido: user.lastName, email: user.email, password: user.password, id_rolref: rol.dataValues.id_rol,
-        empresa: user.empress, cargo: user.cargo, num_tel: user.cellphone, departamento: user.departament, id_us: user.id},
-        {fields: ['nombre', 'apellido', 'email', 'password', 'id_rolref', 'empresa', 'cargo', 'num_tel', 'departamento', 'id_us'] } );
-        
-    const newRol = new userRol(rol.dataValues.id_rol, rol.dataValues.nombre, rol.dataValues.descripcion)  
-    
-    return newRol;
-    } catch (error) {
-        console.log(error);
+      return new userRol(
+        rol.dataValues.id_rol,
+        rol.dataValues.nombre,
+        rol.dataValues.descripcion
+      );
     }
-    
-    
-    //users.users.push(user);
+
+    //DB2
+
+    if (dbSelect == "DB2") {
+      var rol2 = await new Promise((resolve, reject) => {
+        ibmdb.open(connStr, async (err, conn) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+          } else {
+            try {
+              const data = await conn.query(
+                "SELECT * FROM TECNICO.ROL WHERE NOMBRE = ?;",
+                ["usuario"]
+              );
+              await conn.query(
+                "INSERT INTO TECNICO.USUARIO (ID_US, NOMBRE, APELLIDO, EMAIL, NUM_TEL, PASSWORD, EMPRESA, CARGO, DEPARTAMENTO, TOKEN, ULTIMA_CONEXION, ID_ROLREF) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [
+                  user.id_us,
+                  user.nombre,
+                  user.apellido,
+                  user.email,
+                  user.num_tel,
+                  user.password,
+                  user.empresa,
+                  user.cargo,
+                  user.departamento,
+                  null,
+                  null,
+                  data[0].ID_ROL,
+                ]
+              );
+              conn.close(() => {
+                // console.log('done');
+              });
+              console.log(data[0]);
+              resolve(data[0]);
+            } catch (err) {
+              console.log(err);
+              reject(err);
+            }
+          }
+        });
+      });
+
+      return new userRol(rol2.ID_ROL, rol2.NOMBRE_ROL, rol2.DESCRIPCION);
+    }
+    return null;
+  } catch (error) {
+    console.log(error);
+  }
+
+  //users.users.push(user);
 }
 
 //busca en la lista de usuarios un email pasado por parametro
-async function findOne(email){
-    const user1 = await Usuario.findOne(
-        {
-            where: { email: email }
-        }
-    )
+async function findOne(email) {
+  if (dbSelect == "MYSQL") {
+    const user1 = await Usuario.findOne({
+      where: { email: email },
+    });
     //console.log(user1);
     if (!user1) return null;
-    const rol = await Rol.findOne(
-        {
-            where: { id_rol : user1.dataValues.id_rolref} 
-        }
-    ) 
-    ibmdb.open(connStr, function(err, conn) {
-        if (err) return console.log(err);
-        conn.query("SELECT * FROM TECNICO.USUARIO AS USU JOIN TECNICO.ROL AS ROL ON USU.ID_ROLREF = ROL.ID_ROL WHERE EMAIL = ?;", [email],
-        function(err, data) {
-            if (err) console.log(err);
-            else {
-                console.log(data[0]);
-            }
-            conn.close(function() {
-                console.log('done');
-            });
-        });
+    const rol = await Rol.findOne({
+      where: { id_rol: user1.dataValues.id_rolref },
     });
-    
+    return new user(
+      user1.dataValues.nombre,
+      user1.dataValues.apellido,
+      user1.dataValues.email,
+      user1.dataValues.password,
+      user1.dataValues.num_tel,
+      user1.dataValues.empresa,
+      user1.dataValues.cargo,
+      user1.dataValues.departamento,
+      new userRol(
+        rol.dataValues.id_rol,
+        rol.dataValues.nombre,
+        rol.dataValues.descripcion
+      ),
+      user1.dataValues.id_us
+    );
+  }
 
-       
-    const newuser = new user(user1.dataValues.nombre,user1.dataValues.apellido, user1.dataValues.email, user1.dataValues.password,
-        user1.dataValues.num_tel, user1.dataValues.empresa,user1.dataValues.cargo, user1.dataValues.departamento, 
-        new userRol(rol.dataValues.id_rol, rol.dataValues.nombre, rol.dataValues.descripcion), user1.dataValues.id_us);
-        
-    return newuser;
-    //return users.users.find((users) => users.email == email);
-}
+  //DB2
 
-//devuelve un objeto tipi usuario por id
-async function findOneById(id){
-    //let user2;
-
-
-    const user2 = await  new Promise((resolve, reject) => {
-    ibmdb.open(connStr, (err, conn) => {
-      if (err) {
-        console.log(err);
-        reject(err);
-        return;
-      }
-
-      conn.query("SELECT * FROM TECNICO.USUARIO WHERE ID_US = '" + id + "';", (err, data) => {
+  if (dbSelect == "DB2") {
+    var user2 = await new Promise((resolve, reject) => {
+      ibmdb.open(connStr, async (err, conn) => {
         if (err) {
           console.log(err);
           reject(err);
-          return;
+        } else {
+          try {
+            const data = await conn.query(
+              "SELECT ROL.NOMBRE AS NOMBRE_ROL,USU.NOMBRE AS NOMBRE_USU,* FROM TECNICO.USUARIO AS USU JOIN TECNICO.ROL AS ROL ON USU.ID_ROLREF = ROL.ID_ROL WHERE EMAIL = ?;",
+              [email]
+            );
+            conn.close(() => {
+              // console.log('done');
+            });
+            resolve(data[0]);
+          } catch (err) {
+            console.log(err);
+            reject(err);
+          }
         }
-
-        console.log(data[0]);
-        conn.close(() => {
-          console.log('done');
-        });
-        resolve(data);
       });
     });
-  });
+    if (!user2) return null;
+    return new user(
+      user2.NOMBRE_USU,
+      user2.APELLIDO,
+      user2.EMAIL,
+      user2.PASSWORD,
+      user2.NUM_TEL,
+      user2.EMPRESA,
+      user2.CARGO,
+      user2.DEPARTAMENTO,
+      new userRol(user2.ID_ROL, user2.NOMBRE_ROL, user2.DESCRIPCION),
+      user2.ID_US
+    );
+  }
 
-       
-    
+  return null;
+  //return users.users.find((users) => users.email == email);
+}
+
+//devuelve un objeto tipi usuario por id
+async function findOneById(id) {
+  if (dbSelect == "MYSQL") {
     const user1 = await Usuario.findByPk(id, {
-        include: [
-            {
-                model: Rol,
-            }
-
-        ]
+      include: [
+        {
+          model: Rol,
+        },
+      ],
     }).catch((error) => {
-        console.error('Failed to retrieve data : ', error);
-    }); 
-    //console.log(user1);
-    const newuser = new user(user1.dataValues.nombre,user1.dataValues.apellido, 
-        user1.dataValues.email, user1.dataValues.password,
-        user1.dataValues.num_tel, user1.dataValues.empresa,user1.dataValues.cargo, 
-        user1.dataValues.departamento, 
-        new userRol(user1.rol.dataValues.id_rol, user1.rol.dataValues.nombre, user1.rol.dataValues.descripcion), 
-        user1.dataValues.id_us);
+      console.error("Failed to retrieve data : ", error);
+    });
+    if (!user1) return null;
+    return new user(
+      user1.dataValues.nombre,
+      user1.dataValues.apellido,
+      user1.dataValues.email,
+      user1.dataValues.password,
+      user1.dataValues.num_tel,
+      user1.dataValues.empresa,
+      user1.dataValues.cargo,
+      user1.dataValues.departamento,
+      new userRol(
+        user1.rol.dataValues.id_rol,
+        user1.rol.dataValues.nombre,
+        user1.rol.dataValues.descripcion
+      ),
+      user1.dataValues.id_us
+    );
+  }
+  //DB2
+  if (dbSelect == "DB2") {
+    var user2 = await new Promise((resolve, reject) => {
+      ibmdb.open(connStr, async (err, conn) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        } else {
+          try {
+            const data = await conn.query(
+              "SELECT ROL.NOMBRE AS NOMBRE_ROL,USU.NOMBRE AS NOMBRE_USU,* FROM TECNICO.USUARIO AS USU JOIN TECNICO.ROL AS ROL ON USU.ID_ROLREF = ROL.ID_ROL WHERE USU.ID_US = ?;",
+              [id]
+            );
+            conn.close(() => {
+              // console.log('done');
+            });
+            resolve(data[0]);
+          } catch (err) {
+            console.log(err);
+            reject(err);
+          }
+        }
+      });
+    });
 
-    return newuser;
-    //return users.users.find((users) => users.id == id);
+    if (!user2) return null;
+    return new user(
+      user2.NOMBRE_USU,
+      user2.APELLIDO,
+      user2.EMAIL,
+      user2.PASSWORD,
+      user2.NUM_TEL,
+      user2.EMPRESA,
+      user2.CARGO,
+      user2.DEPARTAMENTO,
+      new userRol(user2.ID_ROL, user2.NOMBRE_ROL, user2.DESCRIPCION),
+      user2.ID_US
+    );
+  }
+
+  return null;
+  //return users.users.find((users) => users.id == id);
 }
 
 //actualiza el rol del usuario cuyo email se paso por el req.body
 async function updateRol(rol, email) {
-    const rolFound = await Rol.findOne(
-        {
-            where: { nombre : rol} 
-        }
-    );
+  if (dbSelect == "MYSQL") {
+    const rolFound = await Rol.findOne({
+      where: { nombre: rol },
+    });
 
     if (!rolFound) return null;
 
-    const user1 = await Usuario.findOne(
-        {
-            where: { email: email }
-        }
-    );
+    const user1 = await Usuario.findOne({
+      where: { email: email },
+    });
 
-    if (!rolFound) return null;
+    if (!user1) return null;
 
     user1.id_rolref = rolFound.id_rol;
 
     user1.save();
 
-    const newuser = new user(user1.dataValues.nombre,user1.dataValues.apellido, 
-        user1.dataValues.email, user1.dataValues.password,
-        user1.dataValues.num_tel, user1.dataValues.empresa,user1.dataValues.cargo, 
-        user1.dataValues.departamento, 
-        new userRol(rolFound.dataValues.id_rol, rolFound.dataValues.nombre, rolFound.dataValues.descripcion), 
-        user1.dataValues.id_us);
+    return new user(
+      user1.dataValues.nombre,
+      user1.dataValues.apellido,
+      user1.dataValues.email,
+      user1.dataValues.password,
+      user1.dataValues.num_tel,
+      user1.dataValues.empresa,
+      user1.dataValues.cargo,
+      user1.dataValues.departamento,
+      new userRol(
+        rolFound.dataValues.id_rol,
+        rolFound.dataValues.nombre,
+        rolFound.dataValues.descripcion
+      ),
+      user1.dataValues.id_us
+    );
+  }
 
-    return newuser;
+  //DB2
+  if (dbSelect == "DB2") {
+    var user2 = await new Promise((resolve, reject) => {
+      ibmdb.open(connStr, async (err, conn) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        } else {
+          try {
+            const data = await conn.query(
+              "SELECT * FROM TECNICO.ROL WHERE NOMBRE = ?;",
+              [rol]
+            );
+            if (!data[0]) return null;
+            await conn.query(
+              "UPDATE TECNICO.USUARIO AS USU SET USU.ID_ROLREF = ? WHERE USU.EMAIL = ?;",
+              [data[0].ID_ROL, email]
+            );
+            const user1 = await conn.query(
+              "SELECT ROL.NOMBRE AS NOMBRE_ROL,USU.NOMBRE AS NOMBRE_USU,* FROM TECNICO.USUARIO AS USU JOIN TECNICO.ROL AS ROL ON USU.ID_ROLREF = ROL.ID_ROL WHERE EMAIL = ?;",
+              [email]
+            );
+            conn.close(() => {
+              // console.log('done');
+            });
+            resolve(user1[0]);
+          } catch (err) {
+            console.log(err);
+            reject(err);
+          }
+        }
+      });
+    });
+
+    return new user(
+      user2.NOMBRE_USU,
+      user2.APELLIDO,
+      user2.EMAIL,
+      user2.PASSWORD,
+      user2.NUM_TEL,
+      user2.EMPRESA,
+      user2.CARGO,
+      user2.DEPARTAMENTO,
+      new userRol(user2.ID_ROL, user2.NOMBRE_ROL, user2.DESCRIPCION),
+      user2.ID_US
+    );
+  }
+
+  return null;
 }
 
+export default class userMockup {
+  users = [];
+  static save(user) {
+    return saveUser(user);
+    //console.log(users);
+  }
 
+  static findOne(email) {
+    return findOne(email);
+  }
 
-export default class userMockup extends userPort{
-    users = [];
-    static save(user){
-        
-        return saveUser(user);
-        //console.log(users);
-    }
+  static findOneById(id) {
+    return findOneById(id);
+  }
 
-    static findOne(email){
-        return findOne(email);
-    }
-
-    static findOneById(id){
-        return findOneById(id);
-    }
-
-    static updateRol(rol, email){
-        return updateRol(rol, email);
-    }
-    
+  static updateRol(rol, email) {
+    return updateRol(rol, email);
+  }
 }
 
 let users = new userMockup();
-

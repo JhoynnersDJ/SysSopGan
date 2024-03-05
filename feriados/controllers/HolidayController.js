@@ -20,15 +20,15 @@ export const loadHolidays = async (req,res) => {
             const datef = new Date(element.start.date);
             //busca un feriado por id
             const holidayFound = await holiday.findOneByDate(datef.toISOString().split('T')[0]);
-            console.log(holidayFound)
+            //console.log(holidayFound)
             //si consigue el feriado lanza un mensaje de feriado no encontrado
             if (holidayFound) return//{console.log(holidayFound); return };
-
+            //console.log(holidayFound)
             //se ccrea un nuevo holiday
             const holidayItem = new holiday(element.summary, datef.toISOString().split('T')[0]);
 
             //se guarda el nuevo objeto en el holidaymock
-            await holiday.save(holidayItem);
+            //await holiday.save(holidayItem);
             
         });
         
@@ -66,12 +66,12 @@ export const createHoliday = async (req, res) => {
 
         //si consigue el feriado lanza un mensaje de feriado con fecha repetida
         if (holidayFound) return res.status(500).json({message: "Holiday Found, repeated date"});
-
+        console.log(holidayFound)
         //se ccrea un nuevo holiday
-        const holidayItem = new holiday(nanombreme, new Date(fecha));
+        //const holidayItem = new holiday(nombre, new Date(fecha));
 
         //se guarda el nuevo objeto en el holidaymock
-        const newhol = await holiday.save(holidayItem);
+        //const newhol = await holiday.save(holidayItem);
 
         //se devuelve como respuesta el feriado creado
         res.status(200).json(newhol);

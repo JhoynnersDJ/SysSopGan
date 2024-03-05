@@ -1,5 +1,5 @@
 import { Router} from "express";
-import  {login, logout, register, profile, updateRol}  from './controllers/UserControllers.js';
+import  {login, logout, register, profile, updateRol, verifyToken}  from './controllers/UserControllers.js';
 import { authRequired } from "../src/middlewares/validateToken.js";
 import { rolRequired } from "../src/middlewares/validateRol.js";
 import { validateSchema } from "../src/middlewares/ValidatorSchema.js";
@@ -19,6 +19,8 @@ router.post('/logout',authRequired, logout);
 router.get('/perfil', authRequired, profile);
 
 //actualizar rol del usuario
-router.post('/actualizar-rol',authRequired, validateSchema(updateRolfromAdmin), updateRol);
+router.post('/actualizar-rol',authRequired,rolRequired("admin","moderador",null), validateSchema(updateRolfromAdmin), updateRol);
+
+router.get('/verificar', verifyToken);
 
 export default router

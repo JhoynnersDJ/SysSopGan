@@ -32,10 +32,10 @@ export const register = async (req, res) => {
         const userSaved = await user.save(newuser);
         
         //se genera el token para ser manejado por la cookie
-        const token = await createAccessToken({ id: newuser.getUserId(), rol: userSaved.getUseRol() });
+        const authToken = await createAccessToken({ id_us: newuser.getUserId(), rol: userSaved.getUseRol() });
         
         //se envia de respuesta el token yy los datos ingresados
-        res.cookie('authToken', token);
+        res.cookie('authToken', authToken);
        
         res.status(200).json({
             id: newuser.getUserId(),
@@ -47,7 +47,7 @@ export const register = async (req, res) => {
             empresa: newuser.getUserEmpress(), 
             departamento: newuser.getUserDepartament(),
             rol: userSaved.getUseRol(),
-            authToken: token
+            authToken: authToken
         });
         console.log('Se creo el usuario correctamente');
         //userFound = null;
@@ -78,15 +78,15 @@ export const login = async (req, res) => {
         if (!isMatch) return res.status(202).json({ message: "Incorrect password" });
 
         //se genera un token para ser manejado como una cookie
-        const token = await createAccessToken({ id: userFound.getUserId(), rol: userFound.getUserRol() });
+        const authToken = await createAccessToken({ id_us: userFound.getUserId(), rol: userFound.getUserRol() });
 
         //se envia de respuesta el token y los datos ingresados
-        res.cookie('authToken', token);
+        res.cookie('authToken', authToken);
         res.status(200).json({
             id: userFound.getUserId(),
             nombre: userFound.getUserName(),
             email: userFound.getUserEmail(),
-            authToken: token
+            authToken: authToken
         });
         console.log(`El usuario ${userFound.getUserName()} a iniciado sesion`);
         //userFound = null;
@@ -98,7 +98,6 @@ export const login = async (req, res) => {
 
 //finalizar sesion del usuario
 export const logout = (req, res) => {
-    console.log()
     if(!req.cookies.authToken) return res.status(202).json({ message: "No has iniciado sesion" });
     //se le agota el tiempo de vida de la cookie
     res.cookie('authToken', "", {
@@ -110,7 +109,7 @@ export const logout = (req, res) => {
 //obtener datos del usuario
 export const profile = async (req, res) => {
     //busca al usuario por el id
-    const userFound = await user.findOneById(req.user.id)
+    const userFound = await user.findOneById(req.user.id_us)
     
     //si no encuentra al usurio da el mensaje de error
     if (!userFound) return res.status(202).json({ message: "User not found" });
@@ -135,7 +134,8 @@ export const profile = async (req, res) => {
 export const updateRol = async (req,res) => {
 
     //busca al usuario por el id
-    const userAdmin = await user.findOneById(req.user.id)
+    
+    const userAdmin = await user.findOneById(req.user.id_us)
 
     //si no encuentra al usurio da el mensaje de error
     if (!userAdmin) return res.status(202).json({ message: "User not found" });
@@ -150,7 +150,6 @@ export const updateRol = async (req,res) => {
         if (!userFound) return res.status(202).json({ message: "user not Found" });
 
         const newuser = await user.updateRol(rol, email);
-
         res. status(200).json({
             id: newuser.getUserId(),
             nombre: newuser.getUserName(),
@@ -169,3 +168,50 @@ export const updateRol = async (req,res) => {
     
 }
 
+export const verifyToken = async (req, res) => {
+    const { authToken } = req.cookies;
+
+    if (!authToken) return res.status(401).json({ message: "Invalid token" });
+
+    jwt.verify(authToken, TOKEN_SECRET, async (err, user2) => {
+
+        if (err) return res.status(401).json({ message: "Invalid token" });
+
+        const userFound = await user.findOneById(user2.id_us);
+
+        if (!userFound) return res.status(401).json({ message: "Unauthorized" });
+
+        return res.json({
+            id_us: userFound.id_us,
+            nombre: userFound.nombre,
+            email: userFound.email,
+            rol: userFound.getUserRol()
+        })
+        
+    })
+}
+
+export const updateEmail = async (req, res) => {
+    const { authToken } = req.cookies;
+
+    const { email } = req.body;
+
+    if (!authToken) return res.status(401).json({ message: "Invalid token" });
+
+    jwt.verify(authToken, TOKEN_SECRET, async (err, user2) => {
+
+        if (err) return res.status(401).json({ message: "Invalid token" });
+
+        const userFound = await user.findOneById(user2.id_us);
+
+        if (!userFound) return res.status(401).json({ message: "Unauthorized" });
+
+        return res.json({
+            id_us: userFound.id_us,
+            nombre: userFound.nombre,
+            email: userFound.email,
+            rol: userFound.getUserRol()
+        })
+        
+    })
+}

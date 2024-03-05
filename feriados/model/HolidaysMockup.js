@@ -1,35 +1,54 @@
 import holidays from './HolidaysModel.js';
 import {Feriado} from '../../src/Modelo/Syssopgan/FeriadoModel.js'
 import  {v4 } from "uuid";
-import ibmdb from "ibm_db"
+import ibmdb from "ibm_db";
+import "dotenv/config";
 
 let connStr = "DATABASE=SYSSOP;HOSTNAME=192.168.1.28;UID=db2inst1;PWD=H0l41324%;PORT=25000;PROTOCOL=TCPIP";
 
-class holidayPort{
-    save(holiday){}
-    findOne(email){}
-}
+const dbSelect = process.env.SELECT_DB;
 
 
 //guarda al feriado para persistencia
 async function saveHoliday(holiday) {
-    //console.log(holiday.date);
+    if (dbSelect == "MYSQL"){
+    return await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
+        {fields: [ 'nombre', 'fecha']});
+    }
+
+    //DB2
+
+    if (dbSelect == "DB2"){
     const id = v4().split('-')[0];
     //DB2
-    /*const conn = await ibmdb.open(connStr);
-    try {
-        await conn.query(
-            `INSERT INTO TECNICO.FERIADO(ID, NOMBRE, FECHA) VALUES ('${id}', '${holiday.name}', '${holiday.date}')`
-        );
-        console.log('done');
-    } catch (err) {
-        console.error(err);
-    } finally {
-        conn.close();
-    }*/
-    const newhol = await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
-        {fields: [ 'nombre', 'fecha']});
-    return newhol;
+    
+    var holidayID = await new Promise((resolve, reject) => {
+        ibmdb.open(connStr, async (err, conn) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+          } else {
+            try {
+              const data = await conn.query(
+                `INSERT INTO TECNICO.FERIADO(ID, NOMBRE, FECHA) VALUES ('${id}', '${holiday.name}', '${holiday.date}')`
+              );
+              const id = await conn.query("SELECT MAX(ID) FROM TECNICO.FERIADO");
+              conn.close(() => {
+                // console.log('done');
+              });
+              resolve(id[0]['1']);
+            } catch (err) {
+              console.log(err);
+              reject(err);
+            }
+          }
+        });
+      });
+      if(!holidayID) return new holiday(holiday.name, holiday.date,'1')
+      return new holiday(holiday.name, holiday.date,holidayID+1 );
+    }
+    
+    return null;
     //holidays.holidays.push(holiday);
 }
 
@@ -196,27 +215,72 @@ async function findOneByDate(date){
         }
     });
     });*/
-        
+    try {
+   var holidayFound2 = await new Promise((resolve, reject) => {
+    ibmdb.open(connStr, async (err, conn) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        try {
+          const data = await new Promise((resolve, reject) => {
+            conn.query("SELECT * FROM TECNICO.FERIADO WHERE FECHA = ?;", [date], (err, result) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result);
+              }
+            });
+          });
+          conn.close(() => {
+            // console.log('done');
+          });
+          resolve(data[0]);
+        } catch (err) {
+          console.log(err);
+          reject(err);
+        }
+      }
+    });
+});
+
     
-    var holidayFound = await Feriado.findOne(
+
+    /*var holidayFound2 = await new Promise((resolve, reject) => {
+    ibmdb.open(connStr, async (err, conn) => {
+        if (err) {
+            console.log(err);
+            reject(err);
+        } else {
+            try {
+                const data = await conn.query(`SELECT * FROM TECNICO.FERIADO WHERE FECHA = ?`, [date]);
+                conn.close(() => {
+                    // console.log('done');
+                });
+                console.log(data)
+                resolve(data[0]);
+            } catch (err) {
+                console.log(err);
+                reject(err);
+            }
+        }
+    });
+});*/
+} catch (error) {
+    console.log(error);
+}
+       if(!holidayFound2) return null; 
+    
+    /*var holidayFound = await Feriado.findOne(
         {
             where: { fecha : date} 
         }
-    );
+    );*/
     /*if(!holidayFound) holidayFound = holidayFound2;
     if(!holidayFound2) return null;*/
-    if(!holidayFound) return null;
+    //if(!holidayFound) return null;
     return holidayFound2;
-    /*//date.setHours(0,0,0,0);
-    for(var i = 0; i < holidays.holidays.length; i++) {
-        let day = holidays.holidays[i].date;
-        //day.setHours(0,0,0,0);
-        if (day.valueOf() == date.valueOf()) {
-            return holidays.holidays[i];
-        }
-        //date = null;
-    }
-    return null;*/
+    
 }
 
 async function updateName(name,id){
@@ -245,7 +309,7 @@ async function updateDate(date,id){
     return holidayFound.save();
 }
 
-export default class holidayMockup extends holidayPort{
+export default class holidayMockup {
     holidays = [];
 
     static getHolidays (){

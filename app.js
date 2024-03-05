@@ -29,6 +29,8 @@ const port = process.env.PORT || 3000;
 const host = process.env.HOST;
 const corsOrigin = process.env.CORS_ORIGIN;
 
+const dbSelect = process.env.SELECT_DB;
+
 const app = express();
 
 app.use(cors({
@@ -39,6 +41,8 @@ app.use(express.json());
 //manejo de cookies
 app.use(cookieParser());
 //Sincronizacion de la base de datos
+
+
 await sequelize.sync({ force: false }).then(() => {
   console.log('Modelo sincronizado con la base de datos');
 });

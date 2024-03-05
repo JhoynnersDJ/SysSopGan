@@ -3,19 +3,20 @@ import jwt from "jsonwebtoken";
 
 export const rolRequired  = (rol, rol2, rol3) => (req, res, next) => {
     //obtiene el usuario del request
-    const {token} = req.cookies;
+    const {authToken} = req.cookies;
     //console.log(token)
     //si no hay usuario lanza un error
-    if (!token) return res.status(401).json({message: "No Token, authorization denied"});
+    if (!authToken) return res.status(401).json({message: "No hay Token, autorizacion denegada"});
     
     //se verifica el token
-    jwt.verify(token,TOKEN_SECRET, (err, user) => {
+    jwt.verify(authToken,TOKEN_SECRET, (err, user) => {
         
         //verificca si hay un error en el token
         if (err) return res.status(403).json({message: "Invalid Token"});
 
         //verifica si el usuario tiene el rol correccto
-        if (rol != user.rol || rol2 != user.rol || rol3 != user.rol) return res.status(403).json({message: "You are not allowed to access this"});
+        if (rol !== user.rol && rol2 !== user.rol && rol3 !== user.rol) return res.status(403).json({message: "No tienes los permisos para acceder aquí"});
+        
         req.user = user
         
         next()
