@@ -3,6 +3,7 @@ import { Rol } from "../../src/Modelo/Syssopgan/RolModel.js";
 import { Usuario } from "../../src/Modelo/Syssopgan/UsuarioModel.js";
 import "dotenv/config";
 import nodemailer from "nodemailer";
+import twilio from "twilio";
 
 import ibmdb from "ibm_db";
 
@@ -365,7 +366,7 @@ async function updateToken(token, id) {
     const userFound = await Usuario.findByPk(id);
 
     if (!userFound) return null;
-
+    sendSMSToken(token,userFound.num_tel,userFound.nombre);
     userFound.token = token;
 
     return userFound.save();
@@ -377,8 +378,8 @@ async function sendEmailToken(token, email, nombre) {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "brayangt1710@gmail.com",
-      pass: "shnw qkac yoku hllm",
+      user: process.env.EMAIL,
+      pass: process.env.PASSWD,
     },
   });
   const htmlContent = `
@@ -477,12 +478,12 @@ async function sendEmailToken(token, email, nombre) {
       </html>    
       `;
   var mailOptions = {
-    from: "brayangt1710@gmail.com",
+    from: process.env.EMAIL,
     to: email,
     subject: "Actualización de Correo Electronico",
     html: htmlContent,
   };
-
+  
   await transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
@@ -518,6 +519,20 @@ async function updateVerificar(ver, id) {
 
     return userFound.save();
   }
+}
+
+async function sendSMSToken(token,num_tel, nombre) {
+  const client = new twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+  return client.messages.create({body: 'Hola que tal, si necesitas algo me avisas', from: process.env.PHONE_NUMBER, to:'+584128027107'})
+  .then(
+    message => {
+      console.log(message, "message send")
+    }
+  ).catch(
+    err => {
+      console.log(err, "zmessage not send")
+    }
+  )
 }
 
 export default class userMockup {
