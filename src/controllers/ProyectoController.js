@@ -264,8 +264,10 @@ class ProyectoController {
     static async create(req, res) {
         try {
             // capturar datos
-            const { tarifa, nombre, id_usuario, status, id_responsable_cliente } = req.body
-            let { id_responsable_tecnico } = req.body
+            const { tarifa, id_usuario, status, id_responsable_cliente } = req.body
+            let { id_responsable_tecnico, nombre } = req.body
+            // eliminar espacios en blanco del string
+            nombre = nombre.trim()
             // si id_responsible_technician es una cadena vacia
             if (id_responsable_tecnico === "") {
                 id_responsable_tecnico = null
@@ -287,6 +289,16 @@ class ProyectoController {
             const responsableClienteFound = await ReplicaResponsableCliente.findByPk(id_responsable_cliente)
             if (!responsableClienteFound) {
                 return res.status(404).json({ message: 'Responsable cliente no encontrado' })
+            }
+            // verificar que no exista otro proyecto con el mismo nombre
+            const proyecto = await Proyecto.findOne({
+                where: {
+                    nombre_proyecto: nombre,
+                    id_responsable_cliente_fk: id_responsable_cliente
+                }
+            })
+            if (proyecto) {
+                return res.status(400).json({ message: 'El responsable cliente ya tiene un proyecto con el mismo nombre'})
             }
             // fecha de inicio
             const now = new Date()
