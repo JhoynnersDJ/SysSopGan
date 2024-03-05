@@ -18,7 +18,7 @@ async function saveHoliday(holiday) {
 
     //DB2
 
-    if (dbSelect == "DB2"){
+    /*if (dbSelect == "DB2"){
     const id = v4().split('-')[0];
     //DB2
     
@@ -46,7 +46,7 @@ async function saveHoliday(holiday) {
       });
       if(!holidayID) return new holiday(holiday.name, holiday.date,'1')
       return new holiday(holiday.name, holiday.date,holidayID+1 );
-    }
+    }*/
     
     return null;
     //holidays.holidays.push(holiday);
@@ -215,71 +215,18 @@ async function findOneByDate(date){
         }
     });
     });*/
-    try {
-   var holidayFound2 = await new Promise((resolve, reject) => {
-    ibmdb.open(connStr, async (err, conn) => {
-      if (err) {
-        console.log(err);
-        reject(err);
-      } else {
-        try {
-          const data = await new Promise((resolve, reject) => {
-            conn.query("SELECT * FROM TECNICO.FERIADO WHERE FECHA = ?;", [date], (err, result) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(result);
-              }
-            });
-          });
-          conn.close(() => {
-            // console.log('done');
-          });
-          resolve(data[0]);
-        } catch (err) {
-          console.log(err);
-          reject(err);
-        }
-      }
-    });
-});
-
     
-
-    /*var holidayFound2 = await new Promise((resolve, reject) => {
-    ibmdb.open(connStr, async (err, conn) => {
-        if (err) {
-            console.log(err);
-            reject(err);
-        } else {
-            try {
-                const data = await conn.query(`SELECT * FROM TECNICO.FERIADO WHERE FECHA = ?`, [date]);
-                conn.close(() => {
-                    // console.log('done');
-                });
-                console.log(data)
-                resolve(data[0]);
-            } catch (err) {
-                console.log(err);
-                reject(err);
-            }
-        }
-    });
-});*/
-} catch (error) {
-    console.log(error);
-}
-       if(!holidayFound2) return null; 
+       //if(!holidayFound2) return null; 
     
-    /*var holidayFound = await Feriado.findOne(
+    var holidayFound = await Feriado.findOne(
         {
             where: { fecha : date} 
         }
-    );*/
+    );
     /*if(!holidayFound) holidayFound = holidayFound2;
     if(!holidayFound2) return null;*/
-    //if(!holidayFound) return null;
-    return holidayFound2;
+    if(!holidayFound) return null;
+    return holidayFound;
     
 }
 

@@ -28,7 +28,7 @@ export const loadHolidays = async (req,res) => {
             const holidayItem = new holiday(element.summary, datef.toISOString().split('T')[0]);
 
             //se guarda el nuevo objeto en el holidaymock
-            //await holiday.save(holidayItem);
+            await holiday.save(holidayItem);
             
         });
         
