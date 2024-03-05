@@ -22,7 +22,6 @@ let connStr =
   ";PROTOCOL=" +
   process.env.PROTOCOL;
 
-
 //guarda al usuario para persistencia
 async function saveUser(user) {
   try {
@@ -148,7 +147,8 @@ async function findOne(email) {
         rol.dataValues.nombre,
         rol.dataValues.descripcion
       ),
-      user1.dataValues.id_us
+      user1.dataValues.id_us,
+      user1.dataValues.verificado
     );
   }
 
@@ -223,7 +223,8 @@ async function findOneById(id) {
         user1.rol.dataValues.nombre,
         user1.rol.dataValues.descripcion
       ),
-      user1.dataValues.id_us
+      user1.dataValues.id_us,
+      user1.dataValues.verificado
     );
   }
   //DB2
@@ -303,7 +304,8 @@ async function updateRol(rol, email) {
         rolFound.dataValues.nombre,
         rolFound.dataValues.descripcion
       ),
-      user1.dataValues.id_us
+      user1.dataValues.id_us,
+      user1.dataValues.verificado
     );
   }
 
@@ -358,23 +360,26 @@ async function updateRol(rol, email) {
   return null;
 }
 
-async function updateToken(token,id){
+async function updateToken(token, id) {
+  if (dbSelect == "MYSQL") {
+    const userFound = await Usuario.findByPk(id);
 
-  const userFound = await Usuario.findByPk(id);
-     
-  if(!userFound) return null;
-  userFound.token = token;
-  return userFound.save();
+    if (!userFound) return null;
+
+    userFound.token = token;
+
+    return userFound.save();
+  }
 }
 
-async function sendEmailToken(token,email,nombre){
-  emailTemp=email;
+async function sendEmailToken(token, email, nombre) {
+  emailTemp = email;
   var transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
-      user: 'brayangt1710@gmail.com',
-      pass: 'shnw qkac yoku hllm'
-    }
+      user: "brayangt1710@gmail.com",
+      pass: "shnw qkac yoku hllm",
+    },
   });
   const htmlContent = `
       <!DOCTYPE html>
@@ -472,44 +477,47 @@ async function sendEmailToken(token,email,nombre){
       </html>    
       `;
   var mailOptions = {
-    from: 'brayangt1710@gmail.com',
+    from: "brayangt1710@gmail.com",
     to: email,
-    subject: 'Actualización de Correo Electronico',
-    html: htmlContent
-  };console.log(mailOptions);
-  
-  transporter.sendMail(mailOptions, function(error, info){
+    subject: "Actualización de Correo Electronico",
+    html: htmlContent,
+  };
+
+  await transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
     } else {
-      console.log('Email sent: ' + info.response);
+      console.log("Email sent: " + info.response);
     }
   });
-  
 }
 
-async function updateEmail(id){
+async function updateEmail(id) {
+  if (dbSelect == "MYSQL") {
+    const userFound = await Usuario.findByPk(id);
 
-  const userFound = await Usuario.findByPk(id);
-     
-  if(!userFound) return null;
+    if (!userFound) return null;
 
-  if(!emailTemp) return null;
+    if (!emailTemp) return null;
 
-  userFound.email = emailTemp;
+    userFound.email = emailTemp;
 
-  emailTemp = null;
-  
-  return userFound.save();
+    emailTemp = null;
+
+    return userFound.save();
+  }
 }
 
-async function updateVerificar(ver,id){
+async function updateVerificar(ver, id) {
+  if (dbSelect == "MYSQL") {
+    const userFound = await Usuario.findByPk(id);
 
-  const userFound = await Usuario.findByPk(id);
-     
-  if(!userFound) return null;
-  userFound.verificar = ver;
-  return userFound.save();
+    if (!userFound) return null;
+
+    userFound.verificado = ver;
+
+    return userFound.save();
+  }
 }
 
 export default class userMockup {
@@ -535,16 +543,16 @@ export default class userMockup {
     return updateToken(token, id);
   }
 
-  static sendEmailToken(token,email,nombre) {
-    return sendEmailToken(token,email,nombre);
+  static sendEmailToken(token, email, nombre) {
+    return sendEmailToken(token, email, nombre);
   }
 
-  static updateEmail( id) {
-    return updateEmail( id);
+  static updateEmail(id) {
+    return updateEmail(id);
   }
 
-  static updateVerificar(ver,id) {
-    return updateVerificar(ver,id);
+  static updateVerificar(ver, id) {
+    return updateVerificar(ver, id);
   }
 }
 
