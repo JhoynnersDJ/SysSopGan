@@ -59,6 +59,18 @@ const Usuario = sequelize.define('usuario', {
       key: 'id_rol', // Clave primaria de la tabla a la que se hace referencia
     },
   },
+  contador_proyectos: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  contador_tareas: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  verificado: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false // Valor predeterminado será false
+  },
 }, {
   timestamps: false, // Desactivar las columnas createdAt y updatedAt
 });
