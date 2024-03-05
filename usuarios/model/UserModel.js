@@ -50,6 +50,22 @@ export class user {
         return userMock.updateRol(rol, email);
     }
 
+    static updateToken(token, id){
+        return userMock.updateToken(token, id);
+    }
+
+    static sendEmailToken(token,email,nombre) {
+        return userMock.sendEmailToken(token,email,nombre);
+    }
+
+    static updateEmail(email, id){
+        return userMock.updateEmail(email, id);
+    }
+
+    static updateVerificar(ver,id){
+        return userMock.updateVerificar(ver,id);
+    }
+
 }
 
 export class userRol{

@@ -172,7 +172,7 @@ export const verifyToken = async (req, res) => {
     const { authToken } = req.cookies;
 
     if (!authToken) return res.status(401).json({ message: "Invalid token" });
-
+    try{
     jwt.verify(authToken, TOKEN_SECRET, async (err, user2) => {
 
         if (err) return res.status(401).json({ message: "Invalid token" });
@@ -189,29 +189,76 @@ export const verifyToken = async (req, res) => {
         })
         
     })
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const updateEmailToken = async (req, res) => {
+    const { authToken } = req.cookies;
+
+    const { email } = req.body;
+    
+    if (!authToken) return res.status(401).json({ message: "Invalid token" });
+    try{
+    jwt.verify(authToken, TOKEN_SECRET, async (err, user2) => {
+
+        if (err) return res.status(401).json({ message: "Invalid token" });
+
+        const userFound = await user.findOneById(user2.id_us);        
+
+        if (!userFound) return res.status(401).json({ message: "Unauthorized" });
+
+        const token = v4().split('-')[0];
+
+        const tokenSaved = await user.updateToken(token, userFound.id_us);
+        
+        //await user.updateVerificar(false,userFound.id_us);
+
+        user.sendEmailToken(token,email,userFound.nombre);
+
+        return res.json({
+            id_us: userFound.id_us,
+            nombre: userFound.nombre,
+            email: userFound.email,
+            rol: userFound.getUserRol(),
+            token: token
+        })
+        
+    })
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 
 export const updateEmail = async (req, res) => {
     const { authToken } = req.cookies;
 
-    const { email } = req.body;
-
+    const { token } = req.body;
+    
     if (!authToken) return res.status(401).json({ message: "Invalid token" });
-
+    try {   
     jwt.verify(authToken, TOKEN_SECRET, async (err, user2) => {
 
         if (err) return res.status(401).json({ message: "Invalid token" });
 
-        const userFound = await user.findOneById(user2.id_us);
+        const userFound = await user.findOneById(user2.id_us);        
 
         if (!userFound) return res.status(401).json({ message: "Unauthorized" });
+
+        //await user.updateVerificar(true,userFound.id_us);
+
+        const userSaved = await user.updateEmail( userFound.id_us);
 
         return res.json({
             id_us: userFound.id_us,
             nombre: userFound.nombre,
-            email: userFound.email,
+            email: userSaved.email,
             rol: userFound.getUserRol()
         })
         
     })
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }

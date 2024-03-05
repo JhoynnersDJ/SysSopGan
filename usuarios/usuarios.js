@@ -1,5 +1,5 @@
 import { Router} from "express";
-import  {login, logout, register, profile, updateRol, verifyToken}  from './controllers/UserControllers.js';
+import  {login, logout, register, profile, updateRol, verifyToken, updateEmailToken, updateEmail}  from './controllers/UserControllers.js';
 import { authRequired } from "../src/middlewares/validateToken.js";
 import { rolRequired } from "../src/middlewares/validateRol.js";
 import { validateSchema } from "../src/middlewares/ValidatorSchema.js";
@@ -22,5 +22,9 @@ router.get('/perfil', authRequired, profile);
 router.post('/actualizar-rol',authRequired,rolRequired("admin","moderador",null), validateSchema(updateRolfromAdmin), updateRol);
 
 router.get('/verificar', verifyToken);
+
+router.post('/actualizar-email',authRequired, updateEmailToken);
+
+router.post('/verificar-email',authRequired, updateEmail);
 
 export default router
