@@ -80,6 +80,8 @@ app.use('/clientes', ReplicaClienteRouter);
 //Middleware para replica cliente
 app.use('/responsable-cliente', ReplicaResponsableClienteRouter);
 
+app.use(express.static('public'));
+
 app.listen(port, () => {
   console.log(`La aplicación está corriendo en http://${host}:${port}`);
 });

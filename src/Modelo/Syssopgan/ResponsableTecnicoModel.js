@@ -26,6 +26,10 @@ const ResponsableTecnico = sequelize.define('responsable_tecnico', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+cedula: {
+    type: DataTypes.STRING,
+    allowNull: false,
+},
 }, {
     timestamps: false, 
 });
