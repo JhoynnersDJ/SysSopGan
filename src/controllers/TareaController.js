@@ -98,16 +98,16 @@ class TareaController {
             }
             // obtener todas las tareas de proyecto
             const tasks = await Tarea.findAll({
-                attributes: [
-                    'id_tarea',
-                    'fecha',
-                    'hora_inicio',
-                    'hora_fin',
-                    'total_hora',
-                    'id_servicio_fk',
-                    'feriado_fk',
-                    'total_tarifa'
-                ],
+                // attributes: [
+                //     'id_tarea',
+                //     'fecha',
+                //     'hora_inicio',
+                //     'hora_fin',
+                //     'total_hora',
+                //     'id_servicio_fk',
+                //     'feriado_fk',
+                //     'total_tarifa'
+                // ],
                 where: {
                     id_proyecto_fk: id
                 },
@@ -149,16 +149,16 @@ static async create (req, res){
         const { date, start_time, end_time, id_project, id_service } = req.body
         // comprobar si existe el proyecto
         const project = await Proyecto.findByPk(id_project,{
-            attributes: [
-                'id_proyecto',
-                'tarifa',
-                'nombre_proyecto',
-                'id_responsable_tecnico_fk',
-                'id_usuario_fk',
-                'id_responsable_cliente_fk',
-                'status',
-                'fecha_inicio'
-            ]
+            // attributes: [
+            //     'id_proyecto',
+            //     'tarifa',
+            //     'nombre_proyecto',
+            //     'id_responsable_tecnico_fk',
+            //     'id_usuario_fk',
+            //     'id_responsable_cliente_fk',
+            //     'status',
+            //     'fecha_inicio'
+            // ]
         })
         if (!project) {
             return res.status(404).json({message: 'Proyecto no encontrado'})
@@ -265,34 +265,33 @@ static async create (req, res){
                 return res.status(404).json({ message: 'Tarea no encontrada' })
             } 
             // comprobar si existe el proyecto
-            const project = await Proyecto.findByPk(id_project,{
-                
-                attributes: [
-                    'id_proyecto',
-                    'tarifa',
-                    'nombre_proyecto',
-                    'id_responsable_tecnico_fk',
-                    'id_usuario_fk',
-                    'id_responsable_cliente_fk',
-                    'status',
-                    'fecha_inicio'
-                ]
+            const project = await Proyecto.findByPk(id_project,{    
+                // attributes: [
+                //     'id_proyecto',
+                //     'tarifa',
+                //     'nombre_proyecto',
+                //     'id_responsable_tecnico_fk',
+                //     'id_usuario_fk',
+                //     'id_responsable_cliente_fk',
+                //     'status',
+                //     'fecha_inicio'
+                // ]
             })
             if (!project) {
                 return res.status(404).json({message: 'Proyecto no encontrado'})
             }
             // comprobar si existe el proyecto y en ese proyecto existe la tarea
             const projectt = await Proyecto.findByPk(id_project,{
-                attributes: [
-                    'id_proyecto',
-                    'tarifa',
-                    'nombre_proyecto',
-                    'id_responsable_tecnico_fk',
-                    'id_usuario_fk',
-                    'id_responsable_cliente_fk',
-                    'status',
-                    'fecha_inicio'
-                ],
+                // attributes: [
+                //     'id_proyecto',
+                //     'tarifa',
+                //     'nombre_proyecto',
+                //     'id_responsable_tecnico_fk',
+                //     'id_usuario_fk',
+                //     'id_responsable_cliente_fk',
+                //     'status',
+                //     'fecha_inicio'
+                // ],
                  where: {id_tarea: id },
             })
             const task = await Tarea.findOne({
