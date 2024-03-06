@@ -16,6 +16,8 @@ import RolRouter from './src/routes/RoleRouter.js';
 import ServicioRouter from './src/routes/ServicioRouter.js';
 // Importar el router de tareas
 import TareaRouter from './src/routes/TareaRouter.js';
+
+import tareaRouter2 from './tareas/tareas.js'
 // Importar el router de responsable tecnico
 import ResponsableTecnicoRouter from './src/routes/ResponsableTecnicoRouter.js';
 // Importar el router de replica cliente
@@ -55,6 +57,9 @@ await sequelizeClients.sync({ force: false }).then(() => {
 
 //Middleware para usuario
 app.use('/usuarios', userRouter);
+
+//Middleware para tareas quue si sirven
+app.use('/tareas2', tareaRouter2);
 
 //Middleware para feriados
 app.use('/feriados', holidaysRouter);
