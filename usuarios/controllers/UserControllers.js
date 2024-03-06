@@ -47,11 +47,11 @@ export const register = async (req, res) => {
 
     //se guarda el usuario
     const userSaved = await user.save(newuser);
-
+      console.log(userSaved)
     //se genera el token para ser manejado por la cookie
     const authToken = await createAccessToken({
       id_us: newuser.getUserId(),
-      rol: userSaved.getUseRol(),
+      rol: userSaved.id_rol,
     });
 
     //se envia de respuesta el token yy los datos ingresados
@@ -66,7 +66,7 @@ export const register = async (req, res) => {
       num_tel: newuser.getUserCellphone(),
       empresa: newuser.getUserEmpress(),
       departamento: newuser.getUserDepartament(),
-      rol: userSaved.getUseRol(),
+      rol: userSaved.id_rol,
       authToken: authToken,
     });
     console.log("Se creo el usuario correctamente");

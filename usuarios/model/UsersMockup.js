@@ -45,6 +45,7 @@ async function saveUser(user) {
           num_tel: user.num_tel,
           departamento: user.departamento,
           id_us: user.id_us,
+          verificado: true
         },
         {
           fields: [
@@ -58,6 +59,7 @@ async function saveUser(user) {
             "num_tel",
             "departamento",
             "id_us",
+            "verificado",
           ],
         }
       );

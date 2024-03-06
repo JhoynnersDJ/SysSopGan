@@ -1,4 +1,4 @@
-function calcularDiferenciaDeTiempo(date1, date2) {
+export function calcularDiferenciaDeTiempo(date1, date2) {
     // Parsea las horas, minutos y período de date1
     const [hours1, minutes1, period1] = date1.match(/\d+|AM|PM/g);
 
@@ -38,7 +38,7 @@ function calcularDiferenciaDeTiempo(date1, date2) {
     return `${horas}:${minutos < 10 ? '0' : ''}${minutos}`;
 }
 
-function calculartarifa(date1, date2, inicio) {
+export function calculartarifa(date1, date2, inicio) {
     let fin; // Inicializamos la variable fin aquí
 
     // Parsea las horas, minutos y período de date1
@@ -64,6 +64,7 @@ function calculartarifa(date1, date2, inicio) {
         horasFin += 24;
 
         const fechaInicio = new Date(inicio);
+        console.log(fechaInicio);
         const fechaFin = new Date(inicio);
         fechaFin.setDate(fechaFin.getDate() + 1); // Establecer el día siguiente a la fecha de inicio
 

@@ -1,4 +1,5 @@
-import tarea from '../model/TareaModel.js'
+import tarea from '../model/TareaModel.js';
+import {calcularDiferenciaDeTiempo, calculartarifa} from '../libs/Tarifa.js'
 
 export const register = async (req, res) => {
     const { date, start_time, end_time, id_project, id_service } = req.body;
@@ -14,9 +15,12 @@ export const register = async (req, res) => {
         const date = new Date(start_time);
         console.log(date);
 
-        var time //= tarea.calulateTotalTime(start_time,end_time);
+        var time = calcularDiferenciaDeTiempo(start_time,end_time);
+        var time2 = calculartarifa(start_time,end_time, date);
         res.status(200).json({
-            total_time: time
+            total_time: time,
+            total_tarifa: time2.tarifa,
+            siguiente_dia: time2.fin
         })
     } catch (error) {
         res.status(500).json({ message: error.message });
