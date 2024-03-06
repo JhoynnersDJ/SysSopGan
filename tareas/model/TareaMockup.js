@@ -1,4 +1,5 @@
-import { Proyecto } from '../../src/Modelo/Syssopgan/TareaModel.js'
+import { Proyecto } from '../../src/Modelo/Syssopgan/ProyectoModel.js'
+import {Servicio} from '../../src/Modelo/Syssopgan/ServicioModel.js'
 
 async function save(tarea) {
   return;
