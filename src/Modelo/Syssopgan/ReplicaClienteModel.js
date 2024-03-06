@@ -16,6 +16,18 @@ import {sequelize} from '../sequelize.js';
     ubicacion: {
         type:DataTypes.STRING,
         allowNull:true,
+    },
+    departamento: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    num_tel: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    cedula: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },   
     }, {
         timestamps: false, // Desactivar las columnas createdAt y updatedAt

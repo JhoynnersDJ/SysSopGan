@@ -24,7 +24,18 @@ id_cliente_fk: {
     model: Cliente, // Nombre de la tabla de referencia
     key: 'id_cliente', // Clave primaria en la tabla de referencia
     },
-    
+    departamento: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    telefono: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    cedula: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
 },
 
 }, {
