@@ -81,11 +81,14 @@ export function calculartarifa(date1, date2, inicio) {
     let tarifa = 0;
     var time = horasInicio;
     var date1 = fechaInicio;
+    var tarifa1;
+    var tarifa2;
     // Itera sobre cada hora y cuenta las horas transcurridas
     for (let i = horasInicio; i < horasFin; i++) {
         // Si la hora está fuera del rango 7:00AM a 7:00PM, suma 1.5
         if(time === 24) {
             time = 0;
+            tarifa1=tarifa;
             date1 = fechaFin;
         };
 
@@ -108,6 +111,9 @@ export function calculartarifa(date1, date2, inicio) {
         }
         
     }
-
-    return { tarifa, fin };
+    tarifa2=tarifa-tarifa1;
+    console.log(tarifa1)
+    console.log(tarifa2)
+    if(!tarifa1) tarifa1 = tarifa;
+    return { tarifa1, tarifa2, fin };
 }

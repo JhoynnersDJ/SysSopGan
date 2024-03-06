@@ -19,7 +19,8 @@ export const register = async (req, res) => {
         var time2 = calculartarifa(hora_inicio,hora_fin, fecha);
         res.status(200).json({
             total_time: time,
-            total_tarifa: time2.tarifa,
+            total_tarifa_dia1: time2.tarifa1,
+            total_tarifa_da2: time2.tarifa2,
             siguiente_dia: time2.fin
         })
     } catch (error) {
