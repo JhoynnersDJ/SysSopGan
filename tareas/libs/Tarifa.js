@@ -77,11 +77,8 @@ export function calculartarifa(date1, date2, inicio) {
         fin = `${año}-${mes < 10 ? '0' : ''}${mes}-${dia < 10 ? '0' : ''}${dia}`;
         //console.log(fechaFin.getDay())
     }
-
+    if ((horasFin === horasInicio && parseInt(minutes2) > parseInt(minutes1))){ horasFin+=1;}
     let tarifa = 0;
-    //console.log(horasInicio)
-    //console.log(fechaFin)
-    //if (horasInicio == horasFin) horasFin += 24;
     var time = horasInicio;
     var date1 = fechaInicio;
     // Itera sobre cada hora y cuenta las horas transcurridas
