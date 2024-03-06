@@ -4,6 +4,7 @@ import { convertTo12HourFormat } from "../services/FormatHours.js"
 import { convertTo24HourFormat } from "../services/FormatHours.js"
 import {Proyecto} from "../Modelo/Syssopgan/ProyectoModel.js"
 import {Servicio} from "../Modelo/Syssopgan/ServicioModel.js"
+import {Usuario} from "../Modelo/Syssopgan/UsuarioModel.js"
 
 class TareaController {
     // devuelve todas las tareas
@@ -241,6 +242,30 @@ static async create (req, res){
                 { fecha: date, hora_inicio:startHour, hora_fin:endHour, total_hora: rate.totalHours, id_proyecto_fk: id_project, id_servicio_fk: id_service, feriado_fk: rate.isHoliday, total_tarifa: rate.totalRate},
                 { fields: ['fecha', 'hora_inicio', 'hora_fin', 'total_hora', 'id_proyecto_fk', 'id_servicio_fk', 'feriado_fk','total_tarifa'] }
             )
+            const proyecto = await Proyecto.findByPk(id_project);
+
+            // Obtener el usuario asociado al proyecto
+            const usuario = await Usuario.findByPk(proyecto.id_usuario_fk);
+    
+            // Contar el número total de tareas asociadas al usuario
+            const totalTareasUsuario = await Tarea.count({ 
+                where: { 
+                    '$proyecto.id_usuario_fk$': proyecto.id_usuario_fk 
+                },
+                include: [
+                    {
+                        model: Proyecto,
+                        as: 'proyecto'
+                    }
+                ]
+            });
+    
+            // Actualizar el campo 'contador_tareas' en la tabla de usuarios
+            await Usuario.update(
+                { contador_tareas: totalTareasUsuario },
+                { where: { id_us: usuario.id_us } }
+            );
+
             res.status(201).json({ message: 'Tarea creada correctamente' })
         }
         }

@@ -2,7 +2,7 @@ import userMock from'./UsersMockup.js';
 
 //clase que define la estructura del usuario del sistema
 export class user {
-    constructor(nombre,apellido, email, password, num_tel, empresa,cargo, departamento, rol, id_us) {
+    constructor(nombre,apellido, email, password, num_tel, empresa,cargo, departamento, rol, id_us, verificado) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
@@ -13,6 +13,7 @@ export class user {
         this.departamento = departamento;
         this.rol = rol;
         this.id_us = id_us;
+        this.verificado = verificado;
     }
 
     //gets de los atributos de user
@@ -48,6 +49,22 @@ export class user {
 
     static updateRol(rol, email){
         return userMock.updateRol(rol, email);
+    }
+
+    static updateToken(token, id){
+        return userMock.updateToken(token, id);
+    }
+
+    static sendEmailToken(token,email,nombre) {
+        return userMock.sendEmailToken(token,email,nombre);
+    }
+
+    static updateEmail(email, id){
+        return userMock.updateEmail(email, id);
+    }
+
+    static updateVerificar(ver,id){
+        return userMock.updateVerificar(ver,id);
     }
 
 }

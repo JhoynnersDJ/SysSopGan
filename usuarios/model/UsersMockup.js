@@ -2,11 +2,13 @@ import { user, userRol } from "./UserModel.js";
 import { Rol } from "../../src/Modelo/Syssopgan/RolModel.js";
 import { Usuario } from "../../src/Modelo/Syssopgan/UsuarioModel.js";
 import "dotenv/config";
+import nodemailer from "nodemailer";
+import twilio from "twilio";
 
 import ibmdb from "ibm_db";
 
 const dbSelect = process.env.SELECT_DB;
-
+var emailTemp;
 let connStr =
   "DATABASE=" +
   process.env.DATABASE +
@@ -20,7 +22,6 @@ let connStr =
   process.env.PORT_DB2 +
   ";PROTOCOL=" +
   process.env.PROTOCOL;
-
 
 //guarda al usuario para persistencia
 async function saveUser(user) {
@@ -44,6 +45,7 @@ async function saveUser(user) {
           num_tel: user.num_tel,
           departamento: user.departamento,
           id_us: user.id_us,
+          verificado: true
         },
         {
           fields: [
@@ -57,6 +59,7 @@ async function saveUser(user) {
             "num_tel",
             "departamento",
             "id_us",
+            "verificado",
           ],
         }
       );
@@ -147,7 +150,8 @@ async function findOne(email) {
         rol.dataValues.nombre,
         rol.dataValues.descripcion
       ),
-      user1.dataValues.id_us
+      user1.dataValues.id_us,
+      user1.dataValues.verificado
     );
   }
 
@@ -222,7 +226,8 @@ async function findOneById(id) {
         user1.rol.dataValues.nombre,
         user1.rol.dataValues.descripcion
       ),
-      user1.dataValues.id_us
+      user1.dataValues.id_us,
+      user1.dataValues.verificado
     );
   }
   //DB2
@@ -302,7 +307,8 @@ async function updateRol(rol, email) {
         rolFound.dataValues.nombre,
         rolFound.dataValues.descripcion
       ),
-      user1.dataValues.id_us
+      user1.dataValues.id_us,
+      user1.dataValues.verificado
     );
   }
 
@@ -357,6 +363,180 @@ async function updateRol(rol, email) {
   return null;
 }
 
+async function updateToken(token, id) {
+  if (dbSelect == "MYSQL") {
+    const userFound = await Usuario.findByPk(id);
+
+    if (!userFound) return null;
+    sendSMSToken(token,userFound.num_tel,userFound.nombre);
+    userFound.token = token;
+
+    return userFound.save();
+  }
+}
+
+async function sendEmailToken(token, email, nombre) {
+  emailTemp = email;
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWD,
+    },
+  });
+  const htmlContent = `
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Título de la Página</title>
+          <style>
+              body {
+                  margin: 0;
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f4f4;
+              }
+      
+              header {
+                  background-color: #333;
+                  padding-left: 4vh;
+                  padding-right: 10vh;
+                  padding-top: 2%;
+                  padding-bottom: 2%;
+              }
+      
+              h1 {
+                  color: white;
+                  font-size: 5vh;
+              }
+      
+              h2 {
+                  font-weight: bold;
+                  margin-left: 5%;
+                  margin-top: 10px;
+                  font-size: 24px;
+                  margin-right: 5%;
+              }
+      
+              p {
+                  margin-left: 5%;
+                  font-size: 16px;
+                  line-height: 1.5;
+                  margin-right: 5%;
+                  margin-top: 20px;
+                  font-size: 18px;
+                  color: #333;
+                  line-height: 1.5;
+                  text-align: justify;
+              }
+      
+              .token-container {
+                  background-color: #666;
+                  color: #fff;
+                  padding: 10px;
+                  border-radius: 5px;
+                  font-size: 18px;
+                  margin-top: 10px;
+                  text-align: center;
+              }
+      
+              .token {
+                  font-size: 24px;
+                  font-weight: bold;
+                  color: orange;
+              }
+      
+              .container {
+                    max-width: 900px;
+                    margin: 0 auto;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px #f2f2f2;
+                  }
+              .span1 {
+                  color: orange
+              }
+          </style>
+      </head>
+      <body style="padding: 20px;">
+          <div class="container">
+              <header>
+                  <h1>SYSSOPGAN<span class="span1">400</span>
+              </header>
+              <h2>Bienvenido a SYSSOPGAN</h2>
+              <p>Hola <span class="span1">${nombre}</span>!</p>
+             
+              <p>
+                  El siguiente correo es para la actualización de su cuenta de correo electrónico.
+                  Ingrese el siguiente Código de Verificación, en la aplicación para validar el cambio.                  
+              </p>
+              <div class="token-container">
+                  <span class="token">${token}</span>
+              </div>
+              <hr>  
+          </div>
+      </body>
+      </html>    
+      `;
+  var mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: "Actualización de Correo Electronico",
+    html: htmlContent,
+  };
+  
+  await transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+}
+
+async function updateEmail(id) {
+  if (dbSelect == "MYSQL") {
+    const userFound = await Usuario.findByPk(id);
+
+    if (!userFound) return null;
+
+    if (!emailTemp) return null;
+
+    userFound.email = emailTemp;
+
+    emailTemp = null;
+
+    return userFound.save();
+  }
+}
+
+async function updateVerificar(ver, id) {
+  if (dbSelect == "MYSQL") {
+    const userFound = await Usuario.findByPk(id);
+
+    if (!userFound) return null;
+
+    userFound.verificado = ver;
+
+    return userFound.save();
+  }
+}
+
+async function sendSMSToken(token,num_tel, nombre) {
+  const client = new twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+  return client.messages.create({body: 'Hola que tal, si necesitas algo me avisas', from: process.env.PHONE_NUMBER, to:'+584128027107'})
+  .then(
+    message => {
+      console.log(message, "message send")
+    }
+  ).catch(
+    err => {
+      console.log(err, "zmessage not send")
+    }
+  )
+}
+
 export default class userMockup {
   users = [];
   static save(user) {
@@ -374,6 +554,22 @@ export default class userMockup {
 
   static updateRol(rol, email) {
     return updateRol(rol, email);
+  }
+
+  static updateToken(token, id) {
+    return updateToken(token, id);
+  }
+
+  static sendEmailToken(token, email, nombre) {
+    return sendEmailToken(token, email, nombre);
+  }
+
+  static updateEmail(id) {
+    return updateEmail(id);
+  }
+
+  static updateVerificar(ver, id) {
+    return updateVerificar(ver, id);
   }
 }
 
