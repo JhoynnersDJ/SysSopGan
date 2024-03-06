@@ -150,9 +150,10 @@ export const getHolidayByDate = async (req, res) => {
 export const deleteHoliday = async (req, res) => {
     try {
         const { name, date } = req.body;
-
+        console.log(req.params.id)
         //busca un feriado por id
         const holidayFound = await holiday.findOne(req.params.id);
+        
         //si no consigue el feriado lanza un mensaje de feriado no encontrado
         if (!holidayFound) return res.status(202).json({message: "Holiday not Found"});
 

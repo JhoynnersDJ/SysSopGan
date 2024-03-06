@@ -55,11 +55,11 @@ async function saveHoliday(holiday) {
 //busca en la lista de feriados una fecha pasada por parametro
 async function findOne(id){
     //DB2
-    /*var holidayFound = await Feriado.findOne(
+    var holidayFound = await Feriado.findOne(
         {
             where: { id : id} 
         }
-    );*/
+    );
     //DB2
     /*var holidayFound2 = await new Promise((resolve, reject) => {
         ibmdb.open(connStr, async (err, conn) => {
