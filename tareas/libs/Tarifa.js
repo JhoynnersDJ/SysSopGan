@@ -58,21 +58,22 @@ export function calculartarifa(date1, date2, inicio) {
     if (period2 === "PM" && horasFin !== 12) {
         horasFin += 12;
     }
-
+    //console.log(horasInicio)
+    //console.log(horasFin)
     // Si date2 es antes que date1 y hay un salto de día, ajusta la fecha de fin
     if (horasFin < horasInicio || (horasFin === horasInicio && parseInt(minutes2) < parseInt(minutes1))) {
         horasFin += 24;
 
         const fechaInicio = new Date(inicio);
-        console.log(fechaInicio);
         const fechaFin = new Date(inicio);
         fechaFin.setDate(fechaFin.getDate() + 1); // Establecer el día siguiente a la fecha de inicio
 
-        const dia = fechaFin.getDate();
+        const dia = fechaFin.getDate()+1;
         const mes = fechaFin.getMonth() + 1; // Los meses en JavaScript se indexan desde 0
         const año = fechaFin.getFullYear();
 
         fin = `${año}-${mes < 10 ? '0' : ''}${mes}-${dia < 10 ? '0' : ''}${dia}`;
+        console.log(fechaFin.getDay())
     }
 
     let tarifa = 0;

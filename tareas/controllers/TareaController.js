@@ -2,7 +2,7 @@ import tarea from '../model/TareaModel.js';
 import {calcularDiferenciaDeTiempo, calculartarifa} from '../libs/Tarifa.js'
 
 export const register = async (req, res) => {
-    const { date, start_time, end_time, id_project, id_service } = req.body;
+    const { fecha, hora_inicio, hora_fin, id_proyecto, id_servicio } = req.body;
     try {
         /*const proyectFound = await tarea.findProjectById(id_project);
 
@@ -12,11 +12,11 @@ export const register = async (req, res) => {
 
         if (!serviceFound) return res.status(404).json({message: 'Servicio no encontrado'}); */  
         
-        const date = new Date(start_time);
-        console.log(date);
-
-        var time = calcularDiferenciaDeTiempo(start_time,end_time);
-        var time2 = calculartarifa(start_time,end_time, date);
+        const date = new Date(fecha);
+        
+        var time = calcularDiferenciaDeTiempo(hora_inicio,hora_fin);
+        
+        var time2 = calculartarifa(hora_inicio,hora_fin, fecha);
         res.status(200).json({
             total_time: time,
             total_tarifa: time2.tarifa,

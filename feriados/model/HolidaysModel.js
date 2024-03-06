@@ -2,9 +2,9 @@ import holidayMock from "./HolidaysMockup.js";
 
 //clase que define la estructura de los feriados del sistema
 export default class holidays {    
-    constructor(name, date, id) {
-        this.name = name;
-        this.date = date;
+    constructor(nombre, fecha, id) {
+        this.nombre = nombre;
+        this.fecha = fecha;
         this.id = id;
     }
 

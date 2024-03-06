@@ -12,7 +12,7 @@ const dbSelect = process.env.SELECT_DB;
 //guarda al feriado para persistencia
 async function saveHoliday(holiday) {
     if (dbSelect == "MYSQL"){
-    return await Feriado.create({ nombre: holiday.name, fecha: holiday.date},
+    return await Feriado.create({ nombre: holiday.nombre, fecha: holiday.fecha},
         {fields: [ 'nombre', 'fecha']});
     }
 
