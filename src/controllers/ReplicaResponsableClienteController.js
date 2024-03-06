@@ -1,5 +1,5 @@
 import { ReplicaResponsableCliente } from "../Modelo/Syssopgan/ReplicaResponsableClienteModel.js";
-import { ResponsableCliente } from "../Modelo/Cliente/ResponsableClienteModel.js";
+import { ResponsableCliente } from "../Modelo/Replicacion.js";
 import { Cliente } from "../Modelo/Cliente/ClienteModel.js";
 import { ClienteReplica } from "../Modelo/Syssopgan/ReplicaClienteModel.js";
 

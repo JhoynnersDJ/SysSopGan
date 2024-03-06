@@ -60,6 +60,9 @@ class ProyectoController {
                 id_responsable_cliente_fk: project.dataValues.id_responsable_cliente_fk,
                 nombre_responsable_cl: project.responsable_cliente ? project.responsable_cliente.nombre_responsable_cl : null,
                 nombre_cliente: project.responsable_cliente ? project.responsable_cliente.cliente.nombre_cliente : null,
+                cedula: project.cliente ? project.cliente.cedula: null,
+                cedula_responsable_tec: project.responsable_tecnico ? project.responsable_tecnico.cedula : null,
+
             }))
             res.status(200).json(formattedProjects)
         } catch (error) {

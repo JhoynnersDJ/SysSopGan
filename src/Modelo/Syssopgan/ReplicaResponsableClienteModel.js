@@ -26,6 +26,18 @@ id_cliente_fk: {
     },
     
 },
+departamento: {
+    type: DataTypes.STRING,
+    allowNull: false,
+},
+telefono: {
+    type: DataTypes.STRING,
+    allowNull: false,
+},
+cedula: {
+    type: DataTypes.STRING,
+    allowNull: false,
+},
 
 }, {
     timestamps: false, // Desactivar las columnas createdAt y updatedAt
