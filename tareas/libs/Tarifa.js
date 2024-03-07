@@ -1,3 +1,5 @@
+import holidayMockup from '../../feriados/model/HolidaysMockup.js'
+
 export function calcularDiferenciaDeTiempo(date1, date2) {
     // Parsea las horas, minutos y período de date1
     const [hours1, minutes1, period1] = date1.match(/\d+|AM|PM/g);
@@ -92,7 +94,7 @@ export function calculartarifa(date1, date2, inicio) {
             date1 = fechaFin;
         };
 
-        if ( (date1.getDay() === 6 )) {
+        if ( (date1.getDay() === 6 ) || isHoliday(date1)) {
             tarifa += 2;
             time += 1;
             //console.log(date1)
@@ -116,4 +118,9 @@ export function calculartarifa(date1, date2, inicio) {
     console.log(tarifa2)
     if(!tarifa1) tarifa1 = tarifa;
     return { tarifa1, tarifa2, fin };
+}
+
+export async function isHoliday(fecha) {
+    const holidays = await holidayMockup.getHolidaysDate();
+    return holidays.includes(fecha.toISOString().split('T')[0]);
 }
