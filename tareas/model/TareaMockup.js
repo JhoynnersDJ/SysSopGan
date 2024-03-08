@@ -1,6 +1,8 @@
 import { Proyecto } from '../../src/Modelo/Syssopgan/ProyectoModel.js'
 import {Servicio} from '../../src/Modelo/Syssopgan/ServicioModel.js'
+import "dotenv/config";
 
+const dbSelect = process.env.SELECT_DB;
 async function save(tarea) {
   return;
 }

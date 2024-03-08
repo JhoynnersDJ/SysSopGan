@@ -114,13 +114,11 @@ export function calculartarifa(date1, date2, inicio) {
         
     }
     tarifa2=tarifa-tarifa1;
-    console.log(tarifa1)
-    console.log(tarifa2)
     if(!tarifa1) tarifa1 = tarifa;
     return { tarifa1, tarifa2, fin };
 }
 
 export async function isHoliday(fecha) {
     const holidays = await holidayMockup.getHolidaysDate();
-    return holidays.includes(fecha.toISOString().split('T')[0]);
+    return holidays.includes(fecha);
 }
